@@ -1,5 +1,6 @@
 ﻿using Microsoft.Owin.Security.OAuth;
 using System.Web.Http;
+using System.Web.Http.Cors;
 
 namespace App.Web
 {
@@ -20,6 +21,8 @@ namespace App.Web
 				routeTemplate: "api/{controller}/{action}/{id}",
 				defaults: new { id = RouteParameter.Optional }
 			);
+
+			config.EnableCors(new EnableCorsAttribute("*", "*", "*"));
 		}
 	}
 }
