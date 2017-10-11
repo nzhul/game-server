@@ -1,18 +1,28 @@
-﻿using System;
+﻿using App.Web.Controllers.API;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using App.Data;
 
 namespace App.Web.Controllers
 {
-    [Authorize]
+    //[Authorize]
     public class ValuesController : ApiController
     {
+        private IUnitOfWork Data;
+
+        public ValuesController(IUnitOfWork data)
+        {
+            this.Data = data;
+        }
+
         // GET api/values
         public IEnumerable<string> Get()
         {
+            var alltowns = this.Data.Towns.All();
             return new string[] { "value1", "value2" };
         }
 
