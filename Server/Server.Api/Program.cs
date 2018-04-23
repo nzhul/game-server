@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.DependencyInjection;
+using Server.Data;
 
 namespace Server.Api
 {
@@ -14,7 +10,25 @@ namespace Server.Api
     {
         public static void Main(string[] args)
         {
-            BuildWebHost(args).Run();
+            var host = BuildWebHost(args);
+
+            using (var scope = host.Services.CreateScope())
+            {
+                var services = scope.ServiceProvider;
+
+                try
+                {
+                    var context = services.GetRequiredService<DataContext>();
+                    Seeder.Initialize(context);
+                }
+                catch (System.Exception ex)
+                {
+                    Console.WriteLine("An error occurred while seeding the database.: " + ex.Message);
+                }
+            }
+
+            host.Run();
+
         }
 
         public static IWebHost BuildWebHost(string[] args) =>

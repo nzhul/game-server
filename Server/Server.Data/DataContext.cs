@@ -3,7 +3,7 @@ using Server.Models.Users;
 
 namespace Server.Data
 {
-    public class DataContext: DbContext
+    public class DataContext : DbContext
     {
         public DataContext(DbContextOptions<DataContext> options) : base(options)
         {
@@ -19,6 +19,18 @@ namespace Server.Data
 
 
         #endregion
-        
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Message>()
+                .HasOne(u => u.Sender)
+                .WithMany(u => u.MessagesSent)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Message>()
+                .HasOne(u => u.Recipient)
+                .WithMany(u => u.MessagesRecieved)
+                .OnDelete(DeleteBehavior.Restrict);
+        }
     }
 }
