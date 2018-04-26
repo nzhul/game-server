@@ -14,6 +14,9 @@ import { HomeComponent } from './home/home.component';
 import { AuthGuard } from './_guards/auth.guard';
 import { AuthService } from './_services/auth.service';
 import { AlertifyService } from './_services/alertify.service';
+import { UserListComponent } from './users/user-list/user-list.component';
+import { UserListResolver } from './_resolvers/user-list.resolver';
+import { UserService } from './_services/user.service';
 
 export function getAccessToken(): string {
   return localStorage.getItem('token');
@@ -28,7 +31,8 @@ export const jwtConfig = {
   declarations: [
     AppComponent,
     NavComponent,
-    HomeComponent
+    HomeComponent,
+    UserListComponent
 ],
   imports: [
     BrowserModule,
@@ -49,7 +53,9 @@ export const jwtConfig = {
   providers: [
     AuthService,
     AlertifyService,
-    AuthGuard
+    AuthGuard,
+    UserService,
+    UserListResolver
   ],
   bootstrap: [AppComponent]
 })
