@@ -11,7 +11,7 @@ export const appRoutes: Routes = [
         runGuardsAndResolvers: 'always',
         canActivate: [AuthGuard],
         children: [
-            { path: 'members', component: UserListComponent, resolve: { users: UserListResolver } }
+            { path: 'users', component: UserListComponent, resolve: { users: UserListResolver } }
         ]
     },
     { path: '**', redirectTo: 'home', pathMatch: 'full' },
