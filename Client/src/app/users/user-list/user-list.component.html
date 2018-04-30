@@ -1,3 +1,15 @@
-<p>
-  user-list works!
-</p>
+<div class="row">
+  <div class="text-center">
+    <h2>Returned users -> {{pagination.totalItems}}</h2>
+  </div>
+</div>
+
+<div *ngFor="let user of users">
+  {{user.username}} <br/>
+</div>
+
+<div class="text-center">
+  <pagination [boundaryLinks]="true" [totalItems]="pagination.totalItems" [itemsPerPage]="pagination.itemsPerPage" (pageChanged)="pageChanged($event)"
+    [(ngModel)]="pagination.currentPage" class="pagination-sm" previousText="&lsaquo;" nextText="&rsaquo;" firstText="&laquo;"
+    lastText="&raquo;"></pagination>
+</div>

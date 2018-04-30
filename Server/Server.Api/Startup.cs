@@ -15,6 +15,7 @@ using Server.Api.Helpers;
 using Server.Data;
 using Server.Data.Services;
 using Server.Data.Services.Abstraction;
+using Server.Data.Services.Implementation;
 
 namespace Server.Api
 {
@@ -36,6 +37,7 @@ namespace Server.Api
             services.AddCors();
             services.AddAutoMapper();
             services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<IUsersService, UsersService>();
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
