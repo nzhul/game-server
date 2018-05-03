@@ -39,14 +39,14 @@ namespace Server.Api.Controllers
         {
             var currentUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
 
-            var dbUser = await _usersService.GetUser(currentUserId);
+            // var dbUser = await _usersService.GetUser(currentUserId);
 
             userParams.UserId = currentUserId;
 
-            if (string.IsNullOrEmpty(userParams.Gender))
-            {
-                userParams.Gender = dbUser.Gender == "male" ? "female" : "male";
-            }
+            // if (string.IsNullOrEmpty(userParams.Gender))
+            // {
+            //     userParams.Gender = dbUser.Gender == "male" ? "female" : "male";
+            // }
 
             var users = await this._usersService.GetUsers(userParams);
 

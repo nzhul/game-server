@@ -25,7 +25,10 @@ namespace Server.Data.Services.Implementation
 
             users = users.Where(u => u.Id != userParams.UserId);
 
-            users = users.Where(u => u.Gender == userParams.Gender);
+            if (!string.IsNullOrEmpty(userParams.Gender) && userParams.Gender != "undefined")
+            {
+                users = users.Where(u => u.Gender == userParams.Gender);   
+            }
 
             if (userParams.MinAge != 18 || userParams.MaxAge != 99)
             {
