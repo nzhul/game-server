@@ -7,7 +7,7 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 import { JwtModule } from '@auth0/angular-jwt';
 import { appRoutes } from './routes';
-
+import { TimeAgoPipe } from 'time-ago-pipe';
 import { AppComponent } from './app.component';
 import { NavComponent } from './nav/nav.component';
 import { HomeComponent } from './home/home.component';
@@ -17,6 +17,8 @@ import { AlertifyService } from './_services/alertify.service';
 import { UserListComponent } from './users/user-list/user-list.component';
 import { UserListResolver } from './_resolvers/user-list.resolver';
 import { UserService } from './_services/user.service';
+import { UserDetailComponent } from './users/user-detail/user-detail.component';
+import { UserDetailResolver } from './_resolvers/user-detail.resolver';
 
 export function getAccessToken(): string {
   return localStorage.getItem('token');
@@ -32,7 +34,9 @@ export const jwtConfig = {
     AppComponent,
     NavComponent,
     HomeComponent,
-    UserListComponent
+    UserListComponent,
+    UserDetailComponent,
+    TimeAgoPipe
 ],
   imports: [
     BrowserModule,
@@ -55,7 +59,8 @@ export const jwtConfig = {
     AlertifyService,
     AuthGuard,
     UserService,
-    UserListResolver
+    UserListResolver,
+    UserDetailResolver
   ],
   bootstrap: [AppComponent]
 })

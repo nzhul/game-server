@@ -1,0 +1,67 @@
+<div class="container">
+  <div class="row">
+    <h1>{{user.username}}'s Profile</h1>
+  </div>
+  <div class="row">
+    <div class="col-sm-4">
+      <div class="panel panel-default">
+        <img class="profile-image thumbnail" src="{{user.photoUrl ? user.photoUrl : '../../../assets/user.png'}}" alt="{{user.knownAs}}">
+        <div class="panel-body">
+          <div>
+            <strong>Location:</strong>
+            <p>{{user.city}}, {{user.country}}</p>
+          </div>
+          <div>
+            <strong>Age:</strong>
+            <p>{{user.age}}</p>
+          </div>
+          <div>
+            <strong>Last Active:</strong>
+            <p>{{user.lastActive | timeAgo}}</p>
+          </div>
+          <div>
+            <strong>Member Since:</strong>
+            <p>{{user.created | date: 'mediumDate'}}</p>
+          </div>
+        </div>
+        <div class="panel-footer">
+          <div class="btn-group-justified">
+            <div class="btn-group">
+              <button class="btn btn-success">Message</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-8">
+      <div class="row">
+        <div class="col-sm-12">
+          <h3>World X <small>(primary)</small></h3>
+          <div class="col-md-4">
+            <h4>Heroes</h4>
+            <ul>
+              <li><button class="btn btn-default">Christian (81)</button></li>
+              <li><button class="btn btn-default">Edric (60)</button></li>
+              <li><button class="btn btn-default">Orrin (22)</button></li>
+              <li><button class="btn btn-default">Sorsha (20)</button></li>
+            </ul>
+          </div>
+          <div class="col-md-8">
+              <h4>Statistics</h4>
+              <ul>
+                  <li>Monster kills: 3012</li>
+                  <li>Influence points</li>
+                  <li>Rank: 23</li>
+                  <li>Last activity: 22:14 PM - 04.12.2018</li>
+                </ul>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-12">
+          <h3>World Y <small><a>[Expand]</a></small></h3>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
