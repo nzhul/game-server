@@ -1,4 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Server.Models.Blueprints;
+using Server.Models.Heroes;
 using Server.Models.Users;
 
 namespace Server.Data
@@ -16,6 +18,12 @@ namespace Server.Data
         public DbSet<Photo> Photos { get; set; }
 
         public DbSet<Message> Messages { get; set; }
+
+        public DbSet<HeroBlueprint> HeroBlueprints { get; set; }
+
+        public DbSet<HeroBlueprintClass> HeroBlueprintClass { get; set; }
+
+        public DbSet<Hero> Heroes { get; set; }
 
 
         #endregion

@@ -10,8 +10,6 @@ namespace Server.Models.Worlds
 
         public int Level { get; set; }
 
-        public int SeedId { get; set; } // the unique Id of this region that will be used by Unity to build the Region map
-
         // public ICollection<MonsterCamp> MonsterCamps { get; set; }
 
         // public ICollection<Interactable> Interactables { get; set; }
