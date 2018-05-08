@@ -1,8 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Server.Models.Castles;
 using Server.Models.Heroes;
 using Server.Models.Items;
+using Server.Models.Realms;
 using Server.Models.Users;
-using Server.Models.Worlds;
 
 namespace Server.Data
 {
@@ -12,9 +13,9 @@ namespace Server.Data
         {
         }
 
-        #region Users
-
         public DbSet<User> Users { get; set; }
+
+        public DbSet<Avatar> Avatars { get; set; }
 
         public DbSet<Photo> Photos { get; set; }
 
@@ -28,14 +29,13 @@ namespace Server.Data
 
         public DbSet<Item> Items { get; set; }
 
-
-
-        public DbSet<World> Worlds { get; set; }
+        public DbSet<Realm> Realms { get; set; }
 
         public DbSet<Region> Regions { get; set; }
 
+        public DbSet<Castle> Castles { get; set; }
 
-        #endregion
+        public DbSet<CastleBlueprint> CastleBlueprints { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

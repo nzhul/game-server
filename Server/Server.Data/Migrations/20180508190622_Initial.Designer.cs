@@ -12,8 +12,8 @@ using System;
 namespace Server.Data.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20180508143223_AddItemModels")]
-    partial class AddItemModels
+    [Migration("20180508190622_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -22,12 +22,50 @@ namespace Server.Data.Migrations
                 .HasAnnotation("ProductVersion", "2.0.3-rtm-10026")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+            modelBuilder.Entity("Server.Models.Castles.Castle", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int?>("AvatarId");
+
+                    b.Property<int>("BlueprintId");
+
+                    b.Property<int>("RegionId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AvatarId");
+
+                    b.HasIndex("BlueprintId");
+
+                    b.HasIndex("RegionId");
+
+                    b.ToTable("Castles");
+                });
+
+            modelBuilder.Entity("Server.Models.Castles.CastleBlueprint", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Description");
+
+                    b.Property<string>("Name");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("CastleBlueprints");
+                });
+
             modelBuilder.Entity("Server.Models.Heroes.Hero", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<int>("Attack");
+
+                    b.Property<int?>("AvatarId");
 
                     b.Property<int>("BlueprintId");
 
@@ -51,17 +89,15 @@ namespace Server.Data.Migrations
 
                     b.Property<int>("PersonalDefense");
 
-                    b.Property<int?>("RegionId");
-
-                    b.Property<int?>("UserId");
+                    b.Property<int>("RegionId");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AvatarId");
 
                     b.HasIndex("BlueprintId");
 
                     b.HasIndex("RegionId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Hero");
                 });
@@ -164,6 +200,62 @@ namespace Server.Data.Migrations
                     b.ToTable("ItemBlueprints");
                 });
 
+            modelBuilder.Entity("Server.Models.Realms.Realm", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Name");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Realms");
+                });
+
+            modelBuilder.Entity("Server.Models.Realms.Region", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int>("Level");
+
+                    b.Property<string>("Name");
+
+                    b.Property<int?>("RealmId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RealmId");
+
+                    b.ToTable("Regions");
+                });
+
+            modelBuilder.Entity("Server.Models.Users.Avatar", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int>("Gems");
+
+                    b.Property<int>("Gold");
+
+                    b.Property<int>("Ore");
+
+                    b.Property<int>("RealmId");
+
+                    b.Property<int?>("UserId");
+
+                    b.Property<int>("Wood");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RealmId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Avatars");
+                });
+
             modelBuilder.Entity("Server.Models.Users.Message", b =>
                 {
                     b.Property<int>("Id")
@@ -243,59 +335,43 @@ namespace Server.Data.Migrations
 
                     b.Property<string>("Username");
 
-                    b.Property<int?>("WorldId");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("WorldId");
 
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("Server.Models.Worlds.Region", b =>
+            modelBuilder.Entity("Server.Models.Castles.Castle", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
+                    b.HasOne("Server.Models.Users.Avatar")
+                        .WithMany("Castles")
+                        .HasForeignKey("AvatarId");
 
-                    b.Property<int>("Level");
+                    b.HasOne("Server.Models.Castles.CastleBlueprint", "Blueprint")
+                        .WithMany()
+                        .HasForeignKey("BlueprintId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
-                    b.Property<string>("Name");
-
-                    b.Property<int?>("WorldId");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("WorldId");
-
-                    b.ToTable("Regions");
-                });
-
-            modelBuilder.Entity("Server.Models.Worlds.World", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("Name");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Worlds");
+                    b.HasOne("Server.Models.Realms.Region", "Region")
+                        .WithMany("Castles")
+                        .HasForeignKey("RegionId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Server.Models.Heroes.Hero", b =>
                 {
+                    b.HasOne("Server.Models.Users.Avatar")
+                        .WithMany("Heroes")
+                        .HasForeignKey("AvatarId");
+
                     b.HasOne("Server.Models.Heroes.HeroBlueprint", "Blueprint")
                         .WithMany()
                         .HasForeignKey("BlueprintId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("Server.Models.Worlds.Region")
+                    b.HasOne("Server.Models.Realms.Region", "Region")
                         .WithMany("Heroes")
-                        .HasForeignKey("RegionId");
-
-                    b.HasOne("Server.Models.Users.User")
-                        .WithMany("Heroes")
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("RegionId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Server.Models.Heroes.HeroBlueprint", b =>
@@ -319,6 +395,25 @@ namespace Server.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
+            modelBuilder.Entity("Server.Models.Realms.Region", b =>
+                {
+                    b.HasOne("Server.Models.Realms.Realm")
+                        .WithMany("Regions")
+                        .HasForeignKey("RealmId");
+                });
+
+            modelBuilder.Entity("Server.Models.Users.Avatar", b =>
+                {
+                    b.HasOne("Server.Models.Realms.Realm", "Realm")
+                        .WithMany("Avatars")
+                        .HasForeignKey("RealmId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Server.Models.Users.User")
+                        .WithMany("Avatars")
+                        .HasForeignKey("UserId");
+                });
+
             modelBuilder.Entity("Server.Models.Users.Message", b =>
                 {
                     b.HasOne("Server.Models.Users.User", "Recipient")
@@ -338,20 +433,6 @@ namespace Server.Data.Migrations
                         .WithMany("Photos")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("Server.Models.Users.User", b =>
-                {
-                    b.HasOne("Server.Models.Worlds.World")
-                        .WithMany("Players")
-                        .HasForeignKey("WorldId");
-                });
-
-            modelBuilder.Entity("Server.Models.Worlds.Region", b =>
-                {
-                    b.HasOne("Server.Models.Worlds.World")
-                        .WithMany("Regions")
-                        .HasForeignKey("WorldId");
                 });
 #pragma warning restore 612, 618
         }

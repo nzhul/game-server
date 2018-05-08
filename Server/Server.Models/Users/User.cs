@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using Server.Models.Heroes;
 
 namespace Server.Models.Users
 {
@@ -35,12 +34,14 @@ namespace Server.Models.Users
 
         public ICollection<Message> MessagesRecieved { get; set; }
 
-        public ICollection<Hero> Heroes { get; set; }
+        public ICollection<Avatar> Avatars { get; set; }
 
         public User()
         {
             this.Photos = new Collection<Photo>();
-            this.Heroes = new Collection<Hero>();
+            this.MessagesSent = new Collection<Message>();
+            this.MessagesRecieved = new Collection<Message>();
+            this.Avatars = new Collection<Avatar>();
         }
     }
 }

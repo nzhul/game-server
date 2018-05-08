@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Server.Models.Items;
+using Server.Models.Realms;
 
 namespace Server.Models.Heroes
 {
@@ -33,6 +34,10 @@ namespace Server.Models.Heroes
         public int BlueprintId { get; set; }
 
         public HeroBlueprint Blueprint { get; set; }
+
+        public int RegionId { get; set; }
+
+        public Region Region { get; set; }
 
         public ICollection<Item> Items {get;set;}
 
