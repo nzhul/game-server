@@ -1,7 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Server.Models.Blueprints;
 using Server.Models.Heroes;
+using Server.Models.Items;
 using Server.Models.Users;
+using Server.Models.Worlds;
 
 namespace Server.Data
 {
@@ -23,7 +24,15 @@ namespace Server.Data
 
         public DbSet<HeroBlueprintClass> HeroBlueprintClass { get; set; }
 
-        public DbSet<Hero> Heroes { get; set; }
+        public DbSet<ItemBlueprint> ItemBlueprints { get; set; }
+
+        public DbSet<Item> Items { get; set; }
+
+
+
+        public DbSet<World> Worlds { get; set; }
+
+        public DbSet<Region> Regions { get; set; }
 
 
         #endregion

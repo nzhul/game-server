@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Server.Models.Heroes;
 
 namespace Server.Models.Worlds
 {
@@ -9,6 +10,8 @@ namespace Server.Models.Worlds
         public string Name { get; set; }
 
         public int Level { get; set; }
+
+        public ICollection<Hero> Heroes { get; set; }
 
         // public ICollection<MonsterCamp> MonsterCamps { get; set; }
 

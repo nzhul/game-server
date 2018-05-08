@@ -1,4 +1,4 @@
-namespace Server.Models.Blueprints
+namespace Server.Models.Heroes
 {
     public class HeroBlueprint
     {

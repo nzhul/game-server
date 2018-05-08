@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Server.Models.Blueprints
+﻿namespace Server.Models.Heroes
 {
     public class HeroBlueprintClass
     {

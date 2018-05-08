@@ -1,4 +1,6 @@
-﻿using Server.Models.Blueprints;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using Server.Models.Items;
 
 namespace Server.Models.Heroes
 {
@@ -31,5 +33,12 @@ namespace Server.Models.Heroes
         public int BlueprintId { get; set; }
 
         public HeroBlueprint Blueprint { get; set; }
+
+        public ICollection<Item> Items {get;set;}
+
+        public Hero()
+        {
+            this.Items = new Collection<Item>();
+        }
     }
 }
