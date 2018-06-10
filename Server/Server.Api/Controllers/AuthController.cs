@@ -30,13 +30,14 @@ namespace Server.Api.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] UserForRegistrationDto userForRegistrationDto)
         {
-            if (!string.IsNullOrEmpty(userForRegistrationDto.Username))if (!string.IsNullOrEmpty(userForRegistrationDto.Username))
+            System.Threading.Thread.Sleep(1000); //TODO: Remove this
+            if (!string.IsNullOrEmpty(userForRegistrationDto.Username))
             {
                 userForRegistrationDto.Username = userForRegistrationDto.Username.ToLower();
             }
 
             if (await _repository.UserExists(userForRegistrationDto.Username))
-                ModelState.AddModelError("UserName", "Username already exists");
+                ModelState.AddModelError("Username", "Username already exists");
 
             if (!ModelState.IsValid)
             {
