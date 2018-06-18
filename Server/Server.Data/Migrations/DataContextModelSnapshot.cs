@@ -242,7 +242,7 @@ namespace Server.Data.Migrations
 
                     b.Property<int>("RealmId");
 
-                    b.Property<int?>("UserId");
+                    b.Property<int>("UserId");
 
                     b.Property<int>("Wood");
 
@@ -408,9 +408,10 @@ namespace Server.Data.Migrations
                         .HasForeignKey("RealmId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("Server.Models.Users.User")
+                    b.HasOne("Server.Models.Users.User", "User")
                         .WithMany("Avatars")
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Server.Models.Users.Message", b =>

@@ -30,6 +30,10 @@ namespace Server.Models.Users
 
         public Realm Realm { get; set; }
 
+        public int UserId { get; set; }
+
+        public User User { get; set; }
+
         public Avatar()
         {
             this.Heroes = new Collection<Hero>();

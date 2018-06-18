@@ -2,6 +2,8 @@
 using AutoMapper;
 using Server.Api.Models.Input;
 using Server.Api.Models.View;
+using Server.Api.Models.View.Realms;
+using Server.Models.Realms;
 using Server.Models.Users;
 
 namespace Server.Api.Helpers
@@ -40,6 +42,14 @@ namespace Server.Api.Helpers
             CreateMap<Message, MessageToReturnDto>()
                 .ForMember(m => m.SenderPhotoUrl, opt => opt.MapFrom(u => u.Sender.Photos.FirstOrDefault(p => p.IsMain).Url))
                 .ForMember(m => m.RecipientPhotoUrl, opt => opt.MapFrom(u => u.Recipient.Photos.FirstOrDefault(p => p.IsMain).Url));
+
+
+            // REALMS
+            CreateMap<Realm, RealmListItemDto>()
+                .ForMember(x => x.AvatarsCount, opt =>
+                {
+                    opt.ResolveUsing(d => d.Avatars.Count);
+                });
         }
     }
 }

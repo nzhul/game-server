@@ -7,21 +7,21 @@ namespace Server.Data.Services.Implementation
     {
         protected readonly DataContext _context;
 
-        public BaseService(DataContext context){
+        protected BaseService(DataContext context){
             this._context = context;
         }
 
-        public void Add<T>(T entity) where T : class
+        public virtual void Add<T>(T entity) where T : class
         {
             _context.Add(entity);
         }
 
-        public void Delete<T>(T entity) where T : class
+        public virtual void Delete<T>(T entity) where T : class
         {
             _context.Remove(entity);
         }
 
-        public async Task<bool> SaveAll()
+        public virtual async Task<bool> SaveAll()
         {
             return await _context.SaveChangesAsync() > 0;
         }

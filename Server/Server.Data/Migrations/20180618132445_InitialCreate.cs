@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace Server.Data.Migrations
 {
-    public partial class Initial : Migration
+    public partial class InitialCreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -155,7 +155,7 @@ namespace Server.Data.Migrations
                     Gold = table.Column<int>(nullable: false),
                     Ore = table.Column<int>(nullable: false),
                     RealmId = table.Column<int>(nullable: false),
-                    UserId = table.Column<int>(nullable: true),
+                    UserId = table.Column<int>(nullable: false),
                     Wood = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
@@ -172,7 +172,7 @@ namespace Server.Data.Migrations
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(

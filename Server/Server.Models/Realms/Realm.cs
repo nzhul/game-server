@@ -10,9 +10,9 @@ namespace Server.Models.Realms
 
         public string Name { get; set; }
 
-        public ICollection<Avatar> Avatars {get;set;}
+        public ICollection<Avatar> Avatars { get; set; }
 
-        public ICollection<Region> Regions {get;set;}
+        public ICollection<Region> Regions { get; set; }
 
         public Realm()
         {
