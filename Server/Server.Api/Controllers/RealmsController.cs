@@ -42,8 +42,6 @@ namespace Server.Api.Controllers
 
             var realmsToReturn = _mapper.Map<IEnumerable<RealmListItemDto>>(realms);
 
-            //realmsToReturn = realmsToReturn.OrderByDescending(r => r.AvatarsCount);
-
             Response.AddPagination(realms.CurrentPage, realms.PageSize, realms.TotalCount, realms.TotalPages);
 
             return Ok(realmsToReturn);
