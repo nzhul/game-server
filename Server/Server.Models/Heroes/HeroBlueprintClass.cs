@@ -8,6 +8,8 @@
         public string Name { get; set; }
 
         public string Description { get; set; }
+
+        public Faction Faction { get; set; }
         #endregion
 
         #region Probabilities

@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Server.Api.Helpers;
+using Server.Api.Models.Input.Realms;
 using Server.Api.Models.View.Realms;
 using Server.Data.Services.Abstraction;
 using Server.Models;
@@ -33,6 +35,22 @@ namespace Server.Api.Controllers
             var realmToReturn = _mapper.Map<RealmDetailedDto>(realm);
 
             return Ok(realmToReturn);
+        }
+
+        /// <summary>
+        /// Create user account will create new avatar for the user
+        /// create new hero and assign random starting world position.
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost("")]
+        public async Task<IActionResult> CreateAvatarWithHero([FromBody] AvatarWithHeroCreationDto input)
+        {
+            if (input.UserId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
+            {
+                return Unauthorized();
+            }
+
+            throw new NotImplementedException();
         }
 
         [HttpGet]
