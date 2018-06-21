@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -56,6 +55,8 @@ namespace Server.Api.Controllers
         [HttpGet]
         public async Task<IActionResult> GetRealmsList(QueryParams queryParams)
         {
+            System.Threading.Thread.Sleep(1000); //TODO: Remove this
+
             var realms = await this._realmsService.GetRealms(queryParams);
 
             var realmsToReturn = _mapper.Map<IEnumerable<RealmListItemDto>>(realms);
