@@ -1,14 +1,17 @@
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Server.Models.Users;
 
 namespace Server.Models.Realms
 {
-    public class Realm
+    public class Realm : Entity
     {
-        public int Id { get; set; }
-
         public string Name { get; set; }
+
+        public DateTime ResetDate { get; set; }
+
+        public RealmType Type { get; set; }
 
         public ICollection<Avatar> Avatars { get; set; }
 

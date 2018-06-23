@@ -28,6 +28,7 @@ namespace Server.Data.Services.Implementation
                 .FirstOrDefaultAsync(r => r.Id == id);
         }
 
+        // TODO this switch statement can be refactored and switcher with OData.
         public async Task<PagedList<Realm>> GetRealms(QueryParams queryParams)
         {
             IQueryable<Realm> realms = _context.Realms.Include(x => x.Avatars).AsQueryable();
@@ -36,7 +37,7 @@ namespace Server.Data.Services.Implementation
             {
                 switch (queryParams.OrderBy)
                 {
-                    case "avatarsCount":
+                    case "Population":
                         switch (queryParams.OrderDirection)
                         {
                             case OrderDirection.Ascending:
@@ -49,9 +50,9 @@ namespace Server.Data.Services.Implementation
                             default:
                                 throw new ArgumentOutOfRangeException();
                         }
-
                         break;
-                    case "name":
+
+                    case "Name":
                         switch (queryParams.OrderDirection)
                         {
                             case OrderDirection.Ascending:
@@ -60,6 +61,36 @@ namespace Server.Data.Services.Implementation
                                 
                             case OrderDirection.Descending:
                                 realms = realms.OrderByDescending(r => r.Name);
+                                break;
+                            default:
+                                throw new ArgumentOutOfRangeException();
+                        }
+                        break;
+
+                    case "Type":
+                        switch (queryParams.OrderDirection)
+                        {
+                            case OrderDirection.Ascending:
+                                realms = realms.OrderBy(r => r.Type);
+                                break;
+
+                            case OrderDirection.Descending:
+                                realms = realms.OrderByDescending(r => r.Type);
+                                break;
+                            default:
+                                throw new ArgumentOutOfRangeException();
+                        }
+                        break;
+
+                    case "ResetDate":
+                        switch (queryParams.OrderDirection)
+                        {
+                            case OrderDirection.Ascending:
+                                realms = realms.OrderBy(r => r.ResetDate);
+                                break;
+
+                            case OrderDirection.Descending:
+                                realms = realms.OrderByDescending(r => r.ResetDate);
                                 break;
                             default:
                                 throw new ArgumentOutOfRangeException();

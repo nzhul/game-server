@@ -8,6 +8,8 @@ namespace Server.Api.Models.View
 
         public string Username { get; set; }
 
+        public int CurrentRealmId { get; set; }
+
         public string Gender { get; set; }
 
         public int Age { get; set; }

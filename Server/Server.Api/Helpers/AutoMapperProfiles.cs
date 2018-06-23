@@ -49,7 +49,9 @@ namespace Server.Api.Helpers
                 .ForMember(x => x.AvatarsCount, opt =>
                 {
                     opt.ResolveUsing(d => d.Avatars.Count);
-                });
+                })
+                .ForMember(x => x.RealmType, opt => opt.MapFrom(u => u.Type.ToString()))
+                .ForMember(x => x.ResetDate, opt => opt.MapFrom(u => u.ResetDate.ToString("dd MMMM yyyy")));
         }
     }
 }

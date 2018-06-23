@@ -2,10 +2,8 @@
 
 namespace Server.Models.Users
 {
-    public class Message
+    public class Message : Entity
     {
-        public int Id { get; set; }
-
         public int SenderId { get; set; }
 
         public User Sender { get; set; }

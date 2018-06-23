@@ -1,8 +1,8 @@
 ﻿namespace Server.Models.Heroes
 {
-    public enum Faction
+    public enum HeroFaction
     {
-        Human,
+        Sanctuary,
         Underworld
     }
 }

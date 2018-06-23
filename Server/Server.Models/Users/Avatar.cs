@@ -10,10 +10,8 @@ namespace Server.Models.Users
     /// Avatar is the user representation in the current world.
     /// The user can have multiple avatars, but only one avatar per realm
     /// </summary>
-    public class Avatar
+    public class Avatar : Entity
     {
-        public int Id { get; set; }
-
         public int Wood { get; set; }
 
         public int Ore { get; set; }

@@ -1,11 +1,9 @@
 namespace Server.Models.Heroes
 {
-    public class HeroBlueprint
+    public class HeroBlueprint : Entity
     {
 
         #region Meta
-
-        public int Id { get; set; }
 
         public string Name { get; set; }
 
@@ -13,9 +11,9 @@ namespace Server.Models.Heroes
 
         public string PortraitImgUrl { get; set; }
 
-        public int HeroClassId { get; set; }
+        public HeroFaction Faction { get; set; }
 
-        public HeroBlueprintClass HeroClass { get; set; }
+        public HeroClass Class { get; set; }
 
         #endregion
 

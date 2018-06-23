@@ -10,6 +10,6 @@ namespace Server.Api.Models.Input.Realms
 
         public string HeroClassName { get; set; }
 
-        public Faction Faction { get; set; }
+        public HeroFaction Faction { get; set; }
     }
 }

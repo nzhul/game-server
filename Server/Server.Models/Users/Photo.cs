@@ -2,10 +2,8 @@
 
 namespace Server.Models.Users
 {
-    public class Photo
+    public class Photo : Entity
     {
-        public int Id { get; set; }
-
         public string Url { get; set; }
 
         public string Description { get; set; }

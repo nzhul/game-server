@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using Server.Models.Realms;
 
 namespace Server.Models.Users
 {
-    public class User
+    public class User : Entity
     {
-        public int Id { get; set; }
-
         public string Username { get; set; }
 
         public byte[] PasswordHash { get; set; }
@@ -17,8 +16,6 @@ namespace Server.Models.Users
         public string Gender { get; set; }
 
         public DateTime DateOfBirth { get; set; }
-
-        public DateTime Created { get; set; }
 
         public DateTime LastActive { get; set; }
 
@@ -35,6 +32,8 @@ namespace Server.Models.Users
         public ICollection<Message> MessagesRecieved { get; set; }
 
         public ICollection<Avatar> Avatars { get; set; }
+
+        public int CurrentRealmId { get; set; }
 
         public User()
         {

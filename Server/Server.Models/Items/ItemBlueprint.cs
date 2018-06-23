@@ -4,10 +4,8 @@ using System.Text;
 
 namespace Server.Models.Items
 {
-    public class ItemBlueprint
+    public class ItemBlueprint : Entity
     {
-        public int Id { get; set; }
-
         public string Name { get; set; }
 
         public string Description { get; set; }

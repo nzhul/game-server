@@ -5,6 +5,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Generators\**" />
+    <EmbeddedResource Remove="Generators\**" />
+    <None Remove="Generators\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.1.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.1.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.0" />
@@ -16,9 +22,6 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Server.Models\Server.Models.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Generators\" />
   </ItemGroup>
 
 </Project>

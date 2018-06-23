@@ -43,7 +43,7 @@ namespace Server.Data.Services.Implementation
                 switch (userParams.OrderBy)
                 {
                     case "created":
-                        users = users.OrderByDescending(u => u.Created);
+                        users = users.OrderByDescending(u => u.CreatedAt);
                         break;
                     default:
                         users = users.OrderByDescending(u => u.LastActive);

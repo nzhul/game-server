@@ -1,4 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using Server.Models;
 using Server.Models.Castles;
 using Server.Models.Heroes;
 using Server.Models.Items;
@@ -23,8 +28,6 @@ namespace Server.Data
 
         public DbSet<HeroBlueprint> HeroBlueprints { get; set; }
 
-        public DbSet<HeroBlueprintClass> HeroBlueprintClass { get; set; }
-
         public DbSet<ItemBlueprint> ItemBlueprints { get; set; }
 
         public DbSet<Item> Items { get; set; }
@@ -48,6 +51,37 @@ namespace Server.Data
                 .HasOne(u => u.Recipient)
                 .WithMany(u => u.MessagesRecieved)
                 .OnDelete(DeleteBehavior.Restrict);
+        }
+
+        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default(CancellationToken))
+        {
+            this.ApplyAudition();
+            return base.SaveChangesAsync(cancellationToken);
+        }
+
+        public override int SaveChanges()
+        {
+            this.ApplyAudition();
+            return base.SaveChanges();
+        }
+
+        private void ApplyAudition()
+        {
+            var entities = this.ChangeTracker.Entries()
+                .Where(e => e.Entity is IAuditedEntity &&
+                    (e.State == EntityState.Added || e.State == EntityState.Modified));
+
+            foreach (var entry in entities)
+            {
+                var entity = (IAuditedEntity)entry.Entity;
+
+                if (entry.State == EntityState.Added)
+                {
+                    entity.CreatedAt = DateTime.UtcNow;
+                }
+
+                entity.ModifiedAt = DateTime.UtcNow;
+            }
         }
     }
 }

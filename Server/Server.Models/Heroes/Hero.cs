@@ -5,10 +5,8 @@ using Server.Models.Realms;
 
 namespace Server.Models.Heroes
 {
-    public class Hero
+    public class Hero : Entity
     {
-        public int Id { get; set; }
-
         public int Attack { get; set; }
 
         public int Defence { get; set; }

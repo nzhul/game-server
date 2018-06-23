@@ -79,6 +79,7 @@ namespace Server.Data
                     user.PasswordHash = passwordHash;
                     user.PasswordSald = passwordSalt;
                     user.Username = user.Username.ToLower();
+                    user.CurrentRealmId = r.Next(1, realmNames.Length);
 
                     _context.Users.Add(user);
                 }
@@ -88,6 +89,8 @@ namespace Server.Data
 
             ICollection<Realm> realms = new List<Realm>();
 
+            Array realmTypes = Enum.GetValues(typeof(RealmType));
+
             if (!_context.Realms.Any())
             {
                 
@@ -95,6 +98,8 @@ namespace Server.Data
                 {
                     Realm newRealm = new Realm();
                     newRealm.Name = realmNames[r.Next(0, realmNames.Length)];
+                    newRealm.ResetDate = GetRandomDate();
+                    newRealm.Type = (RealmType)realmTypes.GetValue(r.Next(realmTypes.Length));
                     realms.Add(newRealm);
                     _context.Realms.Add(newRealm);
                 }
@@ -131,6 +136,13 @@ namespace Server.Data
                 passwordSalt = hmac.Key;
                 passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
             }
+        }
+
+        private static DateTime GetRandomDate()
+        {
+            DateTime start = new DateTime(2014, 1, 1);
+            int range = (DateTime.Today - start).Days;
+            return start.AddDays(r.Next(range));
         }
     }
 }

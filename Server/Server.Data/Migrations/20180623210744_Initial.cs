@@ -1,11 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
-using System;
-using System.Collections.Generic;
 
 namespace Server.Data.Migrations
 {
-    public partial class InitialCreate : Migration
+    public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -15,8 +14,8 @@ namespace Server.Data.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Description = table.Column<string>(nullable: true),
-                    Name = table.Column<string>(nullable: true)
+                    Name = table.Column<string>(nullable: true),
+                    Description = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -24,21 +23,35 @@ namespace Server.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "HeroBlueprintClass",
+                name: "HeroBlueprints",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    AttackGainChance = table.Column<int>(nullable: false),
-                    DefenseGainChance = table.Column<int>(nullable: false),
+                    CreatedBy = table.Column<string>(nullable: true),
+                    CreatedAt = table.Column<DateTime>(nullable: false),
+                    ModifiedBy = table.Column<string>(nullable: true),
+                    ModifiedAt = table.Column<DateTime>(nullable: false),
+                    Name = table.Column<string>(nullable: true),
                     Description = table.Column<string>(nullable: true),
-                    MagicGainChance = table.Column<int>(nullable: false),
-                    MagicPowerGainChance = table.Column<int>(nullable: false),
-                    Name = table.Column<string>(nullable: true)
+                    PortraitImgUrl = table.Column<string>(nullable: true),
+                    Faction = table.Column<int>(nullable: false),
+                    Class = table.Column<int>(nullable: false),
+                    Attack = table.Column<int>(nullable: false),
+                    Defense = table.Column<int>(nullable: false),
+                    PersonalAttack = table.Column<int>(nullable: false),
+                    PersonalDefense = table.Column<int>(nullable: false),
+                    Magic = table.Column<int>(nullable: false),
+                    MagicPower = table.Column<int>(nullable: false),
+                    Dodge = table.Column<int>(nullable: false),
+                    Health = table.Column<int>(nullable: false),
+                    MinDamage = table.Column<int>(nullable: false),
+                    MaxDamage = table.Column<int>(nullable: false),
+                    MagicResistance = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_HeroBlueprintClass", x => x.Id);
+                    table.PrimaryKey("PK_HeroBlueprints", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -47,9 +60,13 @@ namespace Server.Data.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    CreatedBy = table.Column<string>(nullable: true),
+                    CreatedAt = table.Column<DateTime>(nullable: false),
+                    ModifiedBy = table.Column<string>(nullable: true),
+                    ModifiedAt = table.Column<DateTime>(nullable: false),
+                    Name = table.Column<string>(nullable: true),
                     Description = table.Column<string>(nullable: true),
-                    ItemSlotType = table.Column<int>(nullable: false),
-                    Name = table.Column<string>(nullable: true)
+                    ItemSlotType = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -62,7 +79,13 @@ namespace Server.Data.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Name = table.Column<string>(nullable: true)
+                    CreatedBy = table.Column<string>(nullable: true),
+                    CreatedAt = table.Column<DateTime>(nullable: false),
+                    ModifiedBy = table.Column<string>(nullable: true),
+                    ModifiedAt = table.Column<DateTime>(nullable: false),
+                    Name = table.Column<string>(nullable: true),
+                    ResetDate = table.Column<DateTime>(nullable: false),
+                    Type = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -75,53 +98,24 @@ namespace Server.Data.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    City = table.Column<string>(nullable: true),
-                    Country = table.Column<string>(nullable: true),
-                    Created = table.Column<DateTime>(nullable: false),
-                    DateOfBirth = table.Column<DateTime>(nullable: false),
-                    Gender = table.Column<string>(nullable: true),
-                    Interests = table.Column<string>(nullable: true),
-                    LastActive = table.Column<DateTime>(nullable: false),
+                    CreatedBy = table.Column<string>(nullable: true),
+                    CreatedAt = table.Column<DateTime>(nullable: false),
+                    ModifiedBy = table.Column<string>(nullable: true),
+                    ModifiedAt = table.Column<DateTime>(nullable: false),
+                    Username = table.Column<string>(nullable: true),
                     PasswordHash = table.Column<byte[]>(nullable: true),
                     PasswordSald = table.Column<byte[]>(nullable: true),
-                    Username = table.Column<string>(nullable: true)
+                    Gender = table.Column<string>(nullable: true),
+                    DateOfBirth = table.Column<DateTime>(nullable: false),
+                    LastActive = table.Column<DateTime>(nullable: false),
+                    Interests = table.Column<string>(nullable: true),
+                    City = table.Column<string>(nullable: true),
+                    Country = table.Column<string>(nullable: true),
+                    CurrentRealmId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Users", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "HeroBlueprints",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Attack = table.Column<int>(nullable: false),
-                    Defense = table.Column<int>(nullable: false),
-                    Description = table.Column<string>(nullable: true),
-                    Dodge = table.Column<int>(nullable: false),
-                    Health = table.Column<int>(nullable: false),
-                    HeroClassId = table.Column<int>(nullable: false),
-                    Magic = table.Column<int>(nullable: false),
-                    MagicPower = table.Column<int>(nullable: false),
-                    MagicResistance = table.Column<int>(nullable: false),
-                    MaxDamage = table.Column<int>(nullable: false),
-                    MinDamage = table.Column<int>(nullable: false),
-                    Name = table.Column<string>(nullable: true),
-                    PersonalAttack = table.Column<int>(nullable: false),
-                    PersonalDefense = table.Column<int>(nullable: false),
-                    PortraitImgUrl = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_HeroBlueprints", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_HeroBlueprints_HeroBlueprintClass_HeroClassId",
-                        column: x => x.HeroClassId,
-                        principalTable: "HeroBlueprintClass",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -130,8 +124,12 @@ namespace Server.Data.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Level = table.Column<int>(nullable: false),
+                    CreatedBy = table.Column<string>(nullable: true),
+                    CreatedAt = table.Column<DateTime>(nullable: false),
+                    ModifiedBy = table.Column<string>(nullable: true),
+                    ModifiedAt = table.Column<DateTime>(nullable: false),
                     Name = table.Column<string>(nullable: true),
+                    Level = table.Column<int>(nullable: false),
                     RealmId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
@@ -151,12 +149,16 @@ namespace Server.Data.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Gems = table.Column<int>(nullable: false),
-                    Gold = table.Column<int>(nullable: false),
+                    CreatedBy = table.Column<string>(nullable: true),
+                    CreatedAt = table.Column<DateTime>(nullable: false),
+                    ModifiedBy = table.Column<string>(nullable: true),
+                    ModifiedAt = table.Column<DateTime>(nullable: false),
+                    Wood = table.Column<int>(nullable: false),
                     Ore = table.Column<int>(nullable: false),
+                    Gold = table.Column<int>(nullable: false),
+                    Gems = table.Column<int>(nullable: false),
                     RealmId = table.Column<int>(nullable: false),
-                    UserId = table.Column<int>(nullable: false),
-                    Wood = table.Column<int>(nullable: false)
+                    UserId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -181,14 +183,18 @@ namespace Server.Data.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Content = table.Column<string>(nullable: true),
-                    DateRead = table.Column<DateTime>(nullable: true),
-                    IsRead = table.Column<bool>(nullable: false),
-                    MessageSent = table.Column<DateTime>(nullable: false),
-                    RecipientDeleted = table.Column<bool>(nullable: false),
+                    CreatedBy = table.Column<string>(nullable: true),
+                    CreatedAt = table.Column<DateTime>(nullable: false),
+                    ModifiedBy = table.Column<string>(nullable: true),
+                    ModifiedAt = table.Column<DateTime>(nullable: false),
+                    SenderId = table.Column<int>(nullable: false),
                     RecipientId = table.Column<int>(nullable: false),
+                    Content = table.Column<string>(nullable: true),
+                    IsRead = table.Column<bool>(nullable: false),
+                    DateRead = table.Column<DateTime>(nullable: true),
+                    MessageSent = table.Column<DateTime>(nullable: false),
                     SenderDeleted = table.Column<bool>(nullable: false),
-                    SenderId = table.Column<int>(nullable: false)
+                    RecipientDeleted = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -213,11 +219,15 @@ namespace Server.Data.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    DateAdded = table.Column<DateTime>(nullable: false),
+                    CreatedBy = table.Column<string>(nullable: true),
+                    CreatedAt = table.Column<DateTime>(nullable: false),
+                    ModifiedBy = table.Column<string>(nullable: true),
+                    ModifiedAt = table.Column<DateTime>(nullable: false),
+                    Url = table.Column<string>(nullable: true),
                     Description = table.Column<string>(nullable: true),
+                    DateAdded = table.Column<DateTime>(nullable: false),
                     IsMain = table.Column<bool>(nullable: false),
                     PublicId = table.Column<string>(nullable: true),
-                    Url = table.Column<string>(nullable: true),
                     UserId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
@@ -237,9 +247,9 @@ namespace Server.Data.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    AvatarId = table.Column<int>(nullable: true),
                     BlueprintId = table.Column<int>(nullable: false),
-                    RegionId = table.Column<int>(nullable: false)
+                    RegionId = table.Column<int>(nullable: false),
+                    AvatarId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -270,20 +280,24 @@ namespace Server.Data.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    CreatedBy = table.Column<string>(nullable: true),
+                    CreatedAt = table.Column<DateTime>(nullable: false),
+                    ModifiedBy = table.Column<string>(nullable: true),
+                    ModifiedAt = table.Column<DateTime>(nullable: false),
                     Attack = table.Column<int>(nullable: false),
-                    AvatarId = table.Column<int>(nullable: true),
-                    BlueprintId = table.Column<int>(nullable: false),
                     Defence = table.Column<int>(nullable: false),
-                    Dodge = table.Column<int>(nullable: false),
-                    Health = table.Column<int>(nullable: false),
                     Magic = table.Column<int>(nullable: false),
                     MagicPower = table.Column<int>(nullable: false),
-                    MagicResistance = table.Column<int>(nullable: false),
-                    MaxDamage = table.Column<int>(nullable: false),
-                    MinDamage = table.Column<int>(nullable: false),
                     PersonalAttack = table.Column<int>(nullable: false),
                     PersonalDefense = table.Column<int>(nullable: false),
-                    RegionId = table.Column<int>(nullable: false)
+                    Dodge = table.Column<int>(nullable: false),
+                    Health = table.Column<int>(nullable: false),
+                    MinDamage = table.Column<int>(nullable: false),
+                    MaxDamage = table.Column<int>(nullable: false),
+                    MagicResistance = table.Column<int>(nullable: false),
+                    BlueprintId = table.Column<int>(nullable: false),
+                    RegionId = table.Column<int>(nullable: false),
+                    AvatarId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -314,6 +328,10 @@ namespace Server.Data.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    CreatedBy = table.Column<string>(nullable: true),
+                    CreatedAt = table.Column<DateTime>(nullable: false),
+                    ModifiedBy = table.Column<string>(nullable: true),
+                    ModifiedAt = table.Column<DateTime>(nullable: false),
                     BlueprintId = table.Column<int>(nullable: false),
                     HeroId = table.Column<int>(nullable: false)
                 },
@@ -373,11 +391,6 @@ namespace Server.Data.Migrations
                 name: "IX_Hero_RegionId",
                 table: "Hero",
                 column: "RegionId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_HeroBlueprints_HeroClassId",
-                table: "HeroBlueprints",
-                column: "HeroClassId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Items_BlueprintId",
@@ -444,9 +457,6 @@ namespace Server.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "Users");
-
-            migrationBuilder.DropTable(
-                name: "HeroBlueprintClass");
 
             migrationBuilder.DropTable(
                 name: "Realms");

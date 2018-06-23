@@ -2,10 +2,8 @@
 
 namespace Server.Models.Items
 {
-    public class Item
+    public class Item : Entity
     {
-        public int Id { get; set; }
-
         public int BlueprintId { get; set; }
 
         public ItemBlueprint Blueprint { get; set; }
