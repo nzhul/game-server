@@ -10,5 +10,7 @@ namespace Server.Data.Services.Abstraction
         Task<PagedList<Realm>> GetRealms(QueryParams queryParams);
 
         Task<Realm> GetRealm(int id);
+
+        Task UpdateCurrentRealm(int userId, int realmId);
     }
 }

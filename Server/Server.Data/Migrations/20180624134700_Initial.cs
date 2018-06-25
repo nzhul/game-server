@@ -418,6 +418,13 @@ namespace Server.Data.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Realms_Name",
+                table: "Realms",
+                column: "Name",
+                unique: true,
+                filter: "[Name] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Regions_RealmId",
                 table: "Regions",
                 column: "RealmId");

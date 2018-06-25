@@ -65,5 +65,20 @@ namespace Server.Api.Controllers
 
             return Ok(realmsToReturn);
         }
+
+        [HttpPut("updateCurrentRealm/{userId}/{realmId}")]
+        public async Task<IActionResult> UpdateCurrentRealm(int userId, int realmId)
+        {
+            // TODO: Add support for admins to call this method
+            if (userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
+            {
+                return Unauthorized();
+            }
+
+            await this._realmsService.UpdateCurrentRealm(userId, realmId);
+
+            return Ok();
+        }
+
     }
 }

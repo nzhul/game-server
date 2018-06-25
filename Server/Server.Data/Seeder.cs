@@ -20,7 +20,7 @@ namespace Server.Data
             "Wimborne",
             "Leeside",
             "Taewe",
-            "Hull",
+            "Dragomir",
             "Lanteglos",
             "Rotherham",
             "Coombe",
@@ -93,11 +93,11 @@ namespace Server.Data
 
             if (!_context.Realms.Any())
             {
-                
-                foreach (string realmName in realmNames)
+
+                for (int i = 0; i < realmNames.Length; i++)
                 {
                     Realm newRealm = new Realm();
-                    newRealm.Name = realmNames[r.Next(0, realmNames.Length)];
+                    newRealm.Name = realmNames[i];
                     newRealm.ResetDate = GetRandomDate();
                     newRealm.Type = (RealmType)realmTypes.GetValue(r.Next(realmTypes.Length));
                     realms.Add(newRealm);

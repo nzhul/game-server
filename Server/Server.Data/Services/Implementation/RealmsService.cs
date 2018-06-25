@@ -6,6 +6,7 @@ using Server.Data.Services.Abstraction;
 using Server.Models;
 using Server.Models.Pagination;
 using Server.Models.Realms;
+using Server.Models.Users;
 
 namespace Server.Data.Services.Implementation
 {
@@ -100,6 +101,17 @@ namespace Server.Data.Services.Implementation
             }
 
             return await PagedList<Realm>.CreateAsync(realms, queryParams.PageNumber, queryParams.PageSize);
+        }
+
+        public async Task UpdateCurrentRealm(int userId, int realmId)
+        {
+            User dbUser = await _context.Users.FirstOrDefaultAsync(r => r.Id == userId);
+
+            if (dbUser != null)
+            {
+                dbUser.CurrentRealmId = realmId;
+                await _context.SaveChangesAsync();
+            }
         }
     }
 }

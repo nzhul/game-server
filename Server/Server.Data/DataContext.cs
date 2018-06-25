@@ -51,6 +51,10 @@ namespace Server.Data
                 .HasOne(u => u.Recipient)
                 .WithMany(u => u.MessagesRecieved)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Realm>()
+                .HasIndex(r => r.Name)
+                .IsUnique(true);
         }
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default(CancellationToken))
