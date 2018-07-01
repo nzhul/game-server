@@ -25,13 +25,13 @@ namespace Server.Models.Users
 
         public string Country { get; set; }
 
-        public ICollection<Photo> Photos { get; set; }
+        public virtual ICollection<Photo> Photos { get; set; }
 
-        public ICollection<Message> MessagesSent { get; set; }
+        public virtual ICollection<Message> MessagesSent { get; set; }
 
-        public ICollection<Message> MessagesRecieved { get; set; }
+        public virtual ICollection<Message> MessagesRecieved { get; set; }
 
-        public ICollection<Avatar> Avatars { get; set; }
+        public virtual ICollection<Avatar> Avatars { get; set; }
 
         public int CurrentRealmId { get; set; }
 

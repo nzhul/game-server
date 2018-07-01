@@ -10,7 +10,7 @@ using Server.Data;
 namespace Server.Data.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20180624134700_Initial")]
+    [Migration("20180701150132_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -67,7 +67,7 @@ namespace Server.Data.Migrations
 
                     b.Property<int>("Attack");
 
-                    b.Property<int?>("AvatarId");
+                    b.Property<int>("AvatarId");
 
                     b.Property<int>("BlueprintId");
 
@@ -80,6 +80,8 @@ namespace Server.Data.Migrations
                     b.Property<int>("Dodge");
 
                     b.Property<int>("Health");
+
+                    b.Property<int>("Level");
 
                     b.Property<int>("Magic");
 
@@ -94,6 +96,8 @@ namespace Server.Data.Migrations
                     b.Property<DateTime>("ModifiedAt");
 
                     b.Property<string>("ModifiedBy");
+
+                    b.Property<string>("Name");
 
                     b.Property<int>("PersonalAttack");
 
@@ -149,8 +153,6 @@ namespace Server.Data.Migrations
                     b.Property<DateTime>("ModifiedAt");
 
                     b.Property<string>("ModifiedBy");
-
-                    b.Property<string>("Name");
 
                     b.Property<int>("PersonalAttack");
 
@@ -262,7 +264,7 @@ namespace Server.Data.Migrations
 
                     b.Property<string>("Name");
 
-                    b.Property<int?>("RealmId");
+                    b.Property<int>("RealmId");
 
                     b.HasKey("Id");
 
@@ -421,34 +423,36 @@ namespace Server.Data.Migrations
                 {
                     b.HasOne("Server.Models.Users.Avatar")
                         .WithMany("Castles")
-                        .HasForeignKey("AvatarId");
+                        .HasForeignKey("AvatarId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("Server.Models.Castles.CastleBlueprint", "Blueprint")
                         .WithMany()
                         .HasForeignKey("BlueprintId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("Server.Models.Realms.Region", "Region")
                         .WithMany("Castles")
                         .HasForeignKey("RegionId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("Server.Models.Heroes.Hero", b =>
                 {
-                    b.HasOne("Server.Models.Users.Avatar")
+                    b.HasOne("Server.Models.Users.Avatar", "Avatar")
                         .WithMany("Heroes")
-                        .HasForeignKey("AvatarId");
+                        .HasForeignKey("AvatarId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("Server.Models.Heroes.HeroBlueprint", "Blueprint")
                         .WithMany()
                         .HasForeignKey("BlueprintId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("Server.Models.Realms.Region", "Region")
                         .WithMany("Heroes")
                         .HasForeignKey("RegionId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("Server.Models.Items.Item", b =>
@@ -456,19 +460,20 @@ namespace Server.Data.Migrations
                     b.HasOne("Server.Models.Items.ItemBlueprint", "Blueprint")
                         .WithMany()
                         .HasForeignKey("BlueprintId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("Server.Models.Heroes.Hero", "Hero")
                         .WithMany("Items")
                         .HasForeignKey("HeroId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("Server.Models.Realms.Region", b =>
                 {
-                    b.HasOne("Server.Models.Realms.Realm")
+                    b.HasOne("Server.Models.Realms.Realm", "Realm")
                         .WithMany("Regions")
-                        .HasForeignKey("RealmId");
+                        .HasForeignKey("RealmId")
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("Server.Models.Users.Avatar", b =>
@@ -476,12 +481,12 @@ namespace Server.Data.Migrations
                     b.HasOne("Server.Models.Realms.Realm", "Realm")
                         .WithMany("Avatars")
                         .HasForeignKey("RealmId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("Server.Models.Users.User", "User")
                         .WithMany("Avatars")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("Server.Models.Users.Message", b =>
@@ -502,7 +507,7 @@ namespace Server.Data.Migrations
                     b.HasOne("Server.Models.Users.User", "User")
                         .WithMany("Photos")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 #pragma warning restore 612, 618
         }

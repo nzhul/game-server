@@ -11,6 +11,10 @@ namespace Server.Models.Realms
 
         public int Level { get; set; }
 
+        public int RealmId { get; set; }
+
+        public Realm Realm { get; set; }
+
         public ICollection<Hero> Heroes { get; set; }
 
         public ICollection<Castle> Castles { get; set; }

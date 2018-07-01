@@ -32,7 +32,6 @@ namespace Server.Data.Migrations
                     CreatedAt = table.Column<DateTime>(nullable: false),
                     ModifiedBy = table.Column<string>(nullable: true),
                     ModifiedAt = table.Column<DateTime>(nullable: false),
-                    Name = table.Column<string>(nullable: true),
                     Description = table.Column<string>(nullable: true),
                     PortraitImgUrl = table.Column<string>(nullable: true),
                     Faction = table.Column<int>(nullable: false),
@@ -130,7 +129,7 @@ namespace Server.Data.Migrations
                     ModifiedAt = table.Column<DateTime>(nullable: false),
                     Name = table.Column<string>(nullable: true),
                     Level = table.Column<int>(nullable: false),
-                    RealmId = table.Column<int>(nullable: true)
+                    RealmId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -168,13 +167,13 @@ namespace Server.Data.Migrations
                         column: x => x.RealmId,
                         principalTable: "Realms",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Avatars_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -238,7 +237,7 @@ namespace Server.Data.Migrations
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -265,13 +264,13 @@ namespace Server.Data.Migrations
                         column: x => x.BlueprintId,
                         principalTable: "CastleBlueprints",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Castles_Regions_RegionId",
                         column: x => x.RegionId,
                         principalTable: "Regions",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -284,6 +283,8 @@ namespace Server.Data.Migrations
                     CreatedAt = table.Column<DateTime>(nullable: false),
                     ModifiedBy = table.Column<string>(nullable: true),
                     ModifiedAt = table.Column<DateTime>(nullable: false),
+                    Name = table.Column<string>(nullable: true),
+                    Level = table.Column<int>(nullable: false),
                     Attack = table.Column<int>(nullable: false),
                     Defence = table.Column<int>(nullable: false),
                     Magic = table.Column<int>(nullable: false),
@@ -297,7 +298,7 @@ namespace Server.Data.Migrations
                     MagicResistance = table.Column<int>(nullable: false),
                     BlueprintId = table.Column<int>(nullable: false),
                     RegionId = table.Column<int>(nullable: false),
-                    AvatarId = table.Column<int>(nullable: true)
+                    AvatarId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -313,13 +314,13 @@ namespace Server.Data.Migrations
                         column: x => x.BlueprintId,
                         principalTable: "HeroBlueprints",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Hero_Regions_RegionId",
                         column: x => x.RegionId,
                         principalTable: "Regions",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -343,13 +344,13 @@ namespace Server.Data.Migrations
                         column: x => x.BlueprintId,
                         principalTable: "ItemBlueprints",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Items_Hero_HeroId",
                         column: x => x.HeroId,
                         principalTable: "Hero",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(

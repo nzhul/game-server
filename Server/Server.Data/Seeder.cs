@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using Newtonsoft.Json;
+using Server.Models.Heroes;
 using Server.Models.Realms;
 using Server.Models.Users;
 
@@ -56,14 +58,62 @@ namespace Server.Data
             "Duchy of Amused Women",
             "Lake Anchor",
         };
-        private static  string[] avatarNames = new string[]
+        private static string[] heroNames = new string[]
         {
-            "xxSlayerxx"
+            "poisonpaddling",
+            "dauphineobject",
+            "millecampus",
+            "forebittsnobby",
+            "starboardstar",
+            "lobstercomis",
+            "unbalancedkilldeer",
+            "teethingtyre",
+            "roseateglory",
+            "gallowaypassage",
+            "broughtdisc",
+            "feverspeanut",
+            "nitricjoining",
+            "twitterfixes",
+            "ramenphase",
+            "anodetriangulum",
+            "residencedunnock",
+            "welcomesupporting",
+            "nigerianvenus",
+            "minercuckoo",
+            "wackvapid",
+            "radiantspinnaker",
+            "syphilisvenues",
+            "repulsivescoff",
+            "gaysbarmpot",
+            "jointscygnus",
+            "pacebinomial",
+            "conceptjugular",
+            "syndromecaspian",
+            "squeakamphora",
+            "mallardtherapist",
+            "clasthornbill",
+            "saucypetrified",
+            "marksfoamy",
+            "macaroonpeacock",
+            "valuebrown",
+            "teammateplantar",
+            "ablationpumice",
+            "grilltickets",
+            "pastillesvigilant",
+            "awakebenthic",
+            "parkerdropper",
+            "frightencriticize",
+            "cameltaut",
+            "secondarytangent",
+            "isaaccollar"
         };
 
         public static void Initialize(DataContext _context)
         {
             List<User> users = new List<User>();
+            ICollection<Avatar> avatars = new List<Avatar>();
+            ICollection<Hero> heroes = new List<Hero>();
+            ICollection<HeroBlueprint> heroBlueprints = Seeder.InitializeHeroBluePrints(_context);
 
             if (!_context.Users.Any())
             {
@@ -102,31 +152,120 @@ namespace Server.Data
                     newRealm.Type = (RealmType)realmTypes.GetValue(r.Next(realmTypes.Length));
                     realms.Add(newRealm);
                     _context.Realms.Add(newRealm);
+                    _context.SaveChanges();
+
+                    for (int y = 0; y < 5; y++)
+                    {
+                        Region newRegion = new Region
+                        {
+                            Name = regionNames[y],
+                            Level = r.Next(1, 5)
+                        };
+
+                        newRealm.Regions.Add(newRegion);
+                        _context.SaveChanges();
+                    }
                 }
-
-                _context.SaveChanges();
             }
-
-            ICollection<Avatar> avatars = new List<Avatar>();
 
             if (!_context.Avatars.Any())
             {
-                for (int i = 0; i < 20; i++)
+                foreach (var user in users)
                 {
-                    Avatar newAvatar = new Avatar();
-                    newAvatar.Wood = r.Next(0, 1000);
-                    newAvatar.Ore = r.Next(0, 1000);
-                    newAvatar.Gold = r.Next(0, 1000);
-                    newAvatar.Gems = r.Next(0, 1000);
-                    newAvatar.UserId = r.Next(1, users.Count);
-                    newAvatar.RealmId = r.Next(1, realms.Count);
+                    foreach (var realm in realms)
+                    {
+                        Avatar newAvatar = new Avatar();
+                        newAvatar.Wood = r.Next(0, 1000);
+                        newAvatar.Ore = r.Next(0, 1000);
+                        newAvatar.Gold = r.Next(0, 1000);
+                        newAvatar.Gems = r.Next(0, 1000);
+                        newAvatar.UserId = user.Id;
+                        newAvatar.RealmId = realm.Id;
 
-                    _context.Avatars.Add(newAvatar);
-                    avatars.Add(newAvatar);
+                        _context.Avatars.Add(newAvatar);
+                        avatars.Add(newAvatar);
+                    }
                 }
 
                 _context.SaveChanges();
+
+                foreach (var avatar in avatars)
+                {
+                    int iterations = r.Next(2, 5);
+                    for (int i = 0; i < iterations; i++)
+                    {
+                        int regionId = r.Next(1, 90);
+                        Hero newHero = new Hero
+                        {
+                            Name = GetRandomHeroName(_context, regionId),
+                            Level = r.Next(1, 60),
+                            BlueprintId = r.Next(1, 6),
+                            RegionId = regionId,
+                            Attack = r.Next(0, 3),
+                            Defence = r.Next(0, 3),
+                            PersonalAttack = r.Next(5, 10),
+                            PersonalDefense = r.Next(5, 10),
+                            Magic = r.Next(0, 3),
+                            MagicPower = r.Next(0, 3),
+                            Dodge = r.Next(0, 2),
+                            Health = r.Next(20, 60),
+                            MinDamage = r.Next(7, 12),
+                            MaxDamage = r.Next(13, 25),
+                            MagicResistance = r.Next(0, 2),
+                            Avatar = avatar
+                        };
+
+                        avatar.Heroes.Add(newHero);
+                        heroes.Add(newHero);
+                        _context.SaveChanges();
+                    }
+                }
+
             }
+
+        }
+
+        private static ICollection<HeroBlueprint> InitializeHeroBluePrints(DataContext _context)
+        {
+            ICollection<HeroBlueprint> heroBlueprints = new List<HeroBlueprint>();
+
+            HeroClass[] classes = (HeroClass[])Enum.GetValues(typeof(HeroClass));
+
+            for (int i = 0; i < classes.Length; i++)
+            {
+                HeroBlueprint bluePrint = new HeroBlueprint
+                {
+                    Description = Seeder.LoremIpsum(3, 10, 1, 3, 1),
+                    PortraitImgUrl = RandomString(20),
+                    Class = classes[i],
+                    Attack = r.Next(0, 3),
+                    Defense = r.Next(0, 3),
+                    PersonalAttack = r.Next(5, 10),
+                    PersonalDefense = r.Next(5, 10),
+                    Magic = r.Next(0, 3),
+                    MagicPower = r.Next(0, 3),
+                    Dodge = r.Next(0, 2),
+                    Health = r.Next(20, 60),
+                    MinDamage = r.Next(7, 12),
+                    MaxDamage = r.Next(13, 25),
+                    MagicResistance = r.Next(0, 2)
+                };
+
+                if (i < (float)classes.Length / 2)
+                {
+                    bluePrint.Faction = HeroFaction.Sanctuary;
+                }
+                else
+                {
+                    bluePrint.Faction = HeroFaction.Underworld;
+                }
+
+                _context.HeroBlueprints.Add(bluePrint);
+                heroBlueprints.Add(bluePrint);
+            }
+
+            _context.SaveChanges();
+            return heroBlueprints;
         }
 
         private static void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
@@ -143,6 +282,61 @@ namespace Server.Data
             DateTime start = new DateTime(2014, 1, 1);
             int range = (DateTime.Today - start).Days;
             return start.AddDays(r.Next(range));
+        }
+
+        private static string LoremIpsum(int minWords, int maxWords,
+            int minSentences, int maxSentences,
+            int numParagraphs)
+        {
+
+            var words = new[]{"lorem", "ipsum", "dolor", "sit", "amet", "consectetuer",
+            "adipiscing", "elit", "sed", "diam", "nonummy", "nibh", "euismod",
+            "tincidunt", "ut", "laoreet", "dolore", "magna", "aliquam", "erat"};
+
+            var rand = new Random();
+            int numSentences = rand.Next(maxSentences - minSentences)
+                + minSentences + 1;
+            int numWords = rand.Next(maxWords - minWords) + minWords + 1;
+
+            StringBuilder result = new StringBuilder();
+
+            for (int p = 0; p < numParagraphs; p++)
+            {
+                for (int s = 0; s < numSentences; s++)
+                {
+                    for (int w = 0; w < numWords; w++)
+                    {
+                        if (w > 0) { result.Append(" "); }
+                        result.Append(words[rand.Next(words.Length)]);
+                    }
+                    result.Append(". ");
+                }
+            }
+
+            return result.ToString();
+        }
+
+        public static string RandomString(int length)
+        {
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            return new string(Enumerable.Repeat(chars, length)
+              .Select(s => s[r.Next(s.Length)]).ToArray());
+        }
+
+        private static string GetRandomHeroName(DataContext _context, int regionId)
+        {
+            Region region = _context.Regions.FirstOrDefault(r => r.Id == regionId);
+
+            string heroName = string.Empty;
+            bool isFree = false;
+
+            while (!isFree)
+            {
+                heroName = heroNames[r.Next(1, heroNames.Length)];
+                isFree = !region.Realm.Avatars.Any(a => a.Heroes.Any(h => h.Name == heroName));
+            }
+
+            return heroName;
         }
     }
 }

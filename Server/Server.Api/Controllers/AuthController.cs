@@ -30,7 +30,7 @@ namespace Server.Api.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] UserForRegistrationDto userForRegistrationDto)
         {
-            System.Threading.Thread.Sleep(1000); //TODO: Remove this
+            System.Threading.Thread.Sleep(500); //TODO: Remove this
             if (!string.IsNullOrEmpty(userForRegistrationDto.Username))
             {
                 userForRegistrationDto.Username = userForRegistrationDto.Username.ToLower();
@@ -56,7 +56,7 @@ namespace Server.Api.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] UserForLoginDto userForLoginDto)
         {
-            System.Threading.Thread.Sleep(1000); //TODO: Remove this
+            System.Threading.Thread.Sleep(500); //TODO: Remove this
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);

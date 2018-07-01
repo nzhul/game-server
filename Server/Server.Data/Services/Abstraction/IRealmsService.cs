@@ -2,6 +2,7 @@
 using Server.Models;
 using Server.Models.Pagination;
 using Server.Models.Realms;
+using Server.Models.Users;
 
 namespace Server.Data.Services.Abstraction
 {
@@ -12,5 +13,7 @@ namespace Server.Data.Services.Abstraction
         Task<Realm> GetRealm(int id);
 
         Task UpdateCurrentRealm(int userId, int realmId);
+
+        Task<Avatar> GetUserAvatarForRealm(int realmId, int userId);
     }
 }

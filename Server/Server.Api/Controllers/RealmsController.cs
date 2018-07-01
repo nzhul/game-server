@@ -55,7 +55,7 @@ namespace Server.Api.Controllers
         [HttpGet]
         public async Task<IActionResult> GetRealmsList(QueryParams queryParams)
         {
-            System.Threading.Thread.Sleep(1000); //TODO: Remove this
+            System.Threading.Thread.Sleep(500); //TODO: Remove this
 
             var realms = await this._realmsService.GetRealms(queryParams);
 
@@ -66,8 +66,8 @@ namespace Server.Api.Controllers
             return Ok(realmsToReturn);
         }
 
-        [HttpPut("updateCurrentRealm/{userId}/{realmId}")]
-        public async Task<IActionResult> UpdateCurrentRealm(int userId, int realmId)
+        [HttpPut("{realmId}/users/{userId}/updateCurrentRealm")]
+        public async Task<IActionResult> UpdateCurrentRealm(int realmId, int userId)
         {
             // TODO: Add support for admins to call this method
             if (userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
@@ -78,6 +78,24 @@ namespace Server.Api.Controllers
             await this._realmsService.UpdateCurrentRealm(userId, realmId);
 
             return Ok();
+        }
+
+        [HttpGet("{realmId}/users/{userId}/avatar")]
+        [ProducesResponseType(200, Type = typeof(AvatarDetailedDto))]
+        public async Task<IActionResult> GetUserAvatarForRealm(int realmId, int userId)
+        {
+            // TODO: extract this if check as attribute, i am using it constantly!
+            //if (userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
+            //{
+            //    return Unauthorized();
+            //}
+
+            //TODO: include class and faction
+            var avatar = await this._realmsService.GetUserAvatarForRealm(realmId, userId);
+
+            var avatarToReturn = _mapper.Map<AvatarDetailedDto>(avatar);
+
+            return Ok(avatarToReturn);
         }
 
     }

@@ -103,6 +103,16 @@ namespace Server.Data.Services.Implementation
             return await PagedList<Realm>.CreateAsync(realms, queryParams.PageNumber, queryParams.PageSize);
         }
 
+        public async Task<Avatar> GetUserAvatarForRealm(int realmId, int userId)
+        {
+            var avatars = await _context.Avatars
+                .Include(a => a.Heroes)
+                .ThenInclude(x => x.Blueprint)
+                .FirstOrDefaultAsync(a => a.RealmId == realmId && a.UserId == userId);
+
+            return avatars;
+        }
+
         public async Task UpdateCurrentRealm(int userId, int realmId)
         {
             User dbUser = await _context.Users.FirstOrDefaultAsync(r => r.Id == userId);

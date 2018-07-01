@@ -1,8 +1,10 @@
 ﻿using System.Linq;
 using AutoMapper;
+using Server.Api.Controllers;
 using Server.Api.Models.Input;
 using Server.Api.Models.View;
 using Server.Api.Models.View.Realms;
+using Server.Models.Heroes;
 using Server.Models.Realms;
 using Server.Models.Users;
 
@@ -52,6 +54,16 @@ namespace Server.Api.Helpers
                 })
                 .ForMember(x => x.RealmType, opt => opt.MapFrom(u => u.Type.ToString()))
                 .ForMember(x => x.ResetDate, opt => opt.MapFrom(u => u.ResetDate.ToString("dd MMMM yyyy")));
+
+            // AVATARS
+            CreateMap<Hero, HeroDetailedDto>()
+                .ForMember(x => x.Class, opt => opt.MapFrom(u => u.Blueprint.Class))
+                .ForMember(x => x.Faction, opt => opt.MapFrom(u => u.Blueprint.Faction));
+            CreateMap<Avatar, AvatarDetailedDto>()
+                .ForMember(x => x.Heroes, opt =>
+                {
+                    opt.MapFrom(u => u.Heroes);
+                });
         }
     }
 }

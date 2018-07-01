@@ -20,17 +20,17 @@ namespace Server.Models.Users
 
         public int Gems { get; set; }
 
-        public ICollection<Hero> Heroes { get; set; }
+        public virtual ICollection<Hero> Heroes { get; set; }
 
-        public ICollection<Castle> Castles { get; set; }
+        public virtual ICollection<Castle> Castles { get; set; }
 
         public int RealmId { get; set; }
 
-        public Realm Realm { get; set; }
+        public virtual Realm Realm { get; set; }
 
         public int UserId { get; set; }
 
-        public User User { get; set; }
+        public virtual User User { get; set; }
 
         public Avatar()
         {

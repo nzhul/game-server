@@ -5,7 +5,7 @@
         // Sanctuary
         Knight,
         Mercenary,
-        Sorceress,
+        Sorcerer,
         
         // Underworld
         Warlord,

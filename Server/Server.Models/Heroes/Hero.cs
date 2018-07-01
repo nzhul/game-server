@@ -2,11 +2,16 @@
 using System.Collections.ObjectModel;
 using Server.Models.Items;
 using Server.Models.Realms;
+using Server.Models.Users;
 
 namespace Server.Models.Heroes
 {
     public class Hero : Entity
     {
+        public string Name { get; set; }
+
+        public int Level { get; set; }
+
         public int Attack { get; set; }
 
         public int Defence { get; set; }
@@ -31,13 +36,17 @@ namespace Server.Models.Heroes
 
         public int BlueprintId { get; set; }
 
-        public HeroBlueprint Blueprint { get; set; }
+        public virtual HeroBlueprint Blueprint { get; set; }
 
         public int RegionId { get; set; }
 
-        public Region Region { get; set; }
+        public virtual Region Region { get; set; }
 
-        public ICollection<Item> Items {get;set;}
+        public int AvatarId { get; set; }
+
+        public virtual Avatar Avatar { get; set; }
+
+        public virtual ICollection<Item> Items {get;set;}
 
         public Hero()
         {
