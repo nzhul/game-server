@@ -284,6 +284,8 @@ namespace Server.Data.Migrations
                     ModifiedBy = table.Column<string>(nullable: true),
                     ModifiedAt = table.Column<DateTime>(nullable: false),
                     Name = table.Column<string>(nullable: true),
+                    LastActivity = table.Column<DateTime>(nullable: false),
+                    TimePlayedTicks = table.Column<long>(nullable: false),
                     Level = table.Column<int>(nullable: false),
                     Attack = table.Column<int>(nullable: false),
                     Defence = table.Column<int>(nullable: false),

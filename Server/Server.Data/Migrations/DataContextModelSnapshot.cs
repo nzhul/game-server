@@ -79,6 +79,8 @@ namespace Server.Data.Migrations
 
                     b.Property<int>("Health");
 
+                    b.Property<DateTime>("LastActivity");
+
                     b.Property<int>("Level");
 
                     b.Property<int>("Magic");
@@ -102,6 +104,8 @@ namespace Server.Data.Migrations
                     b.Property<int>("PersonalDefense");
 
                     b.Property<int>("RegionId");
+
+                    b.Property<long>("TimePlayedTicks");
 
                     b.HasKey("Id");
 

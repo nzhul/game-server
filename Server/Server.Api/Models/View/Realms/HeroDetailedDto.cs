@@ -1,10 +1,16 @@
-﻿namespace Server.Api.Models.View.Realms
+﻿using System;
+
+namespace Server.Api.Models.View.Realms
 {
     public class HeroDetailedDto
     {
         public int Id { get; set; }
 
         public string Name { get; set; }
+
+        public DateTime LastActivity { get; set; }
+
+        public TimeSpan TimePlayed { get; set; }
 
         public int Level { get; set; }
 

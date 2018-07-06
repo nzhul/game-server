@@ -56,7 +56,6 @@ namespace Server.Api.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] UserForLoginDto userForLoginDto)
         {
-            System.Threading.Thread.Sleep(500); //TODO: Remove this
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);

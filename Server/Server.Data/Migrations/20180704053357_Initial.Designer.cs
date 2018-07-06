@@ -10,7 +10,7 @@ using Server.Data;
 namespace Server.Data.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20180701150132_Initial")]
+    [Migration("20180704053357_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -81,6 +81,8 @@ namespace Server.Data.Migrations
 
                     b.Property<int>("Health");
 
+                    b.Property<DateTime>("LastActivity");
+
                     b.Property<int>("Level");
 
                     b.Property<int>("Magic");
@@ -104,6 +106,8 @@ namespace Server.Data.Migrations
                     b.Property<int>("PersonalDefense");
 
                     b.Property<int>("RegionId");
+
+                    b.Property<long>("TimePlayedTicks");
 
                     b.HasKey("Id");
 

@@ -19,21 +19,21 @@ namespace Server.Data
             "Hull",
             "Zeffari",
             "Tarnstead",
-            "Wimborne",
-            "Leeside",
-            "Taewe",
-            "Dragomir",
-            "Lanteglos",
-            "Rotherham",
-            "Coombe",
-            "Grimsby",
-            "Sutton",
-            "Aylesbury",
-            "Drumnadrochit",
-            "Wavemeet",
-            "Acton",
-            "Redwater",
-            "Shipton",
+            //"Wimborne",
+            //"Leeside",
+            //"Taewe",
+            //"Dragomir",
+            //"Lanteglos",
+            //"Rotherham",
+            //"Coombe",
+            //"Grimsby",
+            //"Sutton",
+            //"Aylesbury",
+            //"Drumnadrochit",
+            //"Wavemeet",
+            //"Acton",
+            //"Redwater",
+            //"Shipton",
         };
         private static string[] regionNames = new string[]
         {
@@ -194,10 +194,12 @@ namespace Server.Data
                     int iterations = r.Next(2, 5);
                     for (int i = 0; i < iterations; i++)
                     {
-                        int regionId = r.Next(1, 90);
+                        int regionId = r.Next(1, realmNames.Length * 5);
                         Hero newHero = new Hero
                         {
                             Name = GetRandomHeroName(_context, regionId),
+                            LastActivity = GetRandomDate(),
+                            TimePlayed = new TimeSpan(r.Next(0, 100), r.Next(0, 23), r.Next(0, 59), r.Next(0, 59)),
                             Level = r.Next(1, 60),
                             BlueprintId = r.Next(1, 6),
                             RegionId = regionId,

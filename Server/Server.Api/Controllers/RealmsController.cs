@@ -55,8 +55,6 @@ namespace Server.Api.Controllers
         [HttpGet]
         public async Task<IActionResult> GetRealmsList(QueryParams queryParams)
         {
-            System.Threading.Thread.Sleep(500); //TODO: Remove this
-
             var realms = await this._realmsService.GetRealms(queryParams);
 
             var realmsToReturn = _mapper.Map<IEnumerable<RealmListItemDto>>(realms);
@@ -90,7 +88,6 @@ namespace Server.Api.Controllers
             //    return Unauthorized();
             //}
 
-            //TODO: include class and faction
             var avatar = await this._realmsService.GetUserAvatarForRealm(realmId, userId);
 
             var avatarToReturn = _mapper.Map<AvatarDetailedDto>(avatar);

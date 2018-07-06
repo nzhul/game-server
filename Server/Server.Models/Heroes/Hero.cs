@@ -1,5 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations.Schema;
 using Server.Models.Items;
 using Server.Models.Realms;
 using Server.Models.Users;
@@ -9,6 +12,28 @@ namespace Server.Models.Heroes
     public class Hero : Entity
     {
         public string Name { get; set; }
+
+        public DateTime LastActivity { get; set; }
+
+        [Obsolete("Property 'Duration' should be used instead.")]
+        [Browsable(false)]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public long TimePlayedTicks { get; set; }
+
+        [NotMapped]
+        public TimeSpan TimePlayed
+        {
+#pragma warning disable 618
+            get
+            {
+                return new TimeSpan(TimePlayedTicks);
+            }
+            set
+            {
+                TimePlayedTicks = value.Ticks;
+            }
+#pragma warning restore 618
+        }
 
         public int Level { get; set; }
 
@@ -46,7 +71,7 @@ namespace Server.Models.Heroes
 
         public virtual Avatar Avatar { get; set; }
 
-        public virtual ICollection<Item> Items {get;set;}
+        public virtual ICollection<Item> Items { get; set; }
 
         public Hero()
         {
