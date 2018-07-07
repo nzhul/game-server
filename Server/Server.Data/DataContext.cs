@@ -56,10 +56,17 @@ namespace Server.Data
                 .HasIndex(r => r.Name)
                 .IsUnique(true);
 
-            foreach (var relationship in modelBuilder.Model.GetEntityTypes().SelectMany(e => e.GetForeignKeys()))
-            {
-                relationship.DeleteBehavior = DeleteBehavior.Restrict;
-            }
+            modelBuilder.Entity<Hero>()
+                .HasOne(u => u.Avatar)
+                .WithMany(u => u.Heroes)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Item>()
+                .HasOne(u => u.Hero)
+                .WithMany(u => u.Items)
+                .OnDelete(DeleteBehavior.Cascade);
+                
+                
         }
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default(CancellationToken))

@@ -6,11 +6,11 @@ namespace Server.Models.Castles
     {
         public int Id { get; set; }
 
-        public int BlueprintId { get; set; }
+        public int? BlueprintId { get; set; }
 
         public CastleBlueprint Blueprint { get; set; }
 
-        public int RegionId { get; set; }
+        public int? RegionId { get; set; }
 
         public Region Region { get; set; }
     }

@@ -59,15 +59,15 @@ namespace Server.Models.Heroes
 
         public int MagicResistance { get; set; }
 
-        public int BlueprintId { get; set; }
+        public int? BlueprintId { get; set; }
 
         public virtual HeroBlueprint Blueprint { get; set; }
 
-        public int RegionId { get; set; }
+        public int? RegionId { get; set; }
 
         public virtual Region Region { get; set; }
 
-        public int AvatarId { get; set; }
+        public int? AvatarId { get; set; }
 
         public virtual Avatar Avatar { get; set; }
 

@@ -82,12 +82,6 @@ namespace Server.Api.Controllers
         [ProducesResponseType(200, Type = typeof(AvatarDetailedDto))]
         public async Task<IActionResult> GetUserAvatarForRealm(int realmId, int userId)
         {
-            // TODO: extract this if check as attribute, i am using it constantly!
-            //if (userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
-            //{
-            //    return Unauthorized();
-            //}
-
             var avatar = await this._realmsService.GetUserAvatarForRealm(realmId, userId);
 
             var avatarToReturn = _mapper.Map<AvatarDetailedDto>(avatar);

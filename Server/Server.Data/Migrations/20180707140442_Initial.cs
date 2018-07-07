@@ -129,7 +129,7 @@ namespace Server.Data.Migrations
                     ModifiedAt = table.Column<DateTime>(nullable: false),
                     Name = table.Column<string>(nullable: true),
                     Level = table.Column<int>(nullable: false),
-                    RealmId = table.Column<int>(nullable: false)
+                    RealmId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -156,8 +156,8 @@ namespace Server.Data.Migrations
                     Ore = table.Column<int>(nullable: false),
                     Gold = table.Column<int>(nullable: false),
                     Gems = table.Column<int>(nullable: false),
-                    RealmId = table.Column<int>(nullable: false),
-                    UserId = table.Column<int>(nullable: false)
+                    RealmId = table.Column<int>(nullable: true),
+                    UserId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -186,8 +186,8 @@ namespace Server.Data.Migrations
                     CreatedAt = table.Column<DateTime>(nullable: false),
                     ModifiedBy = table.Column<string>(nullable: true),
                     ModifiedAt = table.Column<DateTime>(nullable: false),
-                    SenderId = table.Column<int>(nullable: false),
-                    RecipientId = table.Column<int>(nullable: false),
+                    SenderId = table.Column<int>(nullable: true),
+                    RecipientId = table.Column<int>(nullable: true),
                     Content = table.Column<string>(nullable: true),
                     IsRead = table.Column<bool>(nullable: false),
                     DateRead = table.Column<DateTime>(nullable: true),
@@ -227,7 +227,7 @@ namespace Server.Data.Migrations
                     DateAdded = table.Column<DateTime>(nullable: false),
                     IsMain = table.Column<bool>(nullable: false),
                     PublicId = table.Column<string>(nullable: true),
-                    UserId = table.Column<int>(nullable: false)
+                    UserId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -246,8 +246,8 @@ namespace Server.Data.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    BlueprintId = table.Column<int>(nullable: false),
-                    RegionId = table.Column<int>(nullable: false),
+                    BlueprintId = table.Column<int>(nullable: true),
+                    RegionId = table.Column<int>(nullable: true),
                     AvatarId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
@@ -298,9 +298,9 @@ namespace Server.Data.Migrations
                     MinDamage = table.Column<int>(nullable: false),
                     MaxDamage = table.Column<int>(nullable: false),
                     MagicResistance = table.Column<int>(nullable: false),
-                    BlueprintId = table.Column<int>(nullable: false),
-                    RegionId = table.Column<int>(nullable: false),
-                    AvatarId = table.Column<int>(nullable: false)
+                    BlueprintId = table.Column<int>(nullable: true),
+                    RegionId = table.Column<int>(nullable: true),
+                    AvatarId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -310,7 +310,7 @@ namespace Server.Data.Migrations
                         column: x => x.AvatarId,
                         principalTable: "Avatars",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Hero_HeroBlueprints_BlueprintId",
                         column: x => x.BlueprintId,
@@ -335,8 +335,8 @@ namespace Server.Data.Migrations
                     CreatedAt = table.Column<DateTime>(nullable: false),
                     ModifiedBy = table.Column<string>(nullable: true),
                     ModifiedAt = table.Column<DateTime>(nullable: false),
-                    BlueprintId = table.Column<int>(nullable: false),
-                    HeroId = table.Column<int>(nullable: false)
+                    BlueprintId = table.Column<int>(nullable: true),
+                    HeroId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {

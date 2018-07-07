@@ -110,8 +110,10 @@ namespace Server.Data.Services.Implementation
                 .ThenInclude(x => x.Blueprint)
                 .FirstOrDefaultAsync(a => a.RealmId == realmId && a.UserId == userId);
 
-            // note: you cannot orderBy the heroes while queryng.
-            avatars.Heroes = avatars.Heroes.OrderByDescending(h => h.LastActivity).ToList();
+            if (avatars != null)
+            {
+                avatars.Heroes = avatars.Heroes.OrderByDescending(h => h.LastActivity).ToList();
+            }
 
             return avatars;
         }

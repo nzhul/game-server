@@ -24,11 +24,11 @@ namespace Server.Models.Users
 
         public virtual ICollection<Castle> Castles { get; set; }
 
-        public int RealmId { get; set; }
+        public int? RealmId { get; set; }
 
         public virtual Realm Realm { get; set; }
 
-        public int UserId { get; set; }
+        public int? UserId { get; set; }
 
         public virtual User User { get; set; }
 

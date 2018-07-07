@@ -11,7 +11,7 @@ namespace Server.Models.Realms
 
         public int Level { get; set; }
 
-        public int RealmId { get; set; }
+        public int? RealmId { get; set; }
 
         public Realm Realm { get; set; }
 
