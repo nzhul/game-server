@@ -2,6 +2,7 @@
 using Server.Models;
 using Server.Models.Pagination;
 using Server.Models.Realms;
+using Server.Models.Realms.Input;
 using Server.Models.Users;
 
 namespace Server.Data.Services.Abstraction
@@ -15,5 +16,7 @@ namespace Server.Data.Services.Abstraction
         Task UpdateCurrentRealm(int userId, int realmId);
 
         Task<Avatar> GetUserAvatarForRealm(int realmId, int userId);
+
+        Task<Avatar> CreateHeroOrAvatarWithHero(int realmId, int userId, AvatarWithHeroCreationDto input);
     }
 }

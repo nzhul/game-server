@@ -6,10 +6,10 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Server.Api.Helpers;
-using Server.Api.Models.Input.Realms;
 using Server.Api.Models.View.Realms;
 using Server.Data.Services.Abstraction;
 using Server.Models;
+using Server.Models.Realms.Input;
 
 namespace Server.Api.Controllers
 {
@@ -34,22 +34,6 @@ namespace Server.Api.Controllers
             var realmToReturn = _mapper.Map<RealmDetailedDto>(realm);
 
             return Ok(realmToReturn);
-        }
-
-        /// <summary>
-        /// Create user account will create new avatar for the user
-        /// create new hero and assign random starting world position.
-        /// </summary>
-        /// <returns></returns>
-        [HttpPost("")]
-        public async Task<IActionResult> CreateAvatarWithHero([FromBody] AvatarWithHeroCreationDto input)
-        {
-            if (input.UserId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
-            {
-                return Unauthorized();
-            }
-
-            throw new NotImplementedException();
         }
 
         [HttpGet]
@@ -83,6 +67,22 @@ namespace Server.Api.Controllers
         public async Task<IActionResult> GetUserAvatarForRealm(int realmId, int userId)
         {
             var avatar = await this._realmsService.GetUserAvatarForRealm(realmId, userId);
+
+            var avatarToReturn = _mapper.Map<AvatarDetailedDto>(avatar);
+
+            return Ok(avatarToReturn);
+        }
+
+        [HttpPost("{realmId}/users/{userId}/avatar")]
+        [ProducesResponseType(200, Type = typeof(AvatarDetailedDto))]
+        public async Task<IActionResult> CreateHeroOrAvatarWithHero(int realmId, int userId,[FromBody] AvatarWithHeroCreationDto input)
+        {
+            if (userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
+            {
+                return Unauthorized();
+            }
+
+            var avatar = await this._realmsService.CreateHeroOrAvatarWithHero(realmId, userId, input);
 
             var avatarToReturn = _mapper.Map<AvatarDetailedDto>(avatar);
 

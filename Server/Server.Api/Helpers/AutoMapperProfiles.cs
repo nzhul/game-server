@@ -64,6 +64,10 @@ namespace Server.Api.Helpers
                 {
                     opt.MapFrom(u => u.Heroes);
                 });
+
+            // BLUEPRINTS
+            CreateMap<HeroBlueprint, Hero>()
+                .ForMember(x => x.Id, opt => opt.Ignore());
         }
     }
 }

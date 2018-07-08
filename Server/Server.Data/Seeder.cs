@@ -113,7 +113,12 @@ namespace Server.Data
             List<User> users = new List<User>();
             ICollection<Avatar> avatars = new List<Avatar>();
             ICollection<Hero> heroes = new List<Hero>();
-            ICollection<HeroBlueprint> heroBlueprints = Seeder.InitializeHeroBluePrints(_context);
+            ICollection<HeroBlueprint> heroBlueprints = new List<HeroBlueprint>();
+
+            if (!_context.HeroBlueprints.Any())
+            {
+                heroBlueprints = Seeder.InitializeHeroBluePrints(_context);
+            }
 
             if (!_context.Users.Any())
             {
