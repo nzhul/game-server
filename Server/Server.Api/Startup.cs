@@ -1,4 +1,7 @@
-﻿using System.Net;
+﻿using System;
+using System.IO;
+using System.Net;
+using System.Reflection;
 using System.Text;
 using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -12,10 +15,12 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Server.Api.Helpers;
+using Server.Api.Infrastructure.Filters;
 using Server.Data;
 using Server.Data.Services;
 using Server.Data.Services.Abstraction;
 using Server.Data.Services.Implementation;
+using Swashbuckle.AspNetCore.Swagger;
 
 namespace Server.Api
 {
@@ -50,8 +55,25 @@ namespace Server.Api
                         ValidateAudience = false
                     };
                 });
-            services.AddMvc().AddJsonOptions(opt => {
+            services.AddMvc().AddJsonOptions(opt =>
+            {
                 opt.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+            });
+
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new Info
+                {
+                    Version = "v1",
+                    Title = "AW Server API",
+                    Description = "A simple example asp.net core web api"
+                });
+                c.OperationFilter<AddAuthTokenHeaderParameter>();
+
+                // Set the comments path for the Swagger JSON and UI.
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                c.IncludeXmlComments(xmlPath);
             });
         }
 
@@ -86,7 +108,11 @@ namespace Server.Api
             app.UseAuthentication();
             app.UseDefaultFiles();
             app.UseStaticFiles();
-            app.UseMvc(routes => {
+            app.UseSwagger(c => c.RouteTemplate = "api/{documentName}/swagger.json");
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/api/v1/swagger.json", "AW Server V1"));
+            app.UseMvc();
+            app.UseMvc(routes =>
+            {
                 routes.MapSpaFallbackRoute(
                     name: "spa-fallback",
                     defaults: new { controller = "Fallback", action = "Index" }

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -36,6 +35,17 @@ namespace Server.Api.Controllers
             return Ok(realmToReturn);
         }
 
+        /// <summary>
+        /// Get a list of all realms in the server.
+        /// </summary>
+        /// <remarks>
+        /// Remarks can be used to put some description to the request
+        /// It can be multiline description
+        /// </remarks>
+        /// <param name="queryParams"></param>
+        /// <returns>A newly created TodoItem</returns>
+        /// <response code="200">Returns an collection of all realms in the server</response>
+        /// <response code="400">If some of the queryParams are invalid</response>
         [HttpGet]
         public async Task<IActionResult> GetRealmsList(QueryParams queryParams)
         {
@@ -75,7 +85,7 @@ namespace Server.Api.Controllers
 
         [HttpPost("{realmId}/users/{userId}/avatar")]
         [ProducesResponseType(200, Type = typeof(AvatarDetailedDto))]
-        public async Task<IActionResult> CreateHeroOrAvatarWithHero(int realmId, int userId,[FromBody] AvatarWithHeroCreationDto input)
+        public async Task<IActionResult> CreateHeroOrAvatarWithHero(int realmId, int userId, [FromBody] AvatarWithHeroCreationDto input)
         {
             if (userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
             {
