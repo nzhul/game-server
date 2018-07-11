@@ -15,7 +15,8 @@ namespace Server.Data.Services.Implementation
 {
     public class RealmsService : BaseService, IRealmsService
     {
-        public RealmsService(DataContext context) : base(context)
+        public RealmsService(DataContext context)
+            : base(context)
         {
         }
 
@@ -47,7 +48,7 @@ namespace Server.Data.Services.Implementation
                             case OrderDirection.Ascending:
                                 realms = realms.OrderBy(r => r.Avatars.Count);
                                 break;
-                                
+
                             case OrderDirection.Descending:
                                 realms = realms.OrderByDescending(r => r.Avatars.Count);
                                 break;
@@ -62,7 +63,7 @@ namespace Server.Data.Services.Implementation
                             case OrderDirection.Ascending:
                                 realms = realms.OrderBy(r => r.Name);
                                 break;
-                                
+
                             case OrderDirection.Descending:
                                 realms = realms.OrderByDescending(r => r.Name);
                                 break;

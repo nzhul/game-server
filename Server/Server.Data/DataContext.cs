@@ -26,6 +26,8 @@ namespace Server.Data
 
         public DbSet<Message> Messages { get; set; }
 
+        public DbSet<Hero> Heroes { get; set; }
+
         public DbSet<HeroBlueprint> HeroBlueprints { get; set; }
 
         public DbSet<ItemBlueprint> ItemBlueprints { get; set; }

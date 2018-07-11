@@ -10,8 +10,8 @@ using Server.Data;
 namespace Server.Data.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20180707140442_Initial")]
-    partial class Initial
+    [Migration("20180711055344_Intial")]
+    partial class Intial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -117,7 +117,7 @@ namespace Server.Data.Migrations
 
                     b.HasIndex("RegionId");
 
-                    b.ToTable("Hero");
+                    b.ToTable("Heroes");
                 });
 
             modelBuilder.Entity("Server.Models.Heroes.HeroBlueprint", b =>
@@ -462,7 +462,8 @@ namespace Server.Data.Migrations
 
                     b.HasOne("Server.Models.Heroes.Hero", "Hero")
                         .WithMany("Items")
-                        .HasForeignKey("HeroId");
+                        .HasForeignKey("HeroId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Server.Models.Realms.Region", b =>

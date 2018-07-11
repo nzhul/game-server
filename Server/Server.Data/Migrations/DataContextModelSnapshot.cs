@@ -115,7 +115,7 @@ namespace Server.Data.Migrations
 
                     b.HasIndex("RegionId");
 
-                    b.ToTable("Hero");
+                    b.ToTable("Heroes");
                 });
 
             modelBuilder.Entity("Server.Models.Heroes.HeroBlueprint", b =>
@@ -460,7 +460,8 @@ namespace Server.Data.Migrations
 
                     b.HasOne("Server.Models.Heroes.Hero", "Hero")
                         .WithMany("Items")
-                        .HasForeignKey("HeroId");
+                        .HasForeignKey("HeroId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Server.Models.Realms.Region", b =>

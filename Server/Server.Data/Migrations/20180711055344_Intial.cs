@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Server.Data.Migrations
 {
-    public partial class Initial : Migration
+    public partial class Intial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -274,7 +274,7 @@ namespace Server.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Hero",
+                name: "Heroes",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
@@ -304,21 +304,21 @@ namespace Server.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Hero", x => x.Id);
+                    table.PrimaryKey("PK_Heroes", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Hero_Avatars_AvatarId",
+                        name: "FK_Heroes_Avatars_AvatarId",
                         column: x => x.AvatarId,
                         principalTable: "Avatars",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Hero_HeroBlueprints_BlueprintId",
+                        name: "FK_Heroes_HeroBlueprints_BlueprintId",
                         column: x => x.BlueprintId,
                         principalTable: "HeroBlueprints",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Hero_Regions_RegionId",
+                        name: "FK_Heroes_Regions_RegionId",
                         column: x => x.RegionId,
                         principalTable: "Regions",
                         principalColumn: "Id",
@@ -348,11 +348,11 @@ namespace Server.Data.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Items_Hero_HeroId",
+                        name: "FK_Items_Heroes_HeroId",
                         column: x => x.HeroId,
-                        principalTable: "Hero",
+                        principalTable: "Heroes",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
@@ -381,18 +381,18 @@ namespace Server.Data.Migrations
                 column: "RegionId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Hero_AvatarId",
-                table: "Hero",
+                name: "IX_Heroes_AvatarId",
+                table: "Heroes",
                 column: "AvatarId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Hero_BlueprintId",
-                table: "Hero",
+                name: "IX_Heroes_BlueprintId",
+                table: "Heroes",
                 column: "BlueprintId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Hero_RegionId",
-                table: "Hero",
+                name: "IX_Heroes_RegionId",
+                table: "Heroes",
                 column: "RegionId");
 
             migrationBuilder.CreateIndex(
@@ -454,7 +454,7 @@ namespace Server.Data.Migrations
                 name: "ItemBlueprints");
 
             migrationBuilder.DropTable(
-                name: "Hero");
+                name: "Heroes");
 
             migrationBuilder.DropTable(
                 name: "Avatars");

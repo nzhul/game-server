@@ -5,6 +5,8 @@ namespace Server.Api.Controllers
 {
     public class AvatarDetailedDto
     {
+        public int Id { get; set; }
+
         public int Wood { get; set; }
 
         public int Ore { get; set; }
@@ -13,6 +15,6 @@ namespace Server.Api.Controllers
 
         public int Gems { get; set; }
 
-        public ICollection<HeroDetailedDto> Heroes {get; set;}
+        public ICollection<HeroDetailedDto> Heroes { get; set; }
     }
 }
