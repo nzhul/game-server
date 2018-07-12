@@ -28,8 +28,8 @@ namespace Server.Data.Services.Implementation
         public async Task<Realm> GetRealmFull(int id)
         {
             return await _context.Realms
-                .Include(r => r.Avatars).ThenInclude(c => c.Heroes)
-                .Include(r => r.Regions).ThenInclude(c => c.Castles)
+                .Include(r => r.Avatars).ThenInclude(c => c.Heroes) // AutoComplete for .ThenInclude is not working!
+                .Include(r => r.Regions).ThenInclude(c => c.Castles) // Do not wonder why you cannot see nested entities :)
                 .FirstOrDefaultAsync(r => r.Id == id);
         }
 
@@ -130,6 +130,7 @@ namespace Server.Data.Services.Implementation
 
             User dbUser = await _context.Users
                 .Include(u => u.Avatars)
+                .ThenInclude(u => u.Heroes)
                 .FirstOrDefaultAsync(u => u.Id == userId);
 
             if (dbRealm != null && dbUser != null)

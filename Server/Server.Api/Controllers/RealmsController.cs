@@ -94,9 +94,16 @@ namespace Server.Api.Controllers
 
             var avatar = await this._realmsService.CreateHeroOrAvatarWithHero(realmId, userId, input);
 
-            var avatarToReturn = _mapper.Map<AvatarDetailedDto>(avatar);
+            if (avatar != null)
+            {
+                var avatarToReturn = _mapper.Map<AvatarDetailedDto>(avatar);
 
-            return Ok(avatarToReturn);
+                return Ok(avatarToReturn);
+            }
+            else
+            {
+                return BadRequest("Hero name is already taken!");
+            }
         }
 
     }
