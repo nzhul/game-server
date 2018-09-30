@@ -29,7 +29,8 @@ namespace Server.Data.Services.Implementation
         {
             return await _context.Realms
                 .Include(r => r.Avatars).ThenInclude(c => c.Heroes) // AutoComplete for .ThenInclude is not working!
-                .Include(r => r.Regions).ThenInclude(c => c.Castles) // Do not wonder why you cannot see nested entities :)
+                .Include(r => r.Regions).ThenInclude(c => c.Rooms).ThenInclude( c => c.Heroes) // Do not wonder why you cannot see nested entities :)
+                .Include(r => r.Regions).ThenInclude(c => c.Rooms).ThenInclude(c => c.Castles) // Not sure about this duplication ?
                 .FirstOrDefaultAsync(r => r.Id == id);
         }
 
@@ -207,6 +208,20 @@ namespace Server.Data.Services.Implementation
                 dbUser.CurrentRealmId = realmId;
                 await _context.SaveChangesAsync();
             }
+        }
+
+        public Task<Realm> CreateRealm()
+        {
+
+            throw new NotImplementedException();
+            // 1. Create Realm
+            // 2. Populate it with 5 levels of Regions
+            //      Level 5 -> 1 Region
+            //      Level 4 -> 3 Regions
+            //      Level 3 -> 9 Regions (Total active players / X)
+            //      Level 2 -> 27 Regions (Total active players / X)
+            //      Level 1 -> As many regions as players are in the server. Each player will have it's onw starting region.
+
         }
     }
 }

@@ -15,7 +15,7 @@ namespace Server.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.1.1-rtm-30846")
+                .HasAnnotation("ProductVersion", "2.1.3-rtm-32065")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -31,6 +31,8 @@ namespace Server.Data.Migrations
 
                     b.Property<int?>("RegionId");
 
+                    b.Property<int?>("RoomId");
+
                     b.HasKey("Id");
 
                     b.HasIndex("AvatarId");
@@ -38,6 +40,8 @@ namespace Server.Data.Migrations
                     b.HasIndex("BlueprintId");
 
                     b.HasIndex("RegionId");
+
+                    b.HasIndex("RoomId");
 
                     b.ToTable("Castles");
                 });
@@ -105,6 +109,8 @@ namespace Server.Data.Migrations
 
                     b.Property<int?>("RegionId");
 
+                    b.Property<int?>("RoomId");
+
                     b.Property<long>("TimePlayedTicks");
 
                     b.HasKey("Id");
@@ -114,6 +120,8 @@ namespace Server.Data.Migrations
                     b.HasIndex("BlueprintId");
 
                     b.HasIndex("RegionId");
+
+                    b.HasIndex("RoomId");
 
                     b.ToTable("Heroes");
                 });
@@ -260,6 +268,8 @@ namespace Server.Data.Migrations
 
                     b.Property<int>("Level");
 
+                    b.Property<string>("MapMatrix");
+
                     b.Property<DateTime>("ModifiedAt");
 
                     b.Property<string>("ModifiedBy");
@@ -273,6 +283,39 @@ namespace Server.Data.Migrations
                     b.HasIndex("RealmId");
 
                     b.ToTable("Regions");
+                });
+
+            modelBuilder.Entity("Server.Models.Realms.Room", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("CreatedAt");
+
+                    b.Property<string>("CreatedBy");
+
+                    b.Property<string>("EdgeTiles");
+
+                    b.Property<bool>("IsAccessibleFromMainRoom");
+
+                    b.Property<bool>("IsMainRoom");
+
+                    b.Property<DateTime>("ModifiedAt");
+
+                    b.Property<string>("ModifiedBy");
+
+                    b.Property<int?>("RegionId");
+
+                    b.Property<int>("RoomSize");
+
+                    b.Property<string>("Tiles");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RegionId");
+
+                    b.ToTable("Room");
                 });
 
             modelBuilder.Entity("Server.Models.Users.Avatar", b =>
@@ -432,8 +475,12 @@ namespace Server.Data.Migrations
                         .HasForeignKey("BlueprintId");
 
                     b.HasOne("Server.Models.Realms.Region", "Region")
-                        .WithMany("Castles")
+                        .WithMany()
                         .HasForeignKey("RegionId");
+
+                    b.HasOne("Server.Models.Realms.Room")
+                        .WithMany("Castles")
+                        .HasForeignKey("RoomId");
                 });
 
             modelBuilder.Entity("Server.Models.Heroes.Hero", b =>
@@ -448,8 +495,12 @@ namespace Server.Data.Migrations
                         .HasForeignKey("BlueprintId");
 
                     b.HasOne("Server.Models.Realms.Region", "Region")
-                        .WithMany("Heroes")
+                        .WithMany()
                         .HasForeignKey("RegionId");
+
+                    b.HasOne("Server.Models.Realms.Room")
+                        .WithMany("Heroes")
+                        .HasForeignKey("RoomId");
                 });
 
             modelBuilder.Entity("Server.Models.Items.Item", b =>
@@ -469,6 +520,13 @@ namespace Server.Data.Migrations
                     b.HasOne("Server.Models.Realms.Realm", "Realm")
                         .WithMany("Regions")
                         .HasForeignKey("RealmId");
+                });
+
+            modelBuilder.Entity("Server.Models.Realms.Room", b =>
+                {
+                    b.HasOne("Server.Models.Realms.Region")
+                        .WithMany("Rooms")
+                        .HasForeignKey("RegionId");
                 });
 
             modelBuilder.Entity("Server.Models.Users.Avatar", b =>

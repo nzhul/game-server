@@ -18,5 +18,7 @@ namespace Server.Data.Services.Abstraction
         Task<Avatar> GetUserAvatarForRealm(int realmId, int userId);
 
         Task<Avatar> CreateHeroOrAvatarWithHero(int realmId, int userId, AvatarWithHeroCreationDto input);
+
+        Task<Realm> CreateRealm();
     }
 }

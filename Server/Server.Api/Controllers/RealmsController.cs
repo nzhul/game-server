@@ -8,6 +8,7 @@ using Server.Api.Helpers;
 using Server.Api.Models.View.Realms;
 using Server.Data.Services.Abstraction;
 using Server.Models;
+using Server.Models.Realms;
 using Server.Models.Realms.Input;
 
 namespace Server.Api.Controllers
@@ -23,6 +24,16 @@ namespace Server.Api.Controllers
         {
             _realmsService = realmsService;
             _mapper = mapper;
+        }
+
+        //TODO: make this endpoint - Admin only
+        [HttpPost("CreateRealm")]
+        public async Task<IActionResult> CreateRealm()
+        {
+            Realm createdRealm = await this._realmsService.CreateRealm();
+            var realmToReturn = _mapper.Map<RealmDetailedDto>(createdRealm);
+
+            return CreatedAtRoute("GetRealm", new { controller = "Realms", id = createdRealm.Id }, realmToReturn);
         }
 
         [HttpGet("{id}", Name = "GetRealm")]
