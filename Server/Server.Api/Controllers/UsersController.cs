@@ -13,7 +13,7 @@ namespace Server.Api.Controllers
 {
     [Authorize]
     [Route("api/[controller]")]
-    public class UsersController : Controller
+    public class UsersController : ControllerBase
     {
         private readonly IUsersService _usersService;
         private readonly IMapper _mapper;

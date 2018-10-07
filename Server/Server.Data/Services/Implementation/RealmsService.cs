@@ -15,9 +15,12 @@ namespace Server.Data.Services.Implementation
 {
     public class RealmsService : BaseService, IRealmsService
     {
-        public RealmsService(DataContext context)
+        private readonly IMapper _mapper;
+
+        public RealmsService(DataContext context, IMapper mapper)
             : base(context)
         {
+            this._mapper = mapper;
         }
 
         public async Task<Realm> GetRealm(int id)
@@ -191,7 +194,7 @@ namespace Server.Data.Services.Implementation
         {
             Hero newHero = new Hero();
             newHero.Name = heroName;
-            newHero = Mapper.Map(blueprint, newHero);
+            newHero = _mapper.Map(blueprint, newHero);
             newHero.Region = region;
             newHero.Avatar = avatar;
             newHero.Blueprint = blueprint;

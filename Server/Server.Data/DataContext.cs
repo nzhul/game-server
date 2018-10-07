@@ -2,6 +2,8 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Server.Models;
 using Server.Models.Castles;
@@ -12,13 +14,13 @@ using Server.Models.Users;
 
 namespace Server.Data
 {
-    public class DataContext : DbContext
+    public class DataContext : IdentityDbContext<User, Role, int,
+        IdentityUserClaim<int>, UserRole, IdentityUserLogin<int>,
+        IdentityRoleClaim<int>, IdentityUserToken<int>>
     {
         public DataContext(DbContextOptions<DataContext> options) : base(options)
         {
         }
-
-        public DbSet<User> Users { get; set; }
 
         public DbSet<Avatar> Avatars { get; set; }
 
@@ -42,33 +44,50 @@ namespace Server.Data
 
         public DbSet<CastleBlueprint> CastleBlueprints { get; set; }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        protected override void OnModelCreating(ModelBuilder builder)
         {
-            modelBuilder.Entity<Message>()
+            base.OnModelCreating(builder);
+
+            builder.Entity<UserRole>(userRole =>
+            {
+                userRole.HasKey(ur => new { ur.UserId, ur.RoleId });
+
+                userRole.HasOne(ur => ur.Role)
+                .WithMany(r => r.UserRoles)
+                .HasForeignKey(ur => ur.RoleId)
+                .IsRequired();
+
+                userRole.HasOne(ur => ur.User)
+                .WithMany(r => r.UserRoles)
+                .HasForeignKey(ur => ur.UserId)
+                .IsRequired();
+            });
+
+            builder.Entity<Message>()
                 .HasOne(u => u.Sender)
                 .WithMany(u => u.MessagesSent)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<Message>()
+            builder.Entity<Message>()
                 .HasOne(u => u.Recipient)
                 .WithMany(u => u.MessagesRecieved)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<Realm>()
+            builder.Entity<Realm>()
                 .HasIndex(r => r.Name)
                 .IsUnique(true);
 
-            modelBuilder.Entity<Hero>()
+            builder.Entity<Hero>()
                 .HasOne(u => u.Avatar)
                 .WithMany(u => u.Heroes)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<Item>()
+            builder.Entity<Item>()
                 .HasOne(u => u.Hero)
                 .WithMany(u => u.Items)
                 .OnDelete(DeleteBehavior.Cascade);
-                
-                
+
+
         }
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default(CancellationToken))

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Microsoft.AspNetCore.Identity;
 using Newtonsoft.Json;
 using Server.Models.Heroes;
 using Server.Models.Realms;
@@ -108,7 +109,7 @@ namespace Server.Data
             "isaaccollar"
         };
 
-        public static void Initialize(DataContext _context)
+        public static void Initialize(DataContext _context, UserManager<User> _userManager, RoleManager<Role> _roleManager)
         {
             List<User> users = new List<User>();
             ICollection<Avatar> avatars = new List<Avatar>();
@@ -125,18 +126,36 @@ namespace Server.Data
                 var userData = System.IO.File.ReadAllText("SeedData/UserSeedData.json");
                 users = JsonConvert.DeserializeObject<List<User>>(userData);
 
+                var roles = new List<Role>
+                {
+                    new Role { Name = "Admin" },
+                    new Role { Name = "Moderator" },
+                    new Role { Name = "VIP" },
+                    new Role { Name = "User" }
+                };
+
+                foreach (var role in roles)
+                {
+                    _roleManager.CreateAsync(role).Wait();
+                }
+
                 foreach (var user in users)
                 {
-                    // create the password hash
-                    byte[] passwordHash, passwordSalt;
-                    CreatePasswordHash("password", out passwordHash, out passwordSalt);
+                    _userManager.CreateAsync(user, "password").Wait();
+                    _userManager.AddToRoleAsync(user, "User").Wait();
+                }
 
-                    user.PasswordHash = passwordHash;
-                    user.PasswordSald = passwordSalt;
-                    user.Username = user.Username.ToLower();
-                    user.CurrentRealmId = r.Next(1, realmNames.Length);
+                var adminUser = new User
+                {
+                    UserName = "nzhul"
+                };
 
-                    _context.Users.Add(user);
+                IdentityResult result = _userManager.CreateAsync(adminUser, "password").Result;
+
+                if (result.Succeeded)
+                {
+                    var admin = _userManager.FindByNameAsync("nzhul").Result;
+                    _userManager.AddToRolesAsync(admin, new[] { "Admin", "Moderator", "VIP", "User" }).Wait();
                 }
 
                 _context.SaveChanges();

@@ -9,7 +9,7 @@ namespace Server.Api.Controllers
 {
     [Authorize]
     [Route("api/realms")]
-    public class HeroesController : Controller
+    public class HeroesController : ControllerBase
     {
         private readonly IHeroesService _heroesService;
         private readonly IMapper _mapper;

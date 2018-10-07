@@ -1,18 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using Server.Models.Realms;
+using Microsoft.AspNetCore.Identity;
 
 namespace Server.Models.Users
 {
-    public class User : Entity
+    public class User : IdentityUser<int>, IAuditedEntity
     {
-        public string Username { get; set; }
-
-        public byte[] PasswordHash { get; set; }
-
-        public byte[] PasswordSald { get; set; }
-
         public string Gender { get; set; }
 
         public DateTime DateOfBirth { get; set; }
@@ -33,7 +27,17 @@ namespace Server.Models.Users
 
         public virtual ICollection<Avatar> Avatars { get; set; }
 
+        public ICollection<UserRole> UserRoles { get; set; }
+
         public int CurrentRealmId { get; set; }
+
+        public string CreatedBy { get; set; }
+
+        public DateTime CreatedAt { get; set; }
+
+        public string ModifiedBy { get; set; }
+
+        public DateTime ModifiedAt { get; set; }
 
         public User()
         {

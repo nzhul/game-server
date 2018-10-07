@@ -15,7 +15,7 @@ namespace Server.Api.Controllers
 {
     [Authorize]
     [Route("api/[controller]")]
-    public class RealmsController : Controller
+    public class RealmsController : ControllerBase
     {
         private readonly IRealmsService _realmsService;
         private readonly IMapper _mapper;

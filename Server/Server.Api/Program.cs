@@ -1,8 +1,10 @@
 ﻿using System;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Server.Data;
+using Server.Models.Users;
 
 namespace Server.Api
 {
@@ -10,7 +12,7 @@ namespace Server.Api
     {
         public static void Main(string[] args)
         {
-            var host = BuildWebHost(args);
+            var host = CreateWebHostBuilder(args).Build();
 
             using (var scope = host.Services.CreateScope())
             {
@@ -19,7 +21,9 @@ namespace Server.Api
                 try
                 {
                     var context = services.GetRequiredService<DataContext>();
-                    Seeder.Initialize(context);
+                    var userManager = services.GetRequiredService<UserManager<User>>();
+                    var roleManager = services.GetRequiredService<RoleManager<Role>>();
+                    Seeder.Initialize(context, userManager, roleManager);
                 }
                 catch (System.Exception ex)
                 {
@@ -31,6 +35,12 @@ namespace Server.Api
 
         }
 
+        public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
+            WebHost.CreateDefaultBuilder(args)
+                .UseStartup<Startup>()
+                .UseUrls("http://localhost:5000");
+
+        // old way to do it -> should be deleted
         public static IWebHost BuildWebHost(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
                 .UseStartup<Startup>()
