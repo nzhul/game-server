@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Server.Data.Generators;
 using Server.Data.Services.Abstraction;
 using Server.Models;
 using Server.Models.Heroes;
@@ -32,7 +34,7 @@ namespace Server.Data.Services.Implementation
         {
             return await _context.Realms
                 .Include(r => r.Avatars).ThenInclude(c => c.Heroes) // AutoComplete for .ThenInclude is not working!
-                .Include(r => r.Regions).ThenInclude(c => c.Rooms).ThenInclude( c => c.Heroes) // Do not wonder why you cannot see nested entities :)
+                .Include(r => r.Regions).ThenInclude(c => c.Rooms).ThenInclude(c => c.Heroes) // Do not wonder why you cannot see nested entities :)
                 .Include(r => r.Regions).ThenInclude(c => c.Rooms).ThenInclude(c => c.Castles) // Not sure about this duplication ?
                 .FirstOrDefaultAsync(r => r.Id == id);
         }
@@ -213,8 +215,50 @@ namespace Server.Data.Services.Implementation
             }
         }
 
-        public Task<Realm> CreateRealm()
+        public async Task<Realm> CreateRealm(string name)
         {
+            // Create Realm
+            Realm newRealm = new Realm();
+            newRealm.Name = name;
+            newRealm.Type = RealmType.PvE;
+            newRealm.ResetDate = DateTime.UtcNow.AddMonths(6);
+
+            _context.Realms.Add(newRealm);
+            await _context.SaveChangesAsync();
+
+            // Creating Level 1 regions
+            // Level 1 regions will be generated every time a new user is registered.
+            int l1Width = 60;
+            int l1Height = 40;
+            int l1Border = 1;
+
+            // Level 2 regions - count: 18
+            int l2Count = 18;
+            int l2Width = l1Width * 2;
+            int l2Height = l1Height * 2;
+            int l2Border = l1Border + 1;
+            for (int i = 0; i < l2Count; i++)
+            {
+                IMapGenerator generator = new MapGenerator();
+                Map map = generator.GenerateMap(l2Width, l2Height, l2Border, 1, 50, 50, 47);
+
+                Region newRegion = new Region();
+                newRegion.MapMatrix = this.StringifyMatrix(map.Matrix);
+                newRegion.Rooms = map.Rooms;
+                newRegion.Level = 2;
+                newRegion.Name = "RandomRegionName" + i;
+
+                newRealm.Regions.Add(newRegion);
+                await _context.SaveChangesAsync();
+            }
+
+
+
+            // Level 3 regions - count: 9
+
+            // Level 4 regions - count: 3
+
+            // Level 5 regions - count: 1
 
             throw new NotImplementedException();
             // 1. Create Realm
@@ -222,9 +266,27 @@ namespace Server.Data.Services.Implementation
             //      Level 5 -> 1 Region
             //      Level 4 -> 3 Regions
             //      Level 3 -> 9 Regions (Total active players / X)
-            //      Level 2 -> 27 Regions (Total active players / X)
+            //      Level 2 -> 18 Regions (Total active players / X)
             //      Level 1 -> As many regions as players are in the server. Each player will have it's onw starting region.
 
+
+            // When registering new player to given Realm i should Extend/Reduce the 
+
+        }
+
+        string StringifyMatrix(int[,] matrix)
+        {
+            StringBuilder sb = new StringBuilder();
+            for (int x = 0; x < matrix.GetLength(0); x++)
+            {
+                for (int y = 0; y < matrix.GetLength(1); y++)
+                {
+                    sb.Append(matrix[x, y].ToString());
+                }
+                sb.AppendLine();
+            }
+
+            return sb.ToString();
         }
     }
 }

@@ -26,11 +26,11 @@ namespace Server.Api.Controllers
             _mapper = mapper;
         }
 
-        //TODO: make this endpoint - Admin only
+        [Authorize(Policy = "RequireAdmin")]
         [HttpPost("CreateRealm")]
         public async Task<IActionResult> CreateRealm()
         {
-            Realm createdRealm = await this._realmsService.CreateRealm();
+            Realm createdRealm = await this._realmsService.CreateRealm("GenerateRandomNameHere"); //TODO: generate random name
             var realmToReturn = _mapper.Map<RealmDetailedDto>(createdRealm);
 
             return CreatedAtRoute("GetRealm", new { controller = "Realms", id = createdRealm.Id }, realmToReturn);
