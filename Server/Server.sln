@@ -3,11 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27130.2026
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Server.Api", "Server.Api\Server.Api.csproj", "{96281B04-EA78-40C7-8659-5119B67B6534}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Server.Api", "Server.Api\Server.Api.csproj", "{96281B04-EA78-40C7-8659-5119B67B6534}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Server.Data", "Server.Data\Server.Data.csproj", "{72035888-3EDE-4137-BBAD-34E03174A0D4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Server.Data", "Server.Data\Server.Data.csproj", "{72035888-3EDE-4137-BBAD-34E03174A0D4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Server.Models", "Server.Models\Server.Models.csproj", "{89A0693B-8D20-4B33-B626-5BFFD135B5C1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Server.Models", "Server.Models\Server.Models.csproj", "{89A0693B-8D20-4B33-B626-5BFFD135B5C1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Server.GeneratorTesting", "Server.GeneratorTesting\Server.GeneratorTesting.csproj", "{D4356460-C270-4F0F-91A8-412ECFE7BD81}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{89A0693B-8D20-4B33-B626-5BFFD135B5C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{89A0693B-8D20-4B33-B626-5BFFD135B5C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{89A0693B-8D20-4B33-B626-5BFFD135B5C1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D4356460-C270-4F0F-91A8-412ECFE7BD81}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D4356460-C270-4F0F-91A8-412ECFE7BD81}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D4356460-C270-4F0F-91A8-412ECFE7BD81}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D4356460-C270-4F0F-91A8-412ECFE7BD81}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

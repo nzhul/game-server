@@ -5,12 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Generators\**" />
-    <EmbeddedResource Remove="Generators\**" />
-    <None Remove="Generators\**" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Compile Remove="Migrations\20180930145934_Initial.cs" />
     <Compile Remove="Migrations\20181007092958_Initial.cs" />
   </ItemGroup>
