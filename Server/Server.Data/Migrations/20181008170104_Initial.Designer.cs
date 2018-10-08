@@ -10,7 +10,7 @@ using Server.Data;
 namespace Server.Data.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20181007094600_Initial")]
+    [Migration("20181008170104_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -672,7 +672,7 @@ namespace Server.Data.Migrations
                         .HasForeignKey("BlueprintId");
 
                     b.HasOne("Server.Models.Realms.Region", "Region")
-                        .WithMany()
+                        .WithMany("Heroes")
                         .HasForeignKey("RegionId");
 
                     b.HasOne("Server.Models.Realms.Room")

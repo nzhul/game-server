@@ -670,7 +670,7 @@ namespace Server.Data.Migrations
                         .HasForeignKey("BlueprintId");
 
                     b.HasOne("Server.Models.Realms.Region", "Region")
-                        .WithMany()
+                        .WithMany("Heroes")
                         .HasForeignKey("RegionId");
 
                     b.HasOne("Server.Models.Realms.Room")

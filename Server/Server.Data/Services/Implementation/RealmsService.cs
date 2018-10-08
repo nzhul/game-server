@@ -146,7 +146,10 @@ namespace Server.Data.Services.Implementation
                 {
                     Avatar avatarInThisRealm = dbUser.Avatars.FirstOrDefault(a => a.RealmId == realmId);
                     HeroBlueprint blueprint = await _context.HeroBlueprints.FirstOrDefaultAsync(h => h.Class == input.HeroClass);
-                    Region region = dbRealm.Regions.FirstOrDefault();
+
+                    // TODO: this line is not tested!
+                    // Info: with every new user/avatar created in any realm - we will create new Region that will be "His special starting zone realm"
+                    Region region =  await this.CreateRegion("RegionName_" + DateTime.UtcNow.Ticks.ToString(), 1, dbRealm);
 
                     if (avatarInThisRealm != null)
                     {
@@ -194,6 +197,11 @@ namespace Server.Data.Services.Implementation
 
         private Hero CreateHero(string heroName, HeroBlueprint blueprint, Region region, Avatar avatar)
         {
+            // TODO: place the hero on the map
+            // use region.MapMatrix to find starting spot coordinates
+            // use those coordinates to newHero.X and newHero.Z
+            // do the same for player castle.
+
             Hero newHero = new Hero();
             newHero.Name = heroName;
             newHero = _mapper.Map(blueprint, newHero);
@@ -202,6 +210,39 @@ namespace Server.Data.Services.Implementation
             newHero.Blueprint = blueprint;
 
             return newHero;
+        }
+
+        private async Task<Region> CreateRegion(string name, int level, Realm realm)
+        {
+            int width;
+            int height;
+
+            switch (level)
+            {
+                case 1:
+                    width = 90;
+                    height = 60;
+                    break;
+                default:
+                    width = 90;
+                    height = 60;
+                    break;
+            }
+
+            IMapGenerator generator = new MapGenerator();
+            Map generatedMap = generator.GenerateMap(width, height);
+
+            Region newRegion = new Region();
+            newRegion.Name = name;
+            newRegion.Realm = realm;
+            newRegion.Level = level;
+            newRegion.MapMatrix = this.StringifyMatrix(generatedMap.Matrix);
+            newRegion.Rooms = generatedMap.Rooms;
+
+            _context.Regions.Add(newRegion);
+            await _context.SaveChangesAsync();
+
+            return newRegion;
         }
 
         public async Task UpdateCurrentRealm(int userId, int realmId)
@@ -240,6 +281,8 @@ namespace Server.Data.Services.Implementation
             for (int i = 0; i < l2Count; i++)
             {
                 IMapGenerator generator = new MapGenerator();
+                // TODO: generator will sometimes throw exceptions when the map is too small
+                // wrap the generation in try catch and retry couple of times.
                 Map map = generator.GenerateMap(l2Width, l2Height, l2Border, 1, 50, 50, 47);
 
                 Region newRegion = new Region();
