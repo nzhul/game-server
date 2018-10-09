@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel.DataAnnotations.Schema;
 using Server.Models.Castles;
 using Server.Models.Heroes;
 
@@ -11,18 +13,64 @@ namespace Server.Models.Realms
 
         public ICollection<Castle> Castles { get; set; }
 
-        /// <summary>
-        /// CSV of all tile coordinates:
-        /// Ex: 0:0,0:1,0:2, where left is X and right is Y
-        /// </summary>
-        public string Tiles { get; set; }
+
+        private string _tilesString;
 
         /// <summary>
         /// CSV of all tile coordinates:
         /// Ex: 0:0,0:1,0:2, where left is X and right is Y
         /// </summary>
-        public string EdgeTiles { get; set; }
-        
+        public string TilesString
+        {
+            get
+            {
+                return this._tilesString;
+            }
+            set
+            {
+                this._tilesString = value;
+                this.Tiles = this.ParseTiles(this._tilesString);
+            }
+        }
+
+        private List<Coord> ParseTiles(string value)
+        {
+            List<Coord> roomCoordinates = new List<Coord>();
+
+            string[] tilesParts = value.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+            for (int i = 0; i < tilesParts.Length; i++)
+            {
+                string[] coords = tilesParts[i].Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
+                roomCoordinates.Add(new Coord() { X = int.Parse(coords[0]), Y = int.Parse(coords[1]) });
+            }
+
+            return roomCoordinates;
+        }
+
+        [NotMapped]
+        public List<Coord> Tiles { get; set; }
+
+
+        private string _edgeTilesString;
+        /// <summary>
+        /// CSV of all tile coordinates:
+        /// Ex: 0:0,0:1,0:2, where left is X and right is Y
+        /// </summary>
+        public string EdgeTilesString
+        {
+            get
+            {
+                return this._edgeTilesString;
+            }
+            set
+            {
+                this._edgeTilesString = value;
+                this.EdgeTiles = this.ParseTiles(this._edgeTilesString);
+            }
+        }
+
+        public List<Coord> EdgeTiles { get; set; }
+
         public int RoomSize { get; set; }
 
         public bool IsMainRoom { get; set; }

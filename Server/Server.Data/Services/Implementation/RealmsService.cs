@@ -203,6 +203,8 @@ namespace Server.Data.Services.Implementation
             // do the same for player castle.
 
             Hero newHero = new Hero();
+            newHero.X = 10; // TODO: calculate this
+            newHero.Z = 10; // TODO: calculate this
             newHero.Name = heroName;
             newHero = _mapper.Map(blueprint, newHero);
             newHero.Region = region;
@@ -236,7 +238,7 @@ namespace Server.Data.Services.Implementation
             newRegion.Name = name;
             newRegion.Realm = realm;
             newRegion.Level = level;
-            newRegion.MapMatrix = this.StringifyMatrix(generatedMap.Matrix);
+            newRegion.MatrixString = this.StringifyMatrix(generatedMap.Matrix);
             newRegion.Rooms = generatedMap.Rooms;
 
             _context.Regions.Add(newRegion);
@@ -286,7 +288,7 @@ namespace Server.Data.Services.Implementation
                 Map map = generator.GenerateMap(l2Width, l2Height, l2Border, 1, 50, 50, 47);
 
                 Region newRegion = new Region();
-                newRegion.MapMatrix = this.StringifyMatrix(map.Matrix);
+                newRegion.MatrixString = this.StringifyMatrix(map.Matrix);
                 newRegion.Rooms = map.Rooms;
                 newRegion.Level = 2;
                 newRegion.Name = "RandomRegionName" + i;

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Server.Models;
 
 namespace Server.Data.Generators
 {
@@ -74,8 +75,8 @@ namespace Server.Data.Generators
                 newRoom.RoomSize = room.roomSize;
                 newRoom.IsMainRoom = room.isMainRoom;
                 newRoom.IsAccessibleFromMainRoom = room.isAccessibleFromMainRoom;
-                newRoom.Tiles = this.StringifyCoordCollection(room.tiles);
-                newRoom.EdgeTiles = this.StringifyCoordCollection(room.edgeTiles);
+                newRoom.TilesString = this.StringifyCoordCollection(room.tiles);
+                newRoom.EdgeTilesString = this.StringifyCoordCollection(room.edgeTiles);
                 dbRooms.Add(newRoom);
             }
 
@@ -470,18 +471,6 @@ namespace Server.Data.Generators
             }
 
             return sb.ToString();
-        }
-
-        struct Coord
-        {
-            public int X;
-            public int Y;
-
-            public Coord(int x, int y)
-            {
-                X = x;
-                Y = y;
-            }
         }
 
         private class Room : IComparable<Room>
