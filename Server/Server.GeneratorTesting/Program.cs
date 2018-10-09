@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Text;
 using Server.Data.Generators;
+using Server.Models;
 using Server.Models.Realms;
 
 namespace Server.GeneratorTesting
@@ -10,14 +10,16 @@ namespace Server.GeneratorTesting
     {
         static void Main(string[] args)
         {
+            Random r = new Random();
             while (Console.ReadKey().Key == ConsoleKey.R)
             {
                 Console.Clear();
 
                 IMapGenerator generator = new MapGenerator();
-                Map map = generator.GenerateMap(50, 50, 0, 1, 10, 10, 47);
+                Map map = generator.GenerateMap(50, 100, 0, 1, 10, 10, 50);
 
-
+                Coord randomPositionInMainRoom = map.Rooms[0].Tiles[r.Next(map.Rooms[0].Tiles.Count)];
+                map.Matrix[randomPositionInMainRoom.X, randomPositionInMainRoom.Y] = 2;
 
                 for (int x = 0; x < map.Matrix.GetLength(0); x++)
                 {
@@ -32,9 +34,14 @@ namespace Server.GeneratorTesting
                         {
                             Console.Write('\u2588');
                         }
+                        else if (map.Matrix[x, y] == 2)
+                        {
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.Write('\u2588');
+                        }
                         else
                         {
-                            Console.Write(' ');
+                            Console.Write('\u2591');
                         }
 
                         Console.ForegroundColor = ConsoleColor.White;
