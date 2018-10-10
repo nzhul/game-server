@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Text;
 using Server.Data.Generators;
 using Server.Models;
@@ -6,6 +7,10 @@ using Server.Models.Realms;
 
 namespace Server.GeneratorTesting
 {
+    /// <summary>
+    /// characters:
+    /// '\u25A0' -> ■
+    /// </summary>
     class Program
     {
         static void Main(string[] args)
@@ -16,39 +21,61 @@ namespace Server.GeneratorTesting
                 Console.Clear();
 
                 IMapGenerator generator = new MapGenerator();
-                Map map = generator.GenerateMap(50, 100, 0, 1, 10, 10, 50);
-
-                Coord randomPositionInMainRoom = map.Rooms[0].Tiles[r.Next(map.Rooms[0].Tiles.Count)];
-                map.Matrix[randomPositionInMainRoom.X, randomPositionInMainRoom.Y] = 2;
+                Map map = generator.GenerateMap(40, 80, 0, 1, 50, 50, 48);
 
                 for (int x = 0; x < map.Matrix.GetLength(0); x++)
                 {
                     for (int y = 0; y < map.Matrix.GetLength(1); y++)
                     {
-                        if (IsInRoom(x, y, map.Rooms[0]))
-                        {
-                            Console.ForegroundColor = ConsoleColor.Yellow;
-                        }
-
                         if (map.Matrix[x, y] == 1)
                         {
                             Console.Write('\u2588');
                         }
-                        else if (map.Matrix[x, y] == 2)
-                        {
-                            Console.ForegroundColor = ConsoleColor.Red;
-                            Console.Write('\u2588');
-                        }
                         else
                         {
-                            Console.Write('\u2591');
+                            Console.Write(' ');
                         }
-
-                        Console.ForegroundColor = ConsoleColor.White;
                     }
 
                     Console.WriteLine();
                 }
+
+                PaintRooms(map.Rooms);
+                PaintHero(map, r);
+            }
+        }
+
+        private static void PaintHero(Map map, Random r)
+        {
+            Coord randomPositionInMainRoom = map.Rooms[0].Tiles[r.Next(map.Rooms[0].Tiles.Count)];
+            Console.SetCursorPosition(randomPositionInMainRoom.Y, randomPositionInMainRoom.X);
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.Write('\u2588');
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.SetCursorPosition(map.Matrix.GetLength(1), map.Matrix.GetLength(0));
+        }
+
+        private static void PaintRooms(List<Room> rooms)
+        {
+            int colorIndex = 9;
+            foreach (Room room in rooms)
+            {
+                if (colorIndex <= 14)
+                {
+                    Console.ForegroundColor = (ConsoleColor)colorIndex;
+                }
+                else
+                {
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                }
+                
+                foreach (Coord coord in room.Tiles)
+                {
+                    Console.SetCursorPosition(coord.Y, coord.X);
+                    Console.Write('\u2591');
+                }
+                Console.ForegroundColor = ConsoleColor.White;
+                colorIndex++;
             }
         }
 
