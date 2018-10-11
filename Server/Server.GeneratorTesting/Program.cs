@@ -21,7 +21,7 @@ namespace Server.GeneratorTesting
                 Console.Clear();
 
                 IMapGenerator generator = new MapGenerator();
-                Map map = generator.GenerateMap(40, 80, 0, 1, 50, 50, 48);
+                Map map = generator.GenerateMap(60, 130, 0, 1, 50, 50, 49);
 
                 for (int x = 0; x < map.Matrix.GetLength(0); x++)
                 {
@@ -41,8 +41,23 @@ namespace Server.GeneratorTesting
                 }
 
                 PaintRooms(map.Rooms);
+                PaintEdges(map.Rooms);
                 PaintHero(map, r);
             }
+        }
+
+        private static void PaintEdges(List<Room> rooms)
+        {
+            Console.ForegroundColor = ConsoleColor.DarkGray;
+            foreach (Room room in rooms)
+            {
+                foreach (Coord coord in room.EdgeTiles)
+                {
+                    Console.SetCursorPosition(coord.Y, coord.X);
+                    Console.Write('\u25A0');
+                }
+            }
+            Console.ForegroundColor = ConsoleColor.White;
         }
 
         private static void PaintHero(Map map, Random r)
@@ -68,11 +83,12 @@ namespace Server.GeneratorTesting
                 {
                     Console.ForegroundColor = ConsoleColor.Yellow;
                 }
-                
+
                 foreach (Coord coord in room.Tiles)
                 {
                     Console.SetCursorPosition(coord.Y, coord.X);
-                    Console.Write('\u2591');
+                    //Console.Write('\u2591');
+                    Console.Write('\u2588');
                 }
                 Console.ForegroundColor = ConsoleColor.White;
                 colorIndex++;
