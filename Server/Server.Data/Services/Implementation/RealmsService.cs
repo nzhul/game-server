@@ -149,7 +149,7 @@ namespace Server.Data.Services.Implementation
 
                     // TODO: this line is not tested!
                     // Info: with every new user/avatar created in any realm - we will create new Region that will be "His special starting zone realm"
-                    Region region =  await this.CreateRegion("RegionName_" + DateTime.UtcNow.Ticks.ToString(), 1, dbRealm);
+                    Region region = await this.CreateRegion("RegionName_" + DateTime.UtcNow.Ticks.ToString(), 1, dbRealm);
 
                     if (avatarInThisRealm != null)
                     {
@@ -231,20 +231,53 @@ namespace Server.Data.Services.Implementation
                     break;
             }
 
-            IMapGenerator generator = new MapGenerator();
-            Map generatedMap = generator.GenerateMap(width, height);
+            Map generatedMap = TryGenerateMap(width, height);
 
             Region newRegion = new Region();
             newRegion.Name = name;
             newRegion.Realm = realm;
             newRegion.Level = level;
-            newRegion.MatrixString = this.StringifyMatrix(generatedMap.Matrix);
+            newRegion.MatrixString = generatedMap.MatrixString;
             newRegion.Rooms = generatedMap.Rooms;
 
             _context.Regions.Add(newRegion);
             await _context.SaveChangesAsync();
 
             return newRegion;
+        }
+
+        private static Map TryGenerateMap(int width, int height)
+        {
+            IMapGenerator generator = new MapGenerator();
+            Map generatedMap = null;
+
+            bool generationIsFailing = true;
+            bool retryLimitNotReached = true;
+            int retryLimit = 10;
+            int currentRetries = 0;
+
+            while (generationIsFailing && retryLimitNotReached)
+            {
+                try
+                {
+                    generatedMap = generator.GenerateMap(width, height);
+                    generationIsFailing = false;
+                }
+                catch (Exception ex)
+                {
+                    if (currentRetries <= retryLimit)
+                    {
+                        currentRetries++;
+                    }
+                    else
+                    {
+                        retryLimitNotReached = false;
+                        throw ex;
+                    }
+                }
+            }
+
+            return generatedMap;
         }
 
         public async Task UpdateCurrentRealm(int userId, int realmId)

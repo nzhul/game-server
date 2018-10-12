@@ -1,11 +1,42 @@
 ﻿using System.Collections.Generic;
+using System.Text;
 using Server.Models.Realms;
 
 namespace Server.Data.Generators
 {
     public class Map
     {
-        public int[,] Matrix { get; set; }
+        private int[,] _matrix;
+
+        public int[,] Matrix
+        {
+            get
+            {
+                return this._matrix;
+            }
+            set
+            {
+                this._matrix = value;
+                this.MatrixString = this.StringifyMatrix(this._matrix);
+            }
+        }
+
+        private string StringifyMatrix(int[,] matrix)
+        {
+            StringBuilder sb = new StringBuilder();
+            for (int x = 0; x < matrix.GetLength(0); x++)
+            {
+                for (int y = 0; y < matrix.GetLength(1); y++)
+                {
+                    sb.Append(matrix[x, y].ToString());
+                }
+                sb.AppendLine();
+            }
+
+            return sb.ToString();
+        }
+
+        public string MatrixString { get; private set; }
 
         public List<Room> Rooms { get; set; }
 

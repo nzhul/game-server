@@ -26,20 +26,38 @@ namespace Server.Models.Realms
 
         #region MapData
 
-        public string MatrixString { get; set; }
+        private string _matrixString;
 
-        [NotMapped]
-        public int[,] Matrix
+        public string MatrixString
         {
             get
             {
-                return this.ParseMatrix(this.MatrixString);
+                return this._matrixString;
+            }
+            set
+            {
+                this._matrixString = value;
+                this.Matrix = this.ParseMatrix(this._matrixString);
             }
         }
 
+        [NotMapped]
+        public int[,] Matrix { get; private set; }
+
         private int[,] ParseMatrix(string matrixString)
         {
-            throw new NotImplementedException();
+            string[] lines = matrixString.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
+            int[,] parsedMatrix = new int[lines[0].Length, lines.Length];
+            for (int row = 0; row < lines.Length; row++)
+            {
+                string line = lines[row];
+                for (int col = 0; col < line.Length; col++)
+                {
+                    parsedMatrix[col, row] = (int)char.GetNumericValue(line[col]);
+                }
+            }
+
+            return parsedMatrix;
         }
 
         public List<Room> Rooms { get; set; }

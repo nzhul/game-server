@@ -21,7 +21,34 @@ namespace Server.GeneratorTesting
                 Console.Clear();
 
                 IMapGenerator generator = new MapGenerator();
-                Map map = generator.GenerateMap(60, 130, 0, 1, 50, 50, 49);
+                Map map = null;
+
+                bool generationIsFailing = true;
+                bool retryLimitNotReached = true;
+                int retryLimit = 10;
+                int currentRetries = 0;
+
+                while (generationIsFailing && retryLimitNotReached)
+                {
+                    try
+                    {
+                        map = generator.GenerateMap(60, 130, 0, 1, 50, 50, 49, "");
+                        generationIsFailing = false;
+                    }
+                    catch (Exception ex)
+                    {
+                        if (currentRetries <= retryLimit)
+                        {
+                            currentRetries++;
+                            Console.WriteLine("Current retries: " + currentRetries);
+                        }
+                        else
+                        {
+                            retryLimitNotReached = false;
+                            throw ex;
+                        }
+                    }
+                }
 
                 for (int x = 0; x < map.Matrix.GetLength(0); x++)
                 {
