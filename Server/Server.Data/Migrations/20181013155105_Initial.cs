@@ -360,7 +360,7 @@ namespace Server.Data.Migrations
                     Name = table.Column<string>(nullable: true),
                     Level = table.Column<int>(nullable: false),
                     RealmId = table.Column<int>(nullable: true),
-                    MapMatrix = table.Column<string>(nullable: true)
+                    MatrixString = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -383,8 +383,8 @@ namespace Server.Data.Migrations
                     CreatedAt = table.Column<DateTime>(nullable: false),
                     ModifiedBy = table.Column<string>(nullable: true),
                     ModifiedAt = table.Column<DateTime>(nullable: false),
-                    Tiles = table.Column<string>(nullable: true),
-                    EdgeTiles = table.Column<string>(nullable: true),
+                    TilesString = table.Column<string>(nullable: true),
+                    EdgeTilesString = table.Column<string>(nullable: true),
                     RoomSize = table.Column<int>(nullable: false),
                     IsMainRoom = table.Column<bool>(nullable: false),
                     IsAccessibleFromMainRoom = table.Column<bool>(nullable: false),
@@ -452,6 +452,8 @@ namespace Server.Data.Migrations
                     ModifiedBy = table.Column<string>(nullable: true),
                     ModifiedAt = table.Column<DateTime>(nullable: false),
                     Name = table.Column<string>(nullable: true),
+                    X = table.Column<int>(nullable: false),
+                    Z = table.Column<int>(nullable: false),
                     LastActivity = table.Column<DateTime>(nullable: false),
                     TimePlayedTicks = table.Column<long>(nullable: false),
                     Level = table.Column<int>(nullable: false),

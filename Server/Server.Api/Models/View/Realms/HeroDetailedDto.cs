@@ -39,5 +39,7 @@ namespace Server.Api.Models.View.Realms
         public string Faction { get; set; }
 
         public string Class { get; set; }
+
+        public string RegionId { get; set; }
     }
 }

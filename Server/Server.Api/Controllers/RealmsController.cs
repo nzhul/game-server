@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -117,5 +118,40 @@ namespace Server.Api.Controllers
             }
         }
 
+        /// <summary>
+        /// Returns a list of regions with detailed information.
+        /// For querying more than one region use this syntax:
+        /// /api/realms/{realmId}/regions?regionIds=1&regionIds=2&regionIds=3 
+        /// </summary>
+        /// <param name="realmId">Id the the realm</param>
+        /// <param name="regionIds"> collection of regions -> /api/realms/{realmId}/regions?regionIds=1&regionIds=2&regionIds=3</param>
+        /// <returns></returns>
+        [HttpGet("{realmId}/regions")]
+        public async Task<IActionResult> GetRegions(int realmId, [FromQuery] int[] regionIds)
+        {
+            IList<Region> regions = await this._realmsService.GetRegions(regionIds);
+
+            if (regions != null && regions.Count > 0)
+            {
+                IList<RegionDetailedDto> regionsToReturn = _mapper.Map<IList<Region>, IList<RegionDetailedDto>>(regions);
+                //regionsToReturn = this.ManualMatrixMap(regions, regionsToReturn);
+
+                return Ok(regionsToReturn);
+            }
+            else
+            {
+                return BadRequest("Cannot query specified regions!");
+            }
+        }
+
+        //private IList<RegionDetailedDto> ManualMatrixMap(IList<Region> regions, IList<RegionDetailedDto> regionsToReturn)
+        //{
+        //    for (int i = 0; i < regionsToReturn.Count; i++)
+        //    {
+        //        regionsToReturn[i].Matrix = regions[i].Matrix;
+        //    }
+
+        //    return regionsToReturn;
+        //}
     }
 }

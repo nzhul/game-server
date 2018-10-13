@@ -28,8 +28,11 @@ namespace Server.Models.Realms
             }
             set
             {
-                this._tilesString = value;
-                this.Tiles = this.ParseTiles(this._tilesString);
+                if (value != null)
+                {
+                    this._tilesString = value;
+                    this.Tiles = this.ParseTiles(this._tilesString);
+                }
             }
         }
 
@@ -64,11 +67,15 @@ namespace Server.Models.Realms
             }
             set
             {
-                this._edgeTilesString = value;
-                this.EdgeTiles = this.ParseTiles(this._edgeTilesString);
+                if (value != null)
+                {
+                    this._edgeTilesString = value;
+                    this.EdgeTiles = this.ParseTiles(this._edgeTilesString);
+                }
             }
         }
 
+        [NotMapped]
         public List<Coord> EdgeTiles { get; set; }
 
         public int RoomSize { get; set; }

@@ -36,8 +36,11 @@ namespace Server.Models.Realms
             }
             set
             {
-                this._matrixString = value;
-                this.Matrix = this.ParseMatrix(this._matrixString);
+                if (value != null)
+                {
+                    this._matrixString = value;
+                    this.Matrix = this.ParseMatrix(this._matrixString);
+                }
             }
         }
 

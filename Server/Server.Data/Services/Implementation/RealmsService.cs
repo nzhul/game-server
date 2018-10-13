@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -350,6 +351,17 @@ namespace Server.Data.Services.Implementation
 
             // When registering new player to given Realm i should Extend/Reduce the 
 
+        }
+
+        public async Task<IList<Region>> GetRegions(int[] regionIds)
+        {
+            var regions = await _context.Regions
+                .Include(r => r.Heroes)
+                .Include(r => r.Rooms).ThenInclude(r => r.Heroes)
+                .Where(r => regionIds.Contains(r.Id))
+                .ToListAsync();
+
+            return regions;
         }
 
         string StringifyMatrix(int[,] matrix)

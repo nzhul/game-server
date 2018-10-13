@@ -10,7 +10,7 @@ using Server.Data;
 namespace Server.Data.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20181008170104_Initial")]
+    [Migration("20181013155105_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -185,6 +185,10 @@ namespace Server.Data.Migrations
 
                     b.Property<long>("TimePlayedTicks");
 
+                    b.Property<int>("X");
+
+                    b.Property<int>("Z");
+
                     b.HasKey("Id");
 
                     b.HasIndex("AvatarId");
@@ -340,7 +344,7 @@ namespace Server.Data.Migrations
 
                     b.Property<int>("Level");
 
-                    b.Property<string>("MapMatrix");
+                    b.Property<string>("MatrixString");
 
                     b.Property<DateTime>("ModifiedAt");
 
@@ -367,7 +371,7 @@ namespace Server.Data.Migrations
 
                     b.Property<string>("CreatedBy");
 
-                    b.Property<string>("EdgeTiles");
+                    b.Property<string>("EdgeTilesString");
 
                     b.Property<bool>("IsAccessibleFromMainRoom");
 
@@ -381,7 +385,7 @@ namespace Server.Data.Migrations
 
                     b.Property<int>("RoomSize");
 
-                    b.Property<string>("Tiles");
+                    b.Property<string>("TilesString");
 
                     b.HasKey("Id");
 

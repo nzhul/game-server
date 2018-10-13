@@ -87,6 +87,21 @@ namespace Server.Data
                 .WithMany(u => u.Items)
                 .OnDelete(DeleteBehavior.Cascade);
 
+            builder.Entity<Region>()
+                .Property(r => r.MatrixString)
+                .HasField("_matrixString")
+                .UsePropertyAccessMode(PropertyAccessMode.Property);
+
+            builder.Entity<Room>()
+                .Property(r => r.TilesString)
+                .HasField("_tilesString")
+                .UsePropertyAccessMode(PropertyAccessMode.Property);
+
+            builder.Entity<Room>()
+                .Property(r => r.EdgeTilesString)
+                .HasField("_edgeTilesString")
+                .UsePropertyAccessMode(PropertyAccessMode.Property);
+
 
         }
 

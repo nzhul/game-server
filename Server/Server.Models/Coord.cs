@@ -1,5 +1,8 @@
-﻿namespace Server.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Server.Models
 {
+    [NotMapped]
     public class Coord
     {
 

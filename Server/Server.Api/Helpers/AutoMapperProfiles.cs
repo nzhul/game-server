@@ -55,6 +55,10 @@ namespace Server.Api.Helpers
                 .ForMember(x => x.RealmType, opt => opt.MapFrom(u => u.Type.ToString()))
                 .ForMember(x => x.ResetDate, opt => opt.MapFrom(u => u.ResetDate.ToString("dd MMMM yyyy")));
 
+            // REGIONS
+            CreateMap<Region, RegionDetailedDto>();
+            CreateMap<Room, RoomDetailedDto>();
+
             // AVATARS
             CreateMap<Hero, HeroDetailedDto>()
                 .ForMember(x => x.Class, opt => opt.MapFrom(u => u.Blueprint.Class))
