@@ -20,6 +20,8 @@ namespace Server.Data.Generators
 
         public int[,] Matrix { get; private set; }
 
+        public int[,] PopulatedMatrix { get; private set; }
+
         public int PassageRadius { get; private set; }
 
         public string Seed { get; set; }
@@ -512,6 +514,7 @@ namespace Server.Data.Generators
         /// <returns></returns>
         public Map PopulateMap(Map emptyMap, int monsterStrength, int treasureDencity)
         {
+            this.PopulatedMatrix = this.Matrix;
             // contains map walls + non-walkable cells and interactables like monsters, gold, wood, stone and other
             // At the end we will return to the client an matrix with only 0, 1 and 2.
             // But there will be objects that can be cleared from the map
@@ -533,7 +536,7 @@ namespace Server.Data.Generators
             // monsters, consumables, resources and other similar objects are not permanent map blockers.
             // this means that they are only temporary blocking the path of the hero. 
             // This is OK and should not mark the objects placement as invalid.
-            // 
+            // NB: fill the map with objects until certain percent is filled. Ex: 70% of all free cells
 
             // Place player hero/castle
 
@@ -544,7 +547,7 @@ namespace Server.Data.Generators
             //  □□□
             // □□□□□
             // □□■□□
-            List<Coord> occupiedPositions = new List<Coord>()
+            List<Coord> additionalRequiredSpace = new List<Coord>()
             {
                 new Coord { X = -1, Y = 2 },
                 new Coord { X = 0, Y = 2 },
@@ -563,7 +566,7 @@ namespace Server.Data.Generators
                 new Coord { X = 2, Y = 0 },
             };
 
-            Coord safePosition = this.GetRandomSafePosition(mainRoom, PlacementStrategy.FarFromEdge, edgeDistance);
+            Coord safePosition = this.GetRandomSafePosition(mainRoom, PlacementStrategy.FarFromEdge, edgeDistance, additionalRequiredSpace);
 
             //
 
@@ -577,8 +580,9 @@ namespace Server.Data.Generators
         /// <param name="room">Room where the object will be placed</param>
         /// <param name="placementStrategy">Placement strategy: Far from edge, Near edge or random</param>
         /// <param name="edgeDistance">Distance to the nearest edge or other object</param>
+        /// <param name="additionalRequiredSpace">Used when object require more than once cell space to be placed</param>
         /// <returns>Cotanct point</returns>
-        private Coord GetRandomSafePosition(Models.Realms.Room room, PlacementStrategy placementStrategy, int edgeDistance)
+        private Coord GetRandomSafePosition(Models.Realms.Room room, PlacementStrategy placementStrategy, int edgeDistance, List<Coord> additionalRequiredSpace)
         {
             // !!! to reduce the iterations for getting random position.
             // we should mark tested position as invalid for this particular object
