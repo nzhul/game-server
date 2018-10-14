@@ -580,6 +580,11 @@ namespace Server.Data.Generators
         /// <returns>Cotanct point</returns>
         private Coord GetRandomSafePosition(Models.Realms.Room room, PlacementStrategy placementStrategy, int edgeDistance)
         {
+            // !!! to reduce the iterations for getting random position.
+            // we should mark tested position as invalid for this particular object
+            // this way we won't try multiple times to place the object on invalid position.
+            // !!! remember to remove the coordinate from availible for placement room tiles
+
             // if PlacementStrategy.Random
             // 1. get random position
             // 2. if the object is outside of the map -> shift it with nesesary offset so it is inside the map
@@ -600,6 +605,8 @@ namespace Server.Data.Generators
             // if PlacementStrategy.NearEdge
             // 1. Get random position from edgeTiles
             // 2. shift the object with nesesary offset based on its position so it is inside the map
+            //  * shifting the object can happen with "shooting rays" in four directions -> top, right, bottom, left.
+            //  * by doing this we can find the longest ray and based on that decide in what direction we can move the object.
             // and it is not colliding with existing objects
             // 3. run flood fill to validate if the object is not blocking movement
             // 4. on fail -> repeat
