@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 using Server.Data.Generators;
 using Server.Models;
@@ -15,6 +16,8 @@ namespace Server.GeneratorTesting
     {
         static void Main(string[] args)
         {
+            Stopwatch stopwatch = new Stopwatch();
+
             Random r = new Random();
             while (Console.ReadKey().Key == ConsoleKey.R)
             {
@@ -32,7 +35,10 @@ namespace Server.GeneratorTesting
                 {
                     try
                     {
-                        map = generator.GenerateMap(60, 130, 0, 1, 50, 50, 49, "");
+                        stopwatch.Start();
+                        map = generator.GenerateMap(76, 76, 0, 1, 50, 50, 45);
+                        //map = generator.PopulateMap(map, 50, 50);
+                        stopwatch.Stop();
                         generationIsFailing = false;
                     }
                     catch (Exception ex)
@@ -70,6 +76,9 @@ namespace Server.GeneratorTesting
                 PaintRooms(map.Rooms);
                 PaintEdges(map.Rooms);
                 PaintHero(map, r);
+
+                Console.WriteLine();
+                Console.WriteLine(stopwatch.Elapsed);
             }
         }
 
@@ -135,28 +144,6 @@ namespace Server.GeneratorTesting
             }
 
             return isInRoom;
-        }
-
-        static string StringifyMatrix(int[,] matrix)
-        {
-            StringBuilder sb = new StringBuilder();
-            for (int x = 0; x < matrix.GetLength(0); x++)
-            {
-                for (int y = 0; y < matrix.GetLength(1); y++)
-                {
-                    if (matrix[x, y] == 1)
-                    {
-                        sb.Append('\u2588');
-                    }
-                    else
-                    {
-                        sb.Append(' ');
-                    }
-                }
-                sb.AppendLine();
-            }
-
-            return sb.ToString();
         }
     }
 }

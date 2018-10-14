@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
 using Server.Models.Items;
+using Server.Models.MapEntities;
 using Server.Models.Realms;
 using Server.Models.Users;
 

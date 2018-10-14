@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations.Schema;
+using Server.Models.Castles;
 using Server.Models.Heroes;
+using Server.Models.MapEntities;
 
 namespace Server.Models.Realms
 {
@@ -16,11 +18,23 @@ namespace Server.Models.Realms
 
         public Realm Realm { get; set; }
 
+        public ICollection<Room> Rooms { get; set; }
+
         public ICollection<Hero> Heroes { get; set; }
+
+        public ICollection<Castle> Castles { get; set; }
+
+        public ICollection<MonsterPack> MonsterPacks { get; set; }
+
+        public ICollection<Treasure> Treasures { get; set; }
 
         public Region()
         {
+            this.Rooms = new Collection<Room>();
             this.Heroes = new Collection<Hero>();
+            this.Castles = new Collection<Castle>();
+            this.MonsterPacks = new Collection<MonsterPack>();
+            this.Treasures = new Collection<Treasure>();
         }
 
 
@@ -62,8 +76,6 @@ namespace Server.Models.Realms
 
             return parsedMatrix;
         }
-
-        public List<Room> Rooms { get; set; }
 
         #endregion
     }

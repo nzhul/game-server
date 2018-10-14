@@ -8,7 +8,8 @@
             int passageRadius = 1,
             int minRoomSize = 50,
             int minWallSize = 50,
-            int randomFillPercent = 47,
-            string seed = "");
+            int randomFillPercent = 47);
+
+        Map PopulateMap(Map emptyMap, int monsterStrength, int treasureDencity);
     }
 }

@@ -9,6 +9,8 @@
     <Compile Remove="Migrations\20181007092958_Initial.cs" />
     <Compile Remove="Migrations\20181007094600_Initial.cs" />
     <Compile Remove="Migrations\20181013090345_Initial.cs" />
+    <Compile Remove="Migrations\20181013155105_Initial.cs" />
+    <Compile Remove="Migrations\20181014101823_Initial.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -21,7 +23,6 @@
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.5" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Server.Common\Server.Common.csproj" />
     <ProjectReference Include="..\Server.Models\Server.Models.csproj" />
   </ItemGroup>
 

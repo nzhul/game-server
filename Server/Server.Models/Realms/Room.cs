@@ -1,19 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
-using Server.Models.Castles;
-using Server.Models.Heroes;
+using Server.Models.Parsers;
 
 namespace Server.Models.Realms
 {
     public class Room : Entity
     {
-        public ICollection<Hero> Heroes { get; set; }
-
-        public ICollection<Castle> Castles { get; set; }
-
-
         private string _tilesString;
 
         /// <summary>
@@ -31,23 +23,9 @@ namespace Server.Models.Realms
                 if (value != null)
                 {
                     this._tilesString = value;
-                    this.Tiles = this.ParseTiles(this._tilesString);
+                    this.Tiles = CommonParser.ParseTiles(this._tilesString);
                 }
             }
-        }
-
-        private List<Coord> ParseTiles(string value)
-        {
-            List<Coord> roomCoordinates = new List<Coord>();
-
-            string[] tilesParts = value.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
-            for (int i = 0; i < tilesParts.Length; i++)
-            {
-                string[] coords = tilesParts[i].Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
-                roomCoordinates.Add(new Coord() { X = int.Parse(coords[0]), Y = int.Parse(coords[1]) });
-            }
-
-            return roomCoordinates;
         }
 
         [NotMapped]
@@ -70,7 +48,7 @@ namespace Server.Models.Realms
                 if (value != null)
                 {
                     this._edgeTilesString = value;
-                    this.EdgeTiles = this.ParseTiles(this._edgeTilesString);
+                    this.EdgeTiles = CommonParser.ParseTiles(this._edgeTilesString);
                 }
             }
         }
@@ -83,17 +61,5 @@ namespace Server.Models.Realms
         public bool IsMainRoom { get; set; }
 
         public bool IsAccessibleFromMainRoom { get; set; }
-
-        // public ICollection<MonsterCamp> MonsterCamps { get; set; }
-
-        // public ICollection<Interactable> Interactables { get; set; }
-
-        // public ICollection<Mine> Mines { get; set; }
-
-        public Room()
-        {
-            this.Heroes = new Collection<Hero>();
-            this.Castles = new Collection<Castle>();
-        }
     }
 }

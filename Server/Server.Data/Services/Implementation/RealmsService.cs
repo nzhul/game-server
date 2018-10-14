@@ -35,8 +35,10 @@ namespace Server.Data.Services.Implementation
         {
             return await _context.Realms
                 .Include(r => r.Avatars).ThenInclude(c => c.Heroes) // AutoComplete for .ThenInclude is not working!
-                .Include(r => r.Regions).ThenInclude(c => c.Rooms).ThenInclude(c => c.Heroes) // Do not wonder why you cannot see nested entities :)
-                .Include(r => r.Regions).ThenInclude(c => c.Rooms).ThenInclude(c => c.Castles) // Not sure about this duplication ?
+                .Include(r => r.Regions).ThenInclude(c => c.Rooms) // Do not wonder why you cannot see nested entities :)
+                .Include(r => r.Regions).ThenInclude(c => c.Heroes) // Not sure about this duplication ?
+                .Include(r => r.Regions).ThenInclude(c => c.Castles)
+                .Include(r => r.Regions).ThenInclude(c => c.MonsterPacks) 
                 .FirstOrDefaultAsync(r => r.Id == id);
         }
 
@@ -357,7 +359,7 @@ namespace Server.Data.Services.Implementation
         {
             var regions = await _context.Regions
                 .Include(r => r.Heroes)
-                .Include(r => r.Rooms).ThenInclude(r => r.Heroes)
+                .Include(r => r.Rooms)
                 .Where(r => regionIds.Contains(r.Id))
                 .ToListAsync();
 

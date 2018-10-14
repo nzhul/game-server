@@ -5,6 +5,13 @@ using Server.Models;
 
 namespace Server.Data.Generators
 {
+    /// <summary>
+    /// Sizes:
+    /// 36x36
+    /// 72x72
+    /// 108x108
+    /// 144x144
+    /// </summary>
     public class MapGenerator : IMapGenerator
     {
         public int Width { get; private set; }
@@ -15,14 +22,25 @@ namespace Server.Data.Generators
 
         public int PassageRadius { get; private set; }
 
+        public string Seed { get; set; }
+
+        public MapGenerator(string seed)
+        {
+            this.Seed = seed;
+        }
+
+        public MapGenerator()
+        {
+            this.Seed = DateTime.UtcNow.Ticks.ToString();
+        }
+
         public Map GenerateMap(int width = 128,
             int height = 76,
             int borderSize = 0,
             int passageRadius = 1,
             int minRoomSize = 50,
             int minWallSize = 50,
-            int randomFillPercent = 47,
-            string seed = "")
+            int randomFillPercent = 47)
         {
             this.Width = width;
             this.Height = height;
@@ -30,13 +48,21 @@ namespace Server.Data.Generators
             this.PassageRadius = passageRadius;
 
             Map map = new Map();
-            if (string.IsNullOrEmpty(seed))
-            {
-                seed = DateTime.UtcNow.Ticks.ToString();
-            }
             List<Room> rooms = new List<Room>();
 
-            this.RandomFillMap(seed, width, height, randomFillPercent);
+            //!!!TODO: Instead of filling the map randomly.
+            // I can try to initialize the matrix with given hardcoded areas and then 
+            // run the rest of the generation logic
+            // This should cause the map the be proceduraly generated but to have a recognizable pattern
+            // ■■■■■■■■■■■■■■■■■■■■
+            // ■■■■■□□□■■■■■□□□■■■■
+            // ■■■■■□□□■■■■■□□□■■■■
+            // ■■■■■■■■■■■■■■■■■■■■
+            // ■■■■■□□□■■■■■□□□■■■■
+            // ■■■■■□□□■■■■■□□□■■■■
+            // ■■■■■■■■■■■■■■■■■■■■
+
+            this.RandomFillMap(width, height, randomFillPercent);
 
             for (int i = 0; i < 5; i++)
             {
@@ -65,7 +91,7 @@ namespace Server.Data.Generators
             this.Matrix = borderedMap;
             map.Matrix = this.Matrix;
             map.Rooms = this.TransformRoomEntities(rooms);
-            map.Seed = seed;
+            map.Seed = this.Seed;
             return map;
         }
 
@@ -444,9 +470,9 @@ namespace Server.Data.Generators
             return x >= 0 && x < this.Width && y >= 0 && y < this.Height;
         }
 
-        void RandomFillMap(string seed, int width, int height, int randomFillPercent)
+        void RandomFillMap(int width, int height, int randomFillPercent)
         {
-            Random r = new Random(seed.GetHashCode());
+            Random r = new Random(this.Seed.GetHashCode());
 
             for (int x = 0; x < width; x++)
             {
@@ -475,6 +501,118 @@ namespace Server.Data.Generators
             }
 
             return sb.ToString();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="emptyMap"></param>
+        /// <param name="monsterStrength">in percent %</param>
+        /// <param name="treasureDencity">in percent %</param>
+        /// <returns></returns>
+        public Map PopulateMap(Map emptyMap, int monsterStrength, int treasureDencity)
+        {
+            // contains map walls + non-walkable cells and interactables like monsters, gold, wood, stone and other
+            // At the end we will return to the client an matrix with only 0, 1 and 2.
+            // But there will be objects that can be cleared from the map
+            // for example a Monster pack can be placed on position -> 21:10.
+            // initiali position 21:10 will be marked as 2 (interactable) and not be walkable.
+            // when the player clears this position - we will change the value in the matrix to 0
+            // and this cell will become walkable
+
+            int[,] solidMap = emptyMap.Matrix;
+
+            // TODO: Populate the map with objects
+            // 1. Place an object on the map and update the matrix with blocked coordinates
+            // 2. Run flood fill algorithm 
+            // 3. Validate that there are no isolated regions after the object is placed.
+            // 4. If valid -> continue with next placement. Else -> Try to place to new random position
+            //
+            // try to place buildings and power ups near the edge of the map
+            // place resources and consumables at random positions
+            // monsters, consumables, resources and other similar objects are not permanent map blockers.
+            // this means that they are only temporary blocking the path of the hero. 
+            // This is OK and should not mark the objects placement as invalid.
+            // 
+
+            // Place player hero/castle
+
+            // 1. Get random position in main room
+            var mainRoom = emptyMap.Rooms[0];
+            int edgeDistance = 5;
+
+            //  □□□
+            // □□□□□
+            // □□■□□
+            List<Coord> occupiedPositions = new List<Coord>()
+            {
+                new Coord { X = -1, Y = 2 },
+                new Coord { X = 0, Y = 2 },
+                new Coord { X = 1, Y = 2 },
+
+                new Coord { X = -2, Y = 1 },
+                new Coord { X = -1, Y = 1 },
+                new Coord { X = 0, Y = 1 },
+                new Coord { X = 1, Y = 1 },
+                new Coord { X = 2, Y = 1 },
+
+                new Coord { X = -2, Y = 0 },
+                new Coord { X = -1, Y = 0 },
+                new Coord { X = 0, Y = 0 }, // <- this is the contact point
+                new Coord { X = 1, Y = 0 },
+                new Coord { X = 2, Y = 0 },
+            };
+
+            Coord safePosition = this.GetRandomSafePosition(mainRoom, PlacementStrategy.FarFromEdge, edgeDistance);
+
+            //
+
+            emptyMap.Matrix = solidMap; // the map is updated with all non-walkable cells
+            return emptyMap;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="room">Room where the object will be placed</param>
+        /// <param name="placementStrategy">Placement strategy: Far from edge, Near edge or random</param>
+        /// <param name="edgeDistance">Distance to the nearest edge or other object</param>
+        /// <returns>Cotanct point</returns>
+        private Coord GetRandomSafePosition(Models.Realms.Room room, PlacementStrategy placementStrategy, int edgeDistance)
+        {
+            // if PlacementStrategy.Random
+            // 1. get random position
+            // 2. if the object is outside of the map -> shift it with nesesary offset so it is inside the map
+            // and it is not colliding with existing objects
+            // 3. run flood fill to validate if the object is not blocking movement
+            // 4. on fail -> repeat
+            // 5. on success -> continue
+
+
+            // if PlacementStrategy.FarFromEdge
+            // 1. get random room position that is far from edge ( use edgeDistance ).
+            // 2. check if the object is colliding with other objects
+            // 3. run flood fill to validate if the object is not blocking movement
+            // 4. on fail -> repeat
+            // 5. on success -> continue
+
+
+            // if PlacementStrategy.NearEdge
+            // 1. Get random position from edgeTiles
+            // 2. shift the object with nesesary offset based on its position so it is inside the map
+            // and it is not colliding with existing objects
+            // 3. run flood fill to validate if the object is not blocking movement
+            // 4. on fail -> repeat
+            // 5. on success -> continue
+
+            return null;
+        }
+
+        private Models.Realms.Room GetRandomRoom(List<Models.Realms.Room> rooms)
+        {
+            Random r = new Random(this.Seed.GetHashCode());
+
+            return null;
         }
 
         private class Room : IComparable<Room>
@@ -551,6 +689,13 @@ namespace Server.Data.Generators
             {
                 return connectedRooms.Contains(otherRoom);
             }
+        }
+
+        private enum PlacementStrategy
+        {
+            Random = 0,
+            NearEdge = 1,
+            FarFromEdge = 2
         }
     }
 }

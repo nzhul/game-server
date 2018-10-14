@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Text;
+using Server.Models.Heroes;
+using Server.Models.MapEntities;
 using Server.Models.Realms;
 
 namespace Server.Data.Generators
@@ -39,6 +41,12 @@ namespace Server.Data.Generators
         public string MatrixString { get; private set; }
 
         public List<Room> Rooms { get; set; }
+
+        public List<Hero> Heroes { get; set; }
+
+        public List<MonsterPack> MonsterPacks { get; set; }
+
+        public List<Treasure> Treasures { get; set; }
 
         public string Seed { get; set; }
     }

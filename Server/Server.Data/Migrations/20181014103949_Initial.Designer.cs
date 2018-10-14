@@ -10,7 +10,7 @@ using Server.Data;
 namespace Server.Data.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20181013155105_Initial")]
+    [Migration("20181014103949_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -103,8 +103,6 @@ namespace Server.Data.Migrations
 
                     b.Property<int?>("RegionId");
 
-                    b.Property<int?>("RoomId");
-
                     b.HasKey("Id");
 
                     b.HasIndex("AvatarId");
@@ -112,8 +110,6 @@ namespace Server.Data.Migrations
                     b.HasIndex("BlueprintId");
 
                     b.HasIndex("RegionId");
-
-                    b.HasIndex("RoomId");
 
                     b.ToTable("Castles");
                 });
@@ -181,8 +177,6 @@ namespace Server.Data.Migrations
 
                     b.Property<int?>("RegionId");
 
-                    b.Property<int?>("RoomId");
-
                     b.Property<long>("TimePlayedTicks");
 
                     b.Property<int>("X");
@@ -196,8 +190,6 @@ namespace Server.Data.Migrations
                     b.HasIndex("BlueprintId");
 
                     b.HasIndex("RegionId");
-
-                    b.HasIndex("RoomId");
 
                     b.ToTable("Heroes");
                 });
@@ -301,6 +293,53 @@ namespace Server.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("ItemBlueprints");
+                });
+
+            modelBuilder.Entity("Server.Models.MapEntities.MonsterPack", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("CreatedAt");
+
+                    b.Property<string>("CreatedBy");
+
+                    b.Property<int>("Disposition");
+
+                    b.Property<int?>("ItemRewardId");
+
+                    b.Property<DateTime>("ModifiedAt");
+
+                    b.Property<string>("ModifiedBy");
+
+                    b.Property<string>("Name");
+
+                    b.Property<int>("Quantity");
+
+                    b.Property<int?>("RegionId");
+
+                    b.Property<int>("RewardQuantity");
+
+                    b.Property<int>("RewardType");
+
+                    b.Property<int>("TroopsRewardQuantity");
+
+                    b.Property<int>("TroopsRewardType");
+
+                    b.Property<int>("Type");
+
+                    b.Property<int>("X");
+
+                    b.Property<int>("Z");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ItemRewardId");
+
+                    b.HasIndex("RegionId");
+
+                    b.ToTable("MonsterPack");
                 });
 
             modelBuilder.Entity("Server.Models.Realms.Realm", b =>
@@ -656,12 +695,8 @@ namespace Server.Data.Migrations
                         .HasForeignKey("BlueprintId");
 
                     b.HasOne("Server.Models.Realms.Region", "Region")
-                        .WithMany()
-                        .HasForeignKey("RegionId");
-
-                    b.HasOne("Server.Models.Realms.Room")
                         .WithMany("Castles")
-                        .HasForeignKey("RoomId");
+                        .HasForeignKey("RegionId");
                 });
 
             modelBuilder.Entity("Server.Models.Heroes.Hero", b =>
@@ -678,10 +713,6 @@ namespace Server.Data.Migrations
                     b.HasOne("Server.Models.Realms.Region", "Region")
                         .WithMany("Heroes")
                         .HasForeignKey("RegionId");
-
-                    b.HasOne("Server.Models.Realms.Room")
-                        .WithMany("Heroes")
-                        .HasForeignKey("RoomId");
                 });
 
             modelBuilder.Entity("Server.Models.Items.Item", b =>
@@ -694,6 +725,17 @@ namespace Server.Data.Migrations
                         .WithMany("Items")
                         .HasForeignKey("HeroId")
                         .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Server.Models.MapEntities.MonsterPack", b =>
+                {
+                    b.HasOne("Server.Models.Items.ItemBlueprint", "ItemReward")
+                        .WithMany()
+                        .HasForeignKey("ItemRewardId");
+
+                    b.HasOne("Server.Models.Realms.Region")
+                        .WithMany("MonsterPacks")
+                        .HasForeignKey("RegionId");
                 });
 
             modelBuilder.Entity("Server.Models.Realms.Region", b =>
