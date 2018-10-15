@@ -22,6 +22,10 @@ namespace Server.Data.Generators
 
         public int[,] PopulatedMatrix { get; private set; }
 
+        private List<Models.Realms.Room> PopulationRooms;
+
+        private Random rand;
+
         public int PassageRadius { get; private set; }
 
         public string Seed { get; set; }
@@ -514,7 +518,9 @@ namespace Server.Data.Generators
         /// <returns></returns>
         public Map PopulateMap(Map emptyMap, int monsterStrength, int treasureDencity)
         {
-            this.PopulatedMatrix = this.Matrix;
+            this.rand = new Random(this.Seed.GetHashCode());
+            this.PopulatedMatrix = emptyMap.Matrix;
+            this.PopulationRooms = emptyMap.Rooms;
             // contains map walls + non-walkable cells and interactables like monsters, gold, wood, stone and other
             // At the end we will return to the client an matrix with only 0, 1 and 2.
             // But there will be objects that can be cleared from the map
@@ -541,8 +547,8 @@ namespace Server.Data.Generators
             // Place player hero/castle
 
             // 1. Get random position in main room
-            var mainRoom = emptyMap.Rooms[0];
-            int edgeDistance = 5;
+            var mainRoom = this.PopulationRooms[0];
+            int edgeDistance = 3;
 
             //  □□□
             // □□□□□
@@ -584,6 +590,23 @@ namespace Server.Data.Generators
         /// <returns>Cotanct point</returns>
         private Coord GetRandomSafePosition(Models.Realms.Room room, PlacementStrategy placementStrategy, int edgeDistance, List<Coord> additionalRequiredSpace)
         {
+            switch (placementStrategy)
+            {
+                case PlacementStrategy.Random:
+                    break;
+                case PlacementStrategy.NearEdge:
+                    break;
+                case PlacementStrategy.FarFromEdge:
+                    Coord randomRoomPosition = room.Tiles[rand.Next(room.Tiles.Count)];
+                    if (IsFarFromEdge(randomRoomPosition, CheckDirection.All) && IsNotColliding(randomRoomPosition, additionalRequiredSpace))
+                    {
+
+                    }
+                    break;
+                default:
+                    break;
+            }
+
             // !!! to reduce the iterations for getting random position.
             // we should mark tested position as invalid for this particular object
             // this way we won't try multiple times to place the object on invalid position.
@@ -617,6 +640,16 @@ namespace Server.Data.Generators
             // 5. on success -> continue
 
             return null;
+        }
+
+        private bool IsNotColliding(Coord randomRoomPosition, List<Coord> additionalRequiredSpace)
+        {
+            throw new NotImplementedException();
+        }
+
+        private bool IsFarFromEdge(Coord randomRoomPosition, CheckDirection all)
+        {
+            throw new NotImplementedException();
         }
 
         private Models.Realms.Room GetRandomRoom(List<Models.Realms.Room> rooms)
