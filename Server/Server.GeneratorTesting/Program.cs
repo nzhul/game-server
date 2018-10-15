@@ -36,8 +36,8 @@ namespace Server.GeneratorTesting
                     try
                     {
                         stopwatch.Start();
-                        map = generator.GenerateMap(76, 76, 0, 1, 50, 50, 45);
-                        //map = generator.PopulateMap(map, 50, 50);
+                        map = generator.GenerateMap(20, 20, 0, 1, 0, 0, 30);
+                        map = generator.PopulateMap(map, 50, 50);
                         stopwatch.Stop();
                         generationIsFailing = false;
                     }
@@ -64,6 +64,10 @@ namespace Server.GeneratorTesting
                         {
                             Console.Write('\u2588');
                         }
+                        else if (map.Matrix[x, y] == 2)
+                        {
+                            Console.Write('X');
+                        }
                         else
                         {
                             Console.Write(' ');
@@ -73,9 +77,9 @@ namespace Server.GeneratorTesting
                     Console.WriteLine();
                 }
 
-                PaintRooms(map.Rooms);
+                //PaintRooms(map.Rooms);
                 PaintEdges(map.Rooms);
-                PaintHero(map, r);
+                //PaintHero(map, r);
 
                 Console.WriteLine();
                 Console.WriteLine(stopwatch.Elapsed);

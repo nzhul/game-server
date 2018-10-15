@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Server.Models;
 
@@ -529,8 +530,6 @@ namespace Server.Data.Generators
             // when the player clears this position - we will change the value in the matrix to 0
             // and this cell will become walkable
 
-            int[,] solidMap = emptyMap.Matrix;
-
             // TODO: Populate the map with objects
             // 1. Place an object on the map and update the matrix with blocked coordinates
             // 2. Run flood fill algorithm 
@@ -548,7 +547,7 @@ namespace Server.Data.Generators
 
             // 1. Get random position in main room
             var mainRoom = this.PopulationRooms[0];
-            int edgeDistance = 3;
+            int edgeDistance = 4;
 
             //  □□□
             // □□□□□
@@ -572,11 +571,20 @@ namespace Server.Data.Generators
                 new Coord { X = 2, Y = 0 },
             };
 
-            Coord safePosition = this.GetRandomSafePosition(mainRoom, PlacementStrategy.FarFromEdge, edgeDistance, additionalRequiredSpace);
+            // Wrap line below in while loop for 10 retries!
+            Coord safePosition = null;
+
+            // Consider how to handle infinate loops. Eg: imposible to find spot with required edgeDistance
+            while (safePosition == null)
+            {
+                safePosition = this.GetRandomSafePosition(mainRoom, PlacementStrategy.FarFromEdge, edgeDistance, additionalRequiredSpace);
+            }
+
+            this.PopulatedMatrix[safePosition.X, safePosition.Y] = 2; // TODO: handle additionalRequiredSpace
 
             //
 
-            emptyMap.Matrix = solidMap; // the map is updated with all non-walkable cells
+            emptyMap.Matrix = this.PopulatedMatrix; // the map is updated with all non-walkable cells
             return emptyMap;
         }
 
@@ -590,6 +598,10 @@ namespace Server.Data.Generators
         /// <returns>Cotanct point</returns>
         private Coord GetRandomSafePosition(Models.Realms.Room room, PlacementStrategy placementStrategy, int edgeDistance, List<Coord> additionalRequiredSpace)
         {
+            // TODO create a local list with "non-failed" coordinates and try to get value from there instead of from all coordinates.
+            Coord randomRoomPosition = room.Tiles[rand.Next(room.Tiles.Count)];
+            bool positionIsSafe = false;
+
             switch (placementStrategy)
             {
                 case PlacementStrategy.Random:
@@ -597,15 +609,21 @@ namespace Server.Data.Generators
                 case PlacementStrategy.NearEdge:
                     break;
                 case PlacementStrategy.FarFromEdge:
-                    Coord randomRoomPosition = room.Tiles[rand.Next(room.Tiles.Count)];
-                    if (IsFarFromEdge(randomRoomPosition, CheckDirection.All) && IsNotColliding(randomRoomPosition, additionalRequiredSpace))
+                    if (IsFarFromEdge(randomRoomPosition, edgeDistance, CheckDirection.All) && IsNotColliding(randomRoomPosition, additionalRequiredSpace))
                     {
-
+                        positionIsSafe = true;
                     }
                     break;
                 default:
                     break;
             }
+
+            if (positionIsSafe)
+            {
+                return randomRoomPosition;
+            }
+
+            return null;
 
             // !!! to reduce the iterations for getting random position.
             // we should mark tested position as invalid for this particular object
@@ -638,18 +656,99 @@ namespace Server.Data.Generators
             // 3. run flood fill to validate if the object is not blocking movement
             // 4. on fail -> repeat
             // 5. on success -> continue
+        }
 
-            return null;
+        private bool IsFarFromEdge(Coord randomRoomPosition, int edgeDistance, CheckDirection all)
+        {
+            bool result = false;
+
+            if (this.IsOnEdge(this.PopulationRooms, randomRoomPosition))
+            {
+                return false;
+            }
+
+            switch (all)
+            {
+                case CheckDirection.All:
+                    int nDist = this.GetDistanceFromEdge(randomRoomPosition, CheckDirection.North);
+                    int eDist = this.GetDistanceFromEdge(randomRoomPosition, CheckDirection.East);
+                    int sDist = this.GetDistanceFromEdge(randomRoomPosition, CheckDirection.South);
+                    int wDist = this.GetDistanceFromEdge(randomRoomPosition, CheckDirection.West);
+
+                    if (nDist > edgeDistance && eDist > edgeDistance && sDist > edgeDistance && wDist > edgeDistance)
+                    {
+                        result = true;
+                    }
+
+                    break;
+                case CheckDirection.North:
+                    break;
+                case CheckDirection.East:
+                    break;
+                case CheckDirection.South:
+                    break;
+                case CheckDirection.West:
+                    break;
+                default:
+                    break;
+            }
+
+            return result;
+        }
+
+        private int GetDistanceFromEdge(Coord coord, CheckDirection direction)
+        {
+            Coord shiftingCoord = new Coord(coord.X, coord.Y);
+
+            int XOffset = 0;
+            int YOffset = 0;
+            switch (direction)
+            {
+                case CheckDirection.All:
+                    break;
+                case CheckDirection.North:
+                    YOffset += 1;
+                    break;
+                case CheckDirection.East:
+                    XOffset -= 1;
+                    break;
+                case CheckDirection.South:
+                    YOffset -= 1;
+                    break;
+                case CheckDirection.West:
+                    XOffset += 1;
+                    break;
+                default:
+                    break;
+            }
+
+            int distance = 0;
+            bool edgeReached = false;
+            while (!edgeReached)
+            {
+                if (IsOnEdge(this.PopulationRooms, shiftingCoord))
+                {
+                    edgeReached = true;
+                }
+                else
+                {
+                    shiftingCoord.X += XOffset;
+                    shiftingCoord.Y += YOffset;
+                    distance++;
+                }
+            }
+
+            return distance;
+        }
+
+        private bool IsOnEdge(List<Models.Realms.Room> rooms, Coord coord)
+        {
+            return rooms.Any(r => r.EdgeTiles.Any(t => t.X == coord.X && t.Y == coord.Y));
         }
 
         private bool IsNotColliding(Coord randomRoomPosition, List<Coord> additionalRequiredSpace)
         {
-            throw new NotImplementedException();
-        }
-
-        private bool IsFarFromEdge(Coord randomRoomPosition, CheckDirection all)
-        {
-            throw new NotImplementedException();
+            return true;
         }
 
         private Models.Realms.Room GetRandomRoom(List<Models.Realms.Room> rooms)
