@@ -10,6 +10,6 @@
             int minWallSize = 50,
             int randomFillPercent = 47);
 
-        Map PopulateMap(Map emptyMap, int monsterStrength, int treasureDencity);
+        Map PopulateMap(Map emptyMap, int monsterStrength, int objectDencity);
     }
 }

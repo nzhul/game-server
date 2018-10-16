@@ -36,6 +36,8 @@ namespace Server.Data.Generators
 
         private List<Coord> TempEdgeRoomTiles;
 
+        private int FreeCellsCount;
+
         private Random rand;
 
         public int PassageRadius { get; private set; }
@@ -526,13 +528,16 @@ namespace Server.Data.Generators
         /// </summary>
         /// <param name="emptyMap"></param>
         /// <param name="monsterStrength">in percent %</param>
-        /// <param name="treasureDencity">in percent %</param>
+        /// <param name="objectDencity">in percent %</param>
         /// <returns></returns>
-        public Map PopulateMap(Map emptyMap, int monsterStrength, int treasureDencity)
+        public Map PopulateMap(Map emptyMap, int monsterStrength, int objectDencity)
         {
             this.rand = new Random(this.Seed.GetHashCode());
             this.PopulatedMatrix = emptyMap.Matrix;
             this.PopulationRooms = emptyMap.Rooms;
+            this.FreeCellsCount = this.CountFreeCoords(this.PopulationRooms);
+            int minimumFreeCellsLeft = (this.FreeCellsCount * objectDencity) / 100;
+
             // contains map walls + non-walkable cells and interactables like monsters, gold, wood, stone and other
             // At the end we will return to the client an matrix with only 0, 1 and 2.
             // But there will be objects that can be cleared from the map
@@ -593,14 +598,14 @@ namespace Server.Data.Generators
             {
                 safePosition = this.GetRandomSafePosition(mainRoom, strategy, edgeDistance, additionalRequiredSpace);
 
-                if (sw.Elapsed.TotalMilliseconds > 1500 && sw.Elapsed.TotalSeconds < 2500)
+                if (sw.Elapsed.TotalMilliseconds > 1500 && sw.Elapsed.TotalSeconds < 2500) //TODO: change this with 10 retries instead if elapsedtime.
                 {
                     strategy = PlacementStrategy.Random;
                 }
 
                 if (sw.Elapsed.TotalMilliseconds > 2500)
                 {
-                    throw new Exception("Cannot find free space for object ...");
+                    //throw new Exception("Cannot find free space for object ...");
                 }
             }
             sw.Stop();
@@ -613,6 +618,18 @@ namespace Server.Data.Generators
 
             emptyMap.Matrix = this.PopulatedMatrix; // the map is updated with all non-walkable cells
             return emptyMap;
+        }
+
+        private int CountFreeCoords(List<Models.Realms.Room> populationRooms)
+        {
+            int count = 0;
+
+            foreach (var room in populationRooms)
+            {
+                count += room.Tiles.Count;
+            }
+
+            return count;
         }
 
         /// <summary>
@@ -662,8 +679,10 @@ namespace Server.Data.Generators
                 {
                     Coord updatedCoord = new Coord(randomRoomPosition.X + offset.X, randomRoomPosition.Y + offset.Y);
                     this.PopulatedMatrix[updatedCoord.X, updatedCoord.Y] = 3;
+                    this.FreeCellsCount--;
                 }
                 this.PopulatedMatrix[randomRoomPosition.X, randomRoomPosition.Y] = 2;
+                this.FreeCellsCount--;
 
                 return randomRoomPosition;
             }

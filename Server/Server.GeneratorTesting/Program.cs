@@ -16,11 +16,21 @@ namespace Server.GeneratorTesting
         static void Main(string[] args)
         {
             Stopwatch stopwatch = new Stopwatch();
-            bool debugMode = true;
+            bool debugMode = false;
 
             Random r = new Random();
-            while (Console.ReadKey().Key == ConsoleKey.R)
+            ConsoleKey key = Console.ReadKey().Key;
+            while (key == ConsoleKey.R || key == ConsoleKey.D)
             {
+                if (key == ConsoleKey.D)
+                {
+                    debugMode = true;
+                }
+                else if (key == ConsoleKey.R)
+                {
+                    debugMode = false;
+                }
+
                 Console.Clear();
 
                 IMapGenerator generator = new MapGenerator();
@@ -36,7 +46,7 @@ namespace Server.GeneratorTesting
                     try
                     {
                         stopwatch.Start();
-                        map = generator.GenerateMap(30, 30, 0, 1, 0, 0, 30);
+                        map = generator.GenerateMap(76, 50, 0, 1, 50, 50, 48);
                         map = generator.PopulateMap(map, 50, 50);
                         stopwatch.Stop();
                         generationIsFailing = false;
@@ -58,6 +68,7 @@ namespace Server.GeneratorTesting
 
                 if (debugMode)
                 {
+                    Console.Write("  ");
                     for (int x = 0; x < map.Matrix.GetLength(0); x++)
                     {
                         Console.Write(x.ToString().PadLeft(2));
@@ -65,16 +76,16 @@ namespace Server.GeneratorTesting
                     Console.WriteLine();
                 }
 
-                for (int x = 0; x < map.Matrix.GetLength(0); x++)
+                for (int x = 0; x < map.Matrix.GetLength(1); x++)
                 {
                     if (debugMode)
                     {
                         Console.Write(x.ToString().PadLeft(2));
                     }
 
-                    for (int y = 0; y < map.Matrix.GetLength(1); y++)
+                    for (int y = 0; y < map.Matrix.GetLength(0); y++)
                     {
-                        if (map.Matrix[x, y] == 1)
+                        if (map.Matrix[y, x] == 1)
                         {
                             if (debugMode)
                             {
@@ -85,7 +96,7 @@ namespace Server.GeneratorTesting
                                 Console.Write("\u2588");
                             }
                         }
-                        else if (map.Matrix[x, y] == 2)
+                        else if (map.Matrix[y, x] == 2)
                         {
                             if (debugMode)
                             {
@@ -97,7 +108,7 @@ namespace Server.GeneratorTesting
                             }
 
                         }
-                        else if (map.Matrix[x, y] == 3)
+                        else if (map.Matrix[y, x] == 3)
                         {
                             if (debugMode)
                             {
@@ -134,9 +145,19 @@ namespace Server.GeneratorTesting
                 //PaintEdges(map.Rooms);
                 //PaintHero(map, r);
 
-                Console.SetCursorPosition(map.Matrix.GetLength(1), map.Matrix.GetLength(0) * 2);
+                if (debugMode)
+                {
+                    Console.SetCursorPosition(map.Matrix.GetLength(1), map.Matrix.GetLength(1) * 2);
+                }
+                else
+                {
+                    Console.SetCursorPosition(map.Matrix.GetLength(1), map.Matrix.GetLength(1));
+                }
+
                 Console.WriteLine();
                 Console.WriteLine(stopwatch.Elapsed);
+
+                key = Console.ReadKey().Key;
             }
         }
 
