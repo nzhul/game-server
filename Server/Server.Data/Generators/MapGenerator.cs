@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using Server.Models;
@@ -21,9 +22,19 @@ namespace Server.Data.Generators
 
         public int[,] Matrix { get; private set; }
 
+        /// <summary>
+        /// 0 - walkable
+        /// 1 - wall -> not walkable
+        /// 2 - contact point -> can be reached if it is destination target, but cannot be part of the path. Eg: treasure on the map or Entrace of a castle.
+        /// 3 -> occupied -> not walkable -> Additional space of a casle that is not entrance.
+        /// </summary>
         public int[,] PopulatedMatrix { get; private set; }
 
         private List<Models.Realms.Room> PopulationRooms;
+
+        private List<Coord> TempRoomTiles;
+
+        private List<Coord> TempEdgeRoomTiles;
 
         private Random rand;
 
@@ -547,6 +558,8 @@ namespace Server.Data.Generators
 
             // 1. Get random position in main room
             var mainRoom = this.PopulationRooms[0];
+            this.TempRoomTiles = new List<Coord>(mainRoom.Tiles);
+            this.TempEdgeRoomTiles = new List<Coord>(mainRoom.EdgeTiles);
             int edgeDistance = 4;
 
             //  □□□
@@ -573,14 +586,28 @@ namespace Server.Data.Generators
 
             // Wrap line below in while loop for 10 retries!
             Coord safePosition = null;
-
-            // Consider how to handle infinate loops. Eg: imposible to find spot with required edgeDistance
+            PlacementStrategy strategy = PlacementStrategy.FarFromEdge;
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
             while (safePosition == null)
             {
-                safePosition = this.GetRandomSafePosition(mainRoom, PlacementStrategy.FarFromEdge, edgeDistance, additionalRequiredSpace);
-            }
+                safePosition = this.GetRandomSafePosition(mainRoom, strategy, edgeDistance, additionalRequiredSpace);
 
-            this.PopulatedMatrix[safePosition.X, safePosition.Y] = 2; // TODO: handle additionalRequiredSpace
+                if (sw.Elapsed.TotalMilliseconds > 1500 && sw.Elapsed.TotalSeconds < 2500)
+                {
+                    strategy = PlacementStrategy.Random;
+                }
+
+                if (sw.Elapsed.TotalMilliseconds > 2500)
+                {
+                    throw new Exception("Cannot find free space for object ...");
+                }
+            }
+            sw.Stop();
+
+            // TODO: Do this after every placement -> Reset TempRoomTiles and TempEdgeRoomTiles. Do not use mainRoom, but instead use random room.
+            this.TempRoomTiles = new List<Coord>(mainRoom.Tiles);
+            this.TempEdgeRoomTiles = new List<Coord>(mainRoom.EdgeTiles);
 
             //
 
@@ -598,28 +625,46 @@ namespace Server.Data.Generators
         /// <returns>Cotanct point</returns>
         private Coord GetRandomSafePosition(Models.Realms.Room room, PlacementStrategy placementStrategy, int edgeDistance, List<Coord> additionalRequiredSpace)
         {
-            // TODO create a local list with "non-failed" coordinates and try to get value from there instead of from all coordinates.
             Coord randomRoomPosition = room.Tiles[rand.Next(room.Tiles.Count)];
             bool positionIsSafe = false;
+            bool shouldRemoveFromTemp = false;
 
             switch (placementStrategy)
             {
                 case PlacementStrategy.Random:
+                    if (!this.IsOnEdge(this.TempEdgeRoomTiles, randomRoomPosition) && !IsColliding(randomRoomPosition, additionalRequiredSpace))
+                    {
+                        positionIsSafe = true;
+                        shouldRemoveFromTemp = true;
+                    }
                     break;
                 case PlacementStrategy.NearEdge:
                     break;
                 case PlacementStrategy.FarFromEdge:
-                    if (IsFarFromEdge(randomRoomPosition, edgeDistance, CheckDirection.All) && IsNotColliding(randomRoomPosition, additionalRequiredSpace))
+                    if (IsFarFromEdge(randomRoomPosition, edgeDistance, CheckDirection.All) && !IsColliding(randomRoomPosition, additionalRequiredSpace))
                     {
                         positionIsSafe = true;
+                        shouldRemoveFromTemp = true;
                     }
                     break;
                 default:
                     break;
             }
 
+            if (shouldRemoveFromTemp)
+            {
+                this.TempRoomTiles.RemoveAll(t => t.X == randomRoomPosition.X && t.Y == randomRoomPosition.Y);
+            }
+
             if (positionIsSafe)
             {
+                foreach (Coord offset in additionalRequiredSpace)
+                {
+                    Coord updatedCoord = new Coord(randomRoomPosition.X + offset.X, randomRoomPosition.Y + offset.Y);
+                    this.PopulatedMatrix[updatedCoord.X, updatedCoord.Y] = 3;
+                }
+                this.PopulatedMatrix[randomRoomPosition.X, randomRoomPosition.Y] = 2;
+
                 return randomRoomPosition;
             }
 
@@ -662,7 +707,7 @@ namespace Server.Data.Generators
         {
             bool result = false;
 
-            if (this.IsOnEdge(this.PopulationRooms, randomRoomPosition))
+            if (this.IsOnEdge(this.TempEdgeRoomTiles, randomRoomPosition))
             {
                 return false;
             }
@@ -726,7 +771,7 @@ namespace Server.Data.Generators
             bool edgeReached = false;
             while (!edgeReached)
             {
-                if (IsOnEdge(this.PopulationRooms, shiftingCoord))
+                if (IsOnEdge(this.TempEdgeRoomTiles, shiftingCoord))
                 {
                     edgeReached = true;
                 }
@@ -741,14 +786,31 @@ namespace Server.Data.Generators
             return distance;
         }
 
-        private bool IsOnEdge(List<Models.Realms.Room> rooms, Coord coord)
+        private bool IsOnEdge(List<Coord> edges, Coord coord)
         {
-            return rooms.Any(r => r.EdgeTiles.Any(t => t.X == coord.X && t.Y == coord.Y));
+            return edges.Any(t => t.X == coord.X && t.Y == coord.Y);
         }
 
-        private bool IsNotColliding(Coord randomRoomPosition, List<Coord> additionalRequiredSpace)
+        //TODO: test if this is working!
+        private bool IsColliding(Coord coord, List<Coord> additionalRequiredSpace)
         {
-            return true;
+            bool colliding = false;
+
+            if (this.PopulatedMatrix[coord.X, coord.Y] != 0)
+            {
+                colliding = true;
+            }
+
+            foreach (Coord offset in additionalRequiredSpace)
+            {
+                Coord updatedCoord = new Coord(coord.X + offset.X, coord.Y + offset.Y);
+                if (this.PopulatedMatrix[updatedCoord.X, updatedCoord.Y] != 0)
+                {
+                    colliding = true;
+                }
+            }
+
+            return colliding;
         }
 
         private Models.Realms.Room GetRandomRoom(List<Models.Realms.Room> rooms)

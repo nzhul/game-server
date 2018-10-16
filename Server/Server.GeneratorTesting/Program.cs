@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Text;
 using Server.Data.Generators;
 using Server.Models;
 using Server.Models.Realms;
@@ -17,6 +16,7 @@ namespace Server.GeneratorTesting
         static void Main(string[] args)
         {
             Stopwatch stopwatch = new Stopwatch();
+            bool debugMode = true;
 
             Random r = new Random();
             while (Console.ReadKey().Key == ConsoleKey.R)
@@ -36,7 +36,7 @@ namespace Server.GeneratorTesting
                     try
                     {
                         stopwatch.Start();
-                        map = generator.GenerateMap(20, 20, 0, 1, 0, 0, 30);
+                        map = generator.GenerateMap(30, 30, 0, 1, 0, 0, 30);
                         map = generator.PopulateMap(map, 50, 50);
                         stopwatch.Stop();
                         generationIsFailing = false;
@@ -56,31 +56,85 @@ namespace Server.GeneratorTesting
                     }
                 }
 
+                if (debugMode)
+                {
+                    for (int x = 0; x < map.Matrix.GetLength(0); x++)
+                    {
+                        Console.Write(x.ToString().PadLeft(2));
+                    }
+                    Console.WriteLine();
+                }
+
                 for (int x = 0; x < map.Matrix.GetLength(0); x++)
                 {
+                    if (debugMode)
+                    {
+                        Console.Write(x.ToString().PadLeft(2));
+                    }
+
                     for (int y = 0; y < map.Matrix.GetLength(1); y++)
                     {
                         if (map.Matrix[x, y] == 1)
                         {
-                            Console.Write('\u2588');
+                            if (debugMode)
+                            {
+                                Console.Write(" \u2588");
+                            }
+                            else
+                            {
+                                Console.Write("\u2588");
+                            }
                         }
                         else if (map.Matrix[x, y] == 2)
                         {
-                            Console.Write('X');
+                            if (debugMode)
+                            {
+                                Console.Write(" X");
+                            }
+                            else
+                            {
+                                Console.Write("X");
+                            }
+
+                        }
+                        else if (map.Matrix[x, y] == 3)
+                        {
+                            if (debugMode)
+                            {
+                                Console.Write(" O");
+                            }
+                            else
+                            {
+                                Console.Write("O");
+                            }
+                            
                         }
                         else
                         {
-                            Console.Write(' ');
+                            if (debugMode)
+                            {
+                                Console.Write(" \u2591");
+                            }
+                            else
+                            {
+                                Console.Write(" ");
+                            }
+                            
                         }
                     }
 
+                    if (debugMode)
+                    {
+                        Console.WriteLine();
+                    }
                     Console.WriteLine();
                 }
 
                 //PaintRooms(map.Rooms);
-                PaintEdges(map.Rooms);
+                //PaintEdges(map.Rooms);
                 //PaintHero(map, r);
 
+                Console.SetCursorPosition(map.Matrix.GetLength(1), map.Matrix.GetLength(0) * 2);
                 Console.WriteLine();
                 Console.WriteLine(stopwatch.Elapsed);
             }
