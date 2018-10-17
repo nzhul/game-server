@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using Server.Models;
+using Server.Models.MapEntities;
 
 namespace Server.Data.Generators
 {
@@ -559,9 +560,7 @@ namespace Server.Data.Generators
             // This is OK and should not mark the objects placement as invalid.
             // NB: fill the map with objects until certain percent is filled. Ex: 70% of all free cells
 
-            // Place player hero/castle
-
-            // 1. Get random position in main room
+            //1. Place player hero/castle
             var mainRoom = this.PopulationRooms[0];
             this.TempRoomTiles = new List<Coord>(mainRoom.Tiles);
             this.TempEdgeRoomTiles = new List<Coord>(mainRoom.EdgeTiles);
@@ -572,15 +571,15 @@ namespace Server.Data.Generators
             // □□■□□
             List<Coord> additionalRequiredSpace = new List<Coord>()
             {
-                new Coord { X = -1, Y = 2 },
-                new Coord { X = 0, Y = 2 },
-                new Coord { X = 1, Y = 2 },
+                new Coord { X = -1, Y = -2 },
+                new Coord { X = 0, Y = -2 },
+                new Coord { X = 1, Y = -2 },
 
-                new Coord { X = -2, Y = 1 },
-                new Coord { X = -1, Y = 1 },
-                new Coord { X = 0, Y = 1 },
-                new Coord { X = 1, Y = 1 },
-                new Coord { X = 2, Y = 1 },
+                new Coord { X = -2, Y = -1 },
+                new Coord { X = -1, Y = -1 },
+                new Coord { X = 0, Y = -1 },
+                new Coord { X = 1, Y = -1 },
+                new Coord { X = 2, Y = -1 },
 
                 new Coord { X = -2, Y = 0 },
                 new Coord { X = -1, Y = 0 },
@@ -589,32 +588,49 @@ namespace Server.Data.Generators
                 new Coord { X = 2, Y = 0 },
             };
 
-            // Wrap line below in while loop for 10 retries!
             Coord safePosition = null;
             PlacementStrategy strategy = PlacementStrategy.FarFromEdge;
-            Stopwatch sw = new Stopwatch();
-            sw.Start();
+            int retriesCount = 0;
+
             while (safePosition == null)
             {
                 safePosition = this.GetRandomSafePosition(mainRoom, strategy, edgeDistance, additionalRequiredSpace);
 
-                if (sw.Elapsed.TotalMilliseconds > 1500 && sw.Elapsed.TotalSeconds < 2500) //TODO: change this with 10 retries instead if elapsedtime.
+                if (retriesCount > 10 && retriesCount < 30)
                 {
                     strategy = PlacementStrategy.Random;
                 }
 
-                if (sw.Elapsed.TotalMilliseconds > 2500)
+                if (retriesCount > 30)
                 {
-                    //throw new Exception("Cannot find free space for object ...");
+                    // TODO: think about that happens when this exception is thrown
+                    // 1. Fail the map generation and return an error
+                    // 2. Ignore this object placement and stop the population process. This might result half-populated map
+                    // 3. Ignore this object placement and continue with next one.
+                    // 4. Completely scrap the current map generation and start new map generation process.
+                    throw new Exception("Cannot find free space for object ...");
                 }
+
+                retriesCount++;
             }
-            sw.Stop();
+
+            Dwelling startingCastle = new Dwelling()
+            {
+                Type = DwellingType.Castle,
+                // TODO: populate other properties
+            };
+            emptyMap.Dwellings = new List<Dwelling>();
+            emptyMap.Dwellings.Add(startingCastle);
 
             // TODO: Do this after every placement -> Reset TempRoomTiles and TempEdgeRoomTiles. Do not use mainRoom, but instead use random room.
             this.TempRoomTiles = new List<Coord>(mainRoom.Tiles);
             this.TempEdgeRoomTiles = new List<Coord>(mainRoom.EdgeTiles);
 
-            //
+            // 2. Place wood and stone mines -> min 2 - max 4
+
+            // 3. Place gold mine -> min 0 - max 2
+
+            // 4. Place other mines -> min 2 - max 4
 
             emptyMap.Matrix = this.PopulatedMatrix; // the map is updated with all non-walkable cells
             return emptyMap;

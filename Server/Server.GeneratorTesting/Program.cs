@@ -46,7 +46,7 @@ namespace Server.GeneratorTesting
                     try
                     {
                         stopwatch.Start();
-                        map = generator.GenerateMap(76, 50, 0, 1, 50, 50, 48);
+                        map = generator.GenerateMap(15, 15, 0, 1, 0, 0, 30);
                         map = generator.PopulateMap(map, 50, 50);
                         stopwatch.Stop();
                         generationIsFailing = false;
@@ -168,7 +168,7 @@ namespace Server.GeneratorTesting
             {
                 foreach (Coord coord in room.EdgeTiles)
                 {
-                    Console.SetCursorPosition(coord.Y, coord.X);
+                    Console.SetCursorPosition(coord.X, coord.Y);
                     Console.Write('\u25A0');
                 }
             }
@@ -178,7 +178,7 @@ namespace Server.GeneratorTesting
         private static void PaintHero(Map map, Random r)
         {
             Coord randomPositionInMainRoom = map.Rooms[0].Tiles[r.Next(map.Rooms[0].Tiles.Count)];
-            Console.SetCursorPosition(randomPositionInMainRoom.Y, randomPositionInMainRoom.X);
+            Console.SetCursorPosition(randomPositionInMainRoom.X, randomPositionInMainRoom.Y);
             Console.ForegroundColor = ConsoleColor.Red;
             Console.Write('\u2588');
             Console.ForegroundColor = ConsoleColor.White;
@@ -201,7 +201,7 @@ namespace Server.GeneratorTesting
 
                 foreach (Coord coord in room.Tiles)
                 {
-                    Console.SetCursorPosition(coord.Y, coord.X);
+                    Console.SetCursorPosition(coord.X, coord.Y);
                     //Console.Write('\u2591');
                     Console.Write('\u2588');
                 }

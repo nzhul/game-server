@@ -48,6 +48,8 @@ namespace Server.Data.Generators
 
         public List<Treasure> Treasures { get; set; }
 
+        public List<Dwelling> Dwellings { get; set; }
+
         public string Seed { get; set; }
     }
 }

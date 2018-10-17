@@ -2,8 +2,9 @@
 {
     public enum DwellingType
     {
-        WoodMine = 0,
-        StoneMine = 1,
+        Castle = 0,
+        WoodMine = 1,
+        StoneMine = 2,
         GoldMine = 3,
         TownPortal = 4,
         ExperienceShrine = 5,
