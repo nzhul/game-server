@@ -207,7 +207,7 @@ namespace Server.Data.Services.Implementation
 
             Hero newHero = new Hero();
             newHero.X = 10; // TODO: calculate this
-            newHero.Z = 10; // TODO: calculate this
+            newHero.Y = 10; // TODO: calculate this
             newHero.Name = heroName;
             newHero = _mapper.Map(blueprint, newHero);
             newHero.Region = region;

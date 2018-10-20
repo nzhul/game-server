@@ -51,5 +51,14 @@ namespace Server.Data.Generators
         public List<Dwelling> Dwellings { get; set; }
 
         public string Seed { get; set; }
+
+        public Map()
+        {
+            this.Dwellings = new List<Dwelling>();
+            this.Rooms = new List<Room>();
+            this.Heroes = new List<Hero>();
+            this.MonsterPacks = new List<MonsterPack>();
+            this.Treasures = new List<Treasure>();
+        }
     }
 }

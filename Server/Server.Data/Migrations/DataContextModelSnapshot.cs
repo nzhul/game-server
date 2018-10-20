@@ -179,7 +179,7 @@ namespace Server.Data.Migrations
 
                     b.Property<int>("X");
 
-                    b.Property<int>("Z");
+                    b.Property<int>("Y");
 
                     b.HasKey("Id");
 
@@ -313,6 +313,8 @@ namespace Server.Data.Migrations
 
                     b.Property<string>("Name");
 
+                    b.Property<string>("OccupiedTilesString");
+
                     b.Property<int>("Quantity");
 
                     b.Property<int?>("RegionId");
@@ -329,7 +331,7 @@ namespace Server.Data.Migrations
 
                     b.Property<int>("X");
 
-                    b.Property<int>("Z");
+                    b.Property<int>("Y");
 
                     b.HasKey("Id");
 
@@ -338,6 +340,39 @@ namespace Server.Data.Migrations
                     b.HasIndex("RegionId");
 
                     b.ToTable("MonsterPack");
+                });
+
+            modelBuilder.Entity("Server.Models.MapEntities.Treasure", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("CreatedAt");
+
+                    b.Property<string>("CreatedBy");
+
+                    b.Property<DateTime>("ModifiedAt");
+
+                    b.Property<string>("ModifiedBy");
+
+                    b.Property<string>("Name");
+
+                    b.Property<int>("Quantity");
+
+                    b.Property<int?>("RegionId");
+
+                    b.Property<int>("Type");
+
+                    b.Property<int>("X");
+
+                    b.Property<int>("Y");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RegionId");
+
+                    b.ToTable("Treasure");
                 });
 
             modelBuilder.Entity("Server.Models.Realms.Realm", b =>
@@ -733,6 +768,13 @@ namespace Server.Data.Migrations
 
                     b.HasOne("Server.Models.Realms.Region")
                         .WithMany("MonsterPacks")
+                        .HasForeignKey("RegionId");
+                });
+
+            modelBuilder.Entity("Server.Models.MapEntities.Treasure", b =>
+                {
+                    b.HasOne("Server.Models.Realms.Region")
+                        .WithMany("Treasures")
                         .HasForeignKey("RegionId");
                 });
 

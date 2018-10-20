@@ -102,6 +102,11 @@ namespace Server.Data
                 .HasField("_edgeTilesString")
                 .UsePropertyAccessMode(PropertyAccessMode.Property);
 
+            builder.Entity<Room>()
+                .Property(r => r.RoomSize)
+                .HasField("_roomSize")
+                .UsePropertyAccessMode(PropertyAccessMode.Property);
+
 
         }
 

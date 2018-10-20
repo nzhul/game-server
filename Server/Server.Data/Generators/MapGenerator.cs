@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using Server.Models;
 using Server.Models.MapEntities;
+using Server.Models.Realms;
 
 namespace Server.Data.Generators
 {
@@ -31,15 +31,17 @@ namespace Server.Data.Generators
         /// </summary>
         public int[,] PopulatedMatrix { get; private set; }
 
-        private List<Models.Realms.Room> PopulationRooms;
+        private List<Room> PopulationRooms;
 
         private List<Coord> TempRoomTiles;
 
         private List<Coord> TempEdgeRoomTiles;
 
-        private int FreeCellsCount;
-
         private Random rand;
+
+        private bool MapIsFullForDwellings;
+
+        private bool MapIsFullForMonstersOrTreasure;
 
         public int PassageRadius { get; private set; }
 
@@ -69,7 +71,7 @@ namespace Server.Data.Generators
             this.PassageRadius = passageRadius;
 
             Map map = new Map();
-            List<Room> rooms = new List<Room>();
+            List<TempRoom> rooms = new List<TempRoom>();
 
             //!!!TODO: Instead of filling the map randomly.
             // I can try to initialize the matrix with given hardcoded areas and then 
@@ -116,13 +118,13 @@ namespace Server.Data.Generators
             return map;
         }
 
-        private List<Models.Realms.Room> TransformRoomEntities(List<Room> rooms)
+        private List<Room> TransformRoomEntities(List<TempRoom> rooms)
         {
-            List<Models.Realms.Room> dbRooms = new List<Models.Realms.Room>();
+            List<Room> dbRooms = new List<Room>();
 
             foreach (var room in rooms)
             {
-                Models.Realms.Room newRoom = new Models.Realms.Room();
+                Room newRoom = new Room();
                 newRoom.RoomSize = room.roomSize;
                 newRoom.IsMainRoom = room.isMainRoom;
                 newRoom.IsAccessibleFromMainRoom = room.isAccessibleFromMainRoom;
@@ -137,7 +139,7 @@ namespace Server.Data.Generators
         /// <summary>
         /// Returns a collection of survivingRooms for the map
         /// </summary>
-        List<Room> ProcessMap(int minWallSize, int minRoomSize)
+        List<TempRoom> ProcessMap(int minWallSize, int minRoomSize)
         {
             List<List<Coord>> wallRegions = GetRegions(1);
 
@@ -154,7 +156,7 @@ namespace Server.Data.Generators
 
             List<List<Coord>> roomRegions = GetRegions(0);
 
-            List<Room> survivingRooms = new List<Room>();
+            List<TempRoom> survivingRooms = new List<TempRoom>();
 
             foreach (List<Coord> roomRegion in roomRegions)
             {
@@ -167,7 +169,7 @@ namespace Server.Data.Generators
                 }
                 else
                 {
-                    survivingRooms.Add(new Room(roomRegion, this.Matrix));
+                    survivingRooms.Add(new TempRoom(roomRegion, this.Matrix));
                 }
             }
 
@@ -181,14 +183,14 @@ namespace Server.Data.Generators
             return survivingRooms;
         }
 
-        void ConnectClosestRooms(List<Room> allRooms, bool forceAccessibilityFromMainRoom = false)
+        void ConnectClosestRooms(List<TempRoom> allRooms, bool forceAccessibilityFromMainRoom = false)
         {
-            List<Room> roomListA = new List<Room>();
-            List<Room> roomListB = new List<Room>();
+            List<TempRoom> roomListA = new List<TempRoom>();
+            List<TempRoom> roomListB = new List<TempRoom>();
 
             if (forceAccessibilityFromMainRoom)
             {
-                foreach (Room room in allRooms)
+                foreach (TempRoom room in allRooms)
                 {
                     if (room.isAccessibleFromMainRoom)
                     {
@@ -209,11 +211,11 @@ namespace Server.Data.Generators
             int bestDistance = 0;
             Coord bestTileA = new Coord();
             Coord bestTileB = new Coord();
-            Room bestRoomA = new Room();
-            Room bestRoomB = new Room();
+            TempRoom bestRoomA = new TempRoom();
+            TempRoom bestRoomB = new TempRoom();
             bool possibleConnectionFound = false;
 
-            foreach (Room roomA in roomListA)
+            foreach (TempRoom roomA in roomListA)
             {
                 if (!forceAccessibilityFromMainRoom)
                 {
@@ -224,7 +226,7 @@ namespace Server.Data.Generators
                     }
                 }
 
-                foreach (Room roomB in roomListB)
+                foreach (TempRoom roomB in roomListB)
                 {
                     if (roomA == roomB || roomA.IsConnected(roomB))
                     {
@@ -277,9 +279,9 @@ namespace Server.Data.Generators
         /// <param name="roomB">Second room</param>
         /// <param name="tileA">Closest tile from room A</param>
         /// <param name="tileB">Closest tile from room B</param>
-        void CreatePassage(Room roomA, Room roomB, Coord tileA, Coord tileB)
+        void CreatePassage(TempRoom roomA, TempRoom roomB, Coord tileA, Coord tileB)
         {
-            Room.ConnectRooms(roomA, roomB);
+            TempRoom.ConnectRooms(roomA, roomB);
             List<Coord> line = GetLine(tileA, tileB);
 
             foreach (Coord c in line)
@@ -536,8 +538,9 @@ namespace Server.Data.Generators
             this.rand = new Random(this.Seed.GetHashCode());
             this.PopulatedMatrix = emptyMap.Matrix;
             this.PopulationRooms = emptyMap.Rooms;
-            this.FreeCellsCount = this.CountFreeCoords(this.PopulationRooms);
-            int minimumFreeCellsLeft = (this.FreeCellsCount * objectDencity) / 100;
+            //this.FreeCellsCount = this.CountFreeCoords(this.PopulationRooms);
+            //int minimumFreeCellsLeft = (this.FreeCellsCount * objectDencity) / 100;
+            //this.PopulationRooms = this.CalculateInitialFreeCellCountForEveryRoom(this.PopulationRooms);
 
             // contains map walls + non-walkable cells and interactables like monsters, gold, wood, stone and other
             // At the end we will return to the client an matrix with only 0, 1 and 2.
@@ -562,46 +565,148 @@ namespace Server.Data.Generators
 
             //1. Place player hero/castle
             var mainRoom = this.PopulationRooms[0];
-            this.TempRoomTiles = new List<Coord>(mainRoom.Tiles);
-            this.TempEdgeRoomTiles = new List<Coord>(mainRoom.EdgeTiles);
-            int edgeDistance = 4;
+            ResetTempVariables(mainRoom);
 
-            //  □□□
-            // □□□□□
-            // □□■□□
-            List<Coord> additionalRequiredSpace = new List<Coord>()
+            Coord castlePosition = this.TryGetSafePosition(mainRoom, PlacementStrategy.FarFromEdge, 4, SpaceRequirements.Dwellings[DwellingType.Castle]);
+            this.MarkPositionAsOccupied(castlePosition, SpaceRequirements.Dwellings[DwellingType.Castle], mainRoom);
+            CreateDwelling("CastleName", emptyMap, castlePosition, DwellingType.Castle);
+
+            // 2. Place wood mines -> min 2 - max 4
+            PlaceDwelling(emptyMap, "WoodMine", DwellingType.WoodMine, 2, 3);
+
+            PlaceDwelling(emptyMap, "StoneMine", DwellingType.StoneMine, 2, 3);
+
+            // TODO: don't forget the flood fill alg.
+            // -> after getting the object position -> create a copy of PopulationRooms and update it with new object
+            // after that -> run flood fill. 
+            // If there are more than one (1) separate rooms.
+            // discard the position and try again to find safe position.
+            // repeat this process untill safe position is found.
+
+
+            // 3. Place gold mine -> min 0 - max 2
+            if (!MapIsFullForDwellings)
             {
-                new Coord { X = -1, Y = -2 },
-                new Coord { X = 0, Y = -2 },
-                new Coord { X = 1, Y = -2 },
 
-                new Coord { X = -2, Y = -1 },
-                new Coord { X = -1, Y = -1 },
-                new Coord { X = 0, Y = -1 },
-                new Coord { X = 1, Y = -1 },
-                new Coord { X = 2, Y = -1 },
+            }
 
-                new Coord { X = -2, Y = 0 },
-                new Coord { X = -1, Y = 0 },
-                new Coord { X = 0, Y = 0 }, // <- this is the contact point
-                new Coord { X = 1, Y = 0 },
-                new Coord { X = 2, Y = 0 },
+            // 4. Place other mines -> min 2 - max 4
+
+            if (!MapIsFullForDwellings)
+            {
+
+            }
+
+            // 5. Place monsters
+
+            if (!MapIsFullForMonstersOrTreasure)
+            {
+                for (int i = 0; i < 100; i++)
+                {
+                    var availibleRooms = this.PopulationRooms.Where(r => r.AvailibleForMonsterOrTreasurePlacement == true).ToList();
+                    if (availibleRooms.Count == 0)
+                    {
+                        MapIsFullForMonstersOrTreasure = true;
+                        break;
+                    }
+
+                    Room randomRoom = this.GetRandomRoom(availibleRooms); //TODO: keep in mind that there might not be availible rooms and this can fail!
+                    this.ResetTempVariables(randomRoom);
+
+                    var monsterType = MonsterType.Spider;
+                    var spaceRequired = SpaceRequirements.Monsters[monsterType];
+                    Coord monsterPosition = this.TryGetSafePosition(randomRoom, PlacementStrategy.Random, 2, spaceRequired);
+                    this.MarkPositionAsOccupied(monsterPosition, spaceRequired, randomRoom);
+                    CreateMonster("Monster", emptyMap, monsterPosition, monsterType);
+                }
+            }
+
+            emptyMap.Matrix = this.PopulatedMatrix; // the map is updated with all non-walkable cells
+            return emptyMap;
+        }
+
+        private void CreateMonster(string name, Map emptyMap, Coord position, MonsterType type)
+        {
+            MonsterPack monster = new MonsterPack()
+            {
+                Type = MonsterType.Spider,
+                X = position.X,
+                Y = position.Y,
+                Name = name + DateTime.Now.Ticks.ToString(),
+                OccupiedTilesString = this.StringifyCoordCollection(this.ApplyPointShift(position, SpaceRequirements.Monsters[type])),
+                Disposition = Disposition.Savage,
+                // ItemReward = this.GetRandomLevel1Item(); - call cached version of database for ItemBluePrint with the required level
+                Quantity = rand.Next(5, 10),
+                RewardType = TreasureType.Gold,
             };
 
+            emptyMap.MonsterPacks.Add(monster);
+        }
+
+        private void PlaceDwelling(Map emptyMap, string name, DwellingType type, int minCount, int maxCount)
+        {
+            int woodMinesCount = rand.Next(minCount, maxCount + 1);
+            for (int i = 0; i < woodMinesCount; i++)
+            {
+                var availibleRooms = this.PopulationRooms.Where(r => r.AvailibleForDwellingPlacement == true).ToList();
+                if (availibleRooms.Count == 0)
+                {
+                    MapIsFullForDwellings = true;
+                    break;
+                }
+
+                Room randomRoom = this.GetRandomRoom(availibleRooms);
+                this.ResetTempVariables(randomRoom);
+
+                var spaceRequirement = SpaceRequirements.Dwellings[type];
+                Coord dwellingPosition = this.TryGetSafePosition(randomRoom, PlacementStrategy.Random, 2, spaceRequirement);
+                this.MarkPositionAsOccupied(dwellingPosition, spaceRequirement, randomRoom);
+                CreateDwelling(name, emptyMap, dwellingPosition, type);
+            }
+        }
+
+        private void CreateDwelling(string name, Map emptyMap, Coord position, DwellingType type)
+        {
+            Dwelling dwelling = new Dwelling()
+            {
+                Type = type,
+                X = position.X,
+                Y = position.Y,
+                Name = name + DateTime.Now.Ticks.ToString(),
+                //OwnerId = 1, //TODO: pass this as parameter in MapGeneration function.
+                OccupiedTilesString = this.StringifyCoordCollection(this.ApplyPointShift(position, SpaceRequirements.Dwellings[type])),
+            };
+
+            emptyMap.Dwellings.Add(dwelling);
+        }
+
+        private void MarkPositionAsOccupied(Coord safePosition, List<Coord> additionalRequiredSpace, Room room)
+        {
+            foreach (Coord offset in additionalRequiredSpace)
+            {
+                Coord updatedCoord = new Coord(safePosition.X + offset.X, safePosition.Y + offset.Y);
+                this.PopulatedMatrix[updatedCoord.X, updatedCoord.Y] = 3;
+                room.FreeCellsLeft--;
+            }
+            this.PopulatedMatrix[safePosition.X, safePosition.Y] = 2;
+            room.FreeCellsLeft--;
+        }
+
+        private Coord TryGetSafePosition(Room room, PlacementStrategy strategy, int edgeDistance, List<Coord> additionalRequiredSpace)
+        {
             Coord safePosition = null;
-            PlacementStrategy strategy = PlacementStrategy.FarFromEdge;
             int retriesCount = 0;
 
             while (safePosition == null)
             {
-                safePosition = this.GetRandomSafePosition(mainRoom, strategy, edgeDistance, additionalRequiredSpace);
+                safePosition = this.GetRandomSafePosition(room, strategy, edgeDistance, additionalRequiredSpace);
 
-                if (retriesCount > 10 && retriesCount < 30)
+                if (retriesCount > 10 && retriesCount < 60)
                 {
                     strategy = PlacementStrategy.Random;
                 }
 
-                if (retriesCount > 30)
+                if (retriesCount > 60)
                 {
                     // TODO: think about that happens when this exception is thrown
                     // 1. Fail the map generation and return an error
@@ -614,29 +719,28 @@ namespace Server.Data.Generators
                 retriesCount++;
             }
 
-            Dwelling startingCastle = new Dwelling()
-            {
-                Type = DwellingType.Castle,
-                // TODO: populate other properties
-            };
-            emptyMap.Dwellings = new List<Dwelling>();
-            emptyMap.Dwellings.Add(startingCastle);
-
-            // TODO: Do this after every placement -> Reset TempRoomTiles and TempEdgeRoomTiles. Do not use mainRoom, but instead use random room.
-            this.TempRoomTiles = new List<Coord>(mainRoom.Tiles);
-            this.TempEdgeRoomTiles = new List<Coord>(mainRoom.EdgeTiles);
-
-            // 2. Place wood and stone mines -> min 2 - max 4
-
-            // 3. Place gold mine -> min 0 - max 2
-
-            // 4. Place other mines -> min 2 - max 4
-
-            emptyMap.Matrix = this.PopulatedMatrix; // the map is updated with all non-walkable cells
-            return emptyMap;
+            return safePosition;
         }
 
-        private int CountFreeCoords(List<Models.Realms.Room> populationRooms)
+        private void ResetTempVariables(Room room)
+        {
+            this.TempRoomTiles = new List<Coord>(room.Tiles);
+            this.TempEdgeRoomTiles = new List<Coord>(room.EdgeTiles);
+        }
+
+        private List<Coord> ApplyPointShift(Coord position, List<Coord> list)
+        {
+            List<Coord> updatedList = new List<Coord>();
+
+            foreach (var item in list)
+            {
+                updatedList.Add(new Coord(position.X + item.X, position.Y + item.Y));
+            }
+
+            return updatedList;
+        }
+
+        private int CountFreeCoords(List<Room> populationRooms)
         {
             int count = 0;
 
@@ -656,51 +760,35 @@ namespace Server.Data.Generators
         /// <param name="edgeDistance">Distance to the nearest edge or other object</param>
         /// <param name="additionalRequiredSpace">Used when object require more than once cell space to be placed</param>
         /// <returns>Cotanct point</returns>
-        private Coord GetRandomSafePosition(Models.Realms.Room room, PlacementStrategy placementStrategy, int edgeDistance, List<Coord> additionalRequiredSpace)
+        private Coord GetRandomSafePosition(Room room, PlacementStrategy placementStrategy, int edgeDistance, List<Coord> additionalRequiredSpace)
         {
-            Coord randomRoomPosition = room.Tiles[rand.Next(room.Tiles.Count)];
+            Coord position = room.Tiles[rand.Next(room.Tiles.Count)];
             bool positionIsSafe = false;
-            bool shouldRemoveFromTemp = false;
 
             switch (placementStrategy)
             {
                 case PlacementStrategy.Random:
-                    if (!this.IsOnEdge(this.TempEdgeRoomTiles, randomRoomPosition) && !IsColliding(randomRoomPosition, additionalRequiredSpace))
+                    if (!this.IsOnEdge(this.TempEdgeRoomTiles, position) && !IsColliding(position, additionalRequiredSpace))
                     {
                         positionIsSafe = true;
-                        shouldRemoveFromTemp = true;
                     }
                     break;
                 case PlacementStrategy.NearEdge:
                     break;
                 case PlacementStrategy.FarFromEdge:
-                    if (IsFarFromEdge(randomRoomPosition, edgeDistance, CheckDirection.All) && !IsColliding(randomRoomPosition, additionalRequiredSpace))
+                    if (IsFarFromEdge(position, edgeDistance, CheckDirection.All) && !IsColliding(position, additionalRequiredSpace))
                     {
                         positionIsSafe = true;
-                        shouldRemoveFromTemp = true;
                     }
                     break;
                 default:
                     break;
             }
 
-            if (shouldRemoveFromTemp)
-            {
-                this.TempRoomTiles.RemoveAll(t => t.X == randomRoomPosition.X && t.Y == randomRoomPosition.Y);
-            }
-
             if (positionIsSafe)
             {
-                foreach (Coord offset in additionalRequiredSpace)
-                {
-                    Coord updatedCoord = new Coord(randomRoomPosition.X + offset.X, randomRoomPosition.Y + offset.Y);
-                    this.PopulatedMatrix[updatedCoord.X, updatedCoord.Y] = 3;
-                    this.FreeCellsCount--;
-                }
-                this.PopulatedMatrix[randomRoomPosition.X, randomRoomPosition.Y] = 2;
-                this.FreeCellsCount--;
-
-                return randomRoomPosition;
+                this.TempRoomTiles.RemoveAll(t => t.X == position.X && t.Y == position.Y);
+                return position;
             }
 
             return null;
@@ -848,31 +936,29 @@ namespace Server.Data.Generators
             return colliding;
         }
 
-        private Models.Realms.Room GetRandomRoom(List<Models.Realms.Room> rooms)
+        private Room GetRandomRoom(List<Room> rooms)
         {
-            Random r = new Random(this.Seed.GetHashCode());
-
-            return null;
+            return rooms[rand.Next(rooms.Count)];
         }
 
-        private class Room : IComparable<Room>
+        private class TempRoom : IComparable<TempRoom>
         {
             public List<Coord> tiles;
             public List<Coord> edgeTiles;
-            public List<Room> connectedRooms;
+            public List<TempRoom> connectedRooms;
             public int roomSize;
             public bool isAccessibleFromMainRoom;
             public bool isMainRoom;
 
-            public Room()
+            public TempRoom()
             {
             }
 
-            public Room(List<Coord> tiles, int[,] map)
+            public TempRoom(List<Coord> tiles, int[,] map)
             {
                 this.tiles = tiles;
                 this.roomSize = tiles.Count;
-                connectedRooms = new List<Room>();
+                connectedRooms = new List<TempRoom>();
                 edgeTiles = new List<Coord>();
 
                 foreach (Coord tile in tiles)
@@ -898,14 +984,14 @@ namespace Server.Data.Generators
                 if (!isAccessibleFromMainRoom)
                 {
                     isAccessibleFromMainRoom = true;
-                    foreach (Room connectedRoom in connectedRooms)
+                    foreach (TempRoom connectedRoom in connectedRooms)
                     {
                         connectedRoom.SetAccessibleFromMainRoom();
                     }
                 }
             }
 
-            public static void ConnectRooms(Room roomA, Room roomB)
+            public static void ConnectRooms(TempRoom roomA, TempRoom roomB)
             {
                 if (roomA.isAccessibleFromMainRoom)
                 {
@@ -920,12 +1006,12 @@ namespace Server.Data.Generators
                 roomB.connectedRooms.Add(roomA);
             }
 
-            public int CompareTo(Room other)
+            public int CompareTo(TempRoom other)
             {
                 return other.roomSize.CompareTo(this.roomSize);
             }
 
-            public bool IsConnected(Room otherRoom)
+            public bool IsConnected(TempRoom otherRoom)
             {
                 return connectedRooms.Contains(otherRoom);
             }

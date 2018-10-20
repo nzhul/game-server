@@ -9,7 +9,7 @@
 
         public int X { get; set; }
 
-        public int Z { get; set; }
+        public int Y { get; set; }
 
         // contact point -> Coord
         // occupied/blocked points -> List<Coord>

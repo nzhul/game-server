@@ -418,7 +418,7 @@ namespace Server.Data.Migrations
                     ModifiedAt = table.Column<DateTime>(nullable: false),
                     Name = table.Column<string>(nullable: true),
                     X = table.Column<int>(nullable: false),
-                    Z = table.Column<int>(nullable: false),
+                    Y = table.Column<int>(nullable: false),
                     LastActivity = table.Column<DateTime>(nullable: false),
                     TimePlayedTicks = table.Column<long>(nullable: false),
                     Level = table.Column<int>(nullable: false),
@@ -472,7 +472,7 @@ namespace Server.Data.Migrations
                     ModifiedAt = table.Column<DateTime>(nullable: false),
                     Name = table.Column<string>(nullable: true),
                     X = table.Column<int>(nullable: false),
-                    Z = table.Column<int>(nullable: false),
+                    Y = table.Column<int>(nullable: false),
                     Type = table.Column<int>(nullable: false),
                     Quantity = table.Column<int>(nullable: false),
                     Disposition = table.Column<int>(nullable: false),
@@ -481,6 +481,7 @@ namespace Server.Data.Migrations
                     ItemRewardId = table.Column<int>(nullable: true),
                     TroopsRewardType = table.Column<int>(nullable: false),
                     TroopsRewardQuantity = table.Column<int>(nullable: false),
+                    OccupiedTilesString = table.Column<string>(nullable: true),
                     RegionId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
@@ -522,6 +523,34 @@ namespace Server.Data.Migrations
                     table.PrimaryKey("PK_Room", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Room_Regions_RegionId",
+                        column: x => x.RegionId,
+                        principalTable: "Regions",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Treasure",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    CreatedBy = table.Column<string>(nullable: true),
+                    CreatedAt = table.Column<DateTime>(nullable: false),
+                    ModifiedBy = table.Column<string>(nullable: true),
+                    ModifiedAt = table.Column<DateTime>(nullable: false),
+                    Name = table.Column<string>(nullable: true),
+                    X = table.Column<int>(nullable: false),
+                    Y = table.Column<int>(nullable: false),
+                    Type = table.Column<int>(nullable: false),
+                    Quantity = table.Column<int>(nullable: false),
+                    RegionId = table.Column<int>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Treasure", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Treasure_Regions_RegionId",
                         column: x => x.RegionId,
                         principalTable: "Regions",
                         principalColumn: "Id",
@@ -688,6 +717,11 @@ namespace Server.Data.Migrations
                 name: "IX_Room_RegionId",
                 table: "Room",
                 column: "RegionId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Treasure_RegionId",
+                table: "Treasure",
+                column: "RegionId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -724,6 +758,9 @@ namespace Server.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "Room");
+
+            migrationBuilder.DropTable(
+                name: "Treasure");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
