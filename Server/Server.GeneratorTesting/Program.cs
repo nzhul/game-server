@@ -46,8 +46,8 @@ namespace Server.GeneratorTesting
                     try
                     {
                         stopwatch.Start();
-                        map = generator.GenerateMap(36, 36, 0, 1, 0, 0, 30);
-                        //map = generator.GenerateMap(100, 76, 0, 1, 100, 10, 45);
+                        //map = generator.GenerateMap(36, 36, 0, 1, 0, 0, 30);
+                        map = generator.GenerateMap(100, 76, 0, 1, 100, 10, 45);
                         map = generator.PopulateMap(map, 50, 50);
                         stopwatch.Stop();
                         generationIsFailing = false;

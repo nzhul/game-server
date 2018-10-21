@@ -38,7 +38,7 @@ namespace Server.Data.Services.Implementation
                 .Include(r => r.Regions).ThenInclude(c => c.Rooms) // Do not wonder why you cannot see nested entities :)
                 .Include(r => r.Regions).ThenInclude(c => c.Heroes) // Not sure about this duplication ?
                 .Include(r => r.Regions).ThenInclude(c => c.Castles)
-                .Include(r => r.Regions).ThenInclude(c => c.MonsterPacks) 
+                .Include(r => r.Regions).ThenInclude(c => c.MonsterPacks)
                 .FirstOrDefaultAsync(r => r.Id == id);
         }
 
@@ -119,8 +119,7 @@ namespace Server.Data.Services.Implementation
         public async Task<Avatar> GetUserAvatarForRealm(int realmId, int userId)
         {
             var avatars = await _context.Avatars
-                .Include(a => a.Heroes)
-                .ThenInclude(x => x.Blueprint)
+                .Include(a => a.Heroes).ThenInclude(x => x.Blueprint)
                 .FirstOrDefaultAsync(a => a.RealmId == realmId && a.UserId == userId);
 
             if (avatars != null)
@@ -206,8 +205,8 @@ namespace Server.Data.Services.Implementation
             // do the same for player castle.
 
             Hero newHero = new Hero();
-            newHero.X = 10; // TODO: calculate this
-            newHero.Y = 10; // TODO: calculate this
+            newHero.X = region.InitialHeroPosition.X;
+            newHero.Y = region.InitialHeroPosition.Y;
             newHero.Name = heroName;
             newHero = _mapper.Map(blueprint, newHero);
             newHero.Region = region;
@@ -242,6 +241,10 @@ namespace Server.Data.Services.Implementation
             newRegion.Level = level;
             newRegion.MatrixString = generatedMap.MatrixString;
             newRegion.Rooms = generatedMap.Rooms;
+            newRegion.Dwellings = generatedMap.Dwellings;
+            newRegion.MonsterPacks = generatedMap.MonsterPacks;
+            newRegion.Treasures = generatedMap.Treasures;
+            newRegion.InitialHeroPosition = generatedMap.InitialHeroPosition;
 
             _context.Regions.Add(newRegion);
             await _context.SaveChangesAsync();
@@ -264,6 +267,7 @@ namespace Server.Data.Services.Implementation
                 try
                 {
                     generatedMap = generator.GenerateMap(width, height);
+                    generatedMap = generator.PopulateMap(generatedMap, 50, 50);
                     generationIsFailing = false;
                 }
                 catch (Exception ex)
@@ -358,8 +362,12 @@ namespace Server.Data.Services.Implementation
         public async Task<IList<Region>> GetRegions(int[] regionIds)
         {
             var regions = await _context.Regions
-                .Include(r => r.Heroes)
                 .Include(r => r.Rooms)
+                .Include(r => r.Heroes)
+                .Include(r => r.Castles)
+                .Include(r => r.MonsterPacks)
+                .Include(r => r.Treasures)
+                .Include(r => r.Dwellings)
                 .Where(r => regionIds.Contains(r.Id))
                 .ToListAsync();
 

@@ -134,7 +134,6 @@ namespace Server.Api.Controllers
             if (regions != null && regions.Count > 0)
             {
                 IList<RegionDetailedDto> regionsToReturn = _mapper.Map<IList<Region>, IList<RegionDetailedDto>>(regions);
-                //regionsToReturn = this.ManualMatrixMap(regions, regionsToReturn);
 
                 return Ok(regionsToReturn);
             }

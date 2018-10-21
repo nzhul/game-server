@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Server.Models.MapEntities;
 
 namespace Server.Api.Models.View.Realms
 {
@@ -17,5 +18,11 @@ namespace Server.Api.Models.View.Realms
         public ICollection<RoomDetailedDto> Rooms { get; set; }
 
         public ICollection<HeroDetailedDto> Heroes { get; set; }
+
+        public ICollection<MonsterPack> MonsterPacks { get; set; }
+
+        public ICollection<Treasure> Treasures { get; set; }
+
+        public ICollection<Dwelling> Dwellings { get; set; }
     }
 }

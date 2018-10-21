@@ -293,6 +293,41 @@ namespace Server.Data.Migrations
                     b.ToTable("ItemBlueprints");
                 });
 
+            modelBuilder.Entity("Server.Models.MapEntities.Dwelling", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("CreatedAt");
+
+                    b.Property<string>("CreatedBy");
+
+                    b.Property<DateTime>("ModifiedAt");
+
+                    b.Property<string>("ModifiedBy");
+
+                    b.Property<string>("Name");
+
+                    b.Property<string>("OccupiedTilesString");
+
+                    b.Property<int>("OwnerId");
+
+                    b.Property<int?>("RegionId");
+
+                    b.Property<int>("Type");
+
+                    b.Property<int>("X");
+
+                    b.Property<int>("Y");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RegionId");
+
+                    b.ToTable("Dwelling");
+                });
+
             modelBuilder.Entity("Server.Models.MapEntities.MonsterPack", b =>
                 {
                     b.Property<int>("Id")
@@ -758,6 +793,13 @@ namespace Server.Data.Migrations
                         .WithMany("Items")
                         .HasForeignKey("HeroId")
                         .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Server.Models.MapEntities.Dwelling", b =>
+                {
+                    b.HasOne("Server.Models.Realms.Region")
+                        .WithMany("Dwellings")
+                        .HasForeignKey("RegionId");
                 });
 
             modelBuilder.Entity("Server.Models.MapEntities.MonsterPack", b =>

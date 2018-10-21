@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Server.Data.Migrations
 {
-    public partial class Initial : Migration
+    public partial class init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -407,6 +407,35 @@ namespace Server.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Dwelling",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    CreatedBy = table.Column<string>(nullable: true),
+                    CreatedAt = table.Column<DateTime>(nullable: false),
+                    ModifiedBy = table.Column<string>(nullable: true),
+                    ModifiedAt = table.Column<DateTime>(nullable: false),
+                    Name = table.Column<string>(nullable: true),
+                    X = table.Column<int>(nullable: false),
+                    Y = table.Column<int>(nullable: false),
+                    Type = table.Column<int>(nullable: false),
+                    OwnerId = table.Column<int>(nullable: false),
+                    OccupiedTilesString = table.Column<string>(nullable: true),
+                    RegionId = table.Column<int>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Dwelling", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Dwelling_Regions_RegionId",
+                        column: x => x.RegionId,
+                        principalTable: "Regions",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Heroes",
                 columns: table => new
                 {
@@ -652,6 +681,11 @@ namespace Server.Data.Migrations
                 column: "RegionId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Dwelling_RegionId",
+                table: "Dwelling",
+                column: "RegionId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Heroes_AvatarId",
                 table: "Heroes",
                 column: "AvatarId");
@@ -743,6 +777,9 @@ namespace Server.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "Castles");
+
+            migrationBuilder.DropTable(
+                name: "Dwelling");
 
             migrationBuilder.DropTable(
                 name: "Items");

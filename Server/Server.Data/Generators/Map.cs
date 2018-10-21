@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Text;
+using Server.Models;
 using Server.Models.Heroes;
 using Server.Models.MapEntities;
 using Server.Models.Realms;
@@ -51,6 +52,8 @@ namespace Server.Data.Generators
         public List<Dwelling> Dwellings { get; set; }
 
         public string Seed { get; set; }
+
+        public Coord InitialHeroPosition { get; set; }
 
         public Map()
         {

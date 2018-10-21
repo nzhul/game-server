@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using Server.Models.Parsers;
-using Server.Models.Users;
 
 namespace Server.Models.MapEntities
 {
@@ -10,8 +9,6 @@ namespace Server.Models.MapEntities
         public DwellingType Type { get; set; }
 
         public int OwnerId { get; set; }
-
-        public Avatar Owner { get; set; }
 
         private string _occupiedTilesString;
 

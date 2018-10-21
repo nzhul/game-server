@@ -28,6 +28,8 @@ namespace Server.Models.Realms
 
         public ICollection<Treasure> Treasures { get; set; }
 
+        public ICollection<Dwelling> Dwellings { get; set; }
+
         public Region()
         {
             this.Rooms = new Collection<Room>();
@@ -35,6 +37,7 @@ namespace Server.Models.Realms
             this.Castles = new Collection<Castle>();
             this.MonsterPacks = new Collection<MonsterPack>();
             this.Treasures = new Collection<Treasure>();
+            this.Dwellings = new Collection<Dwelling>();
         }
 
 
@@ -76,6 +79,9 @@ namespace Server.Models.Realms
 
             return parsedMatrix;
         }
+
+        [NotMapped]
+        public Coord InitialHeroPosition { get; set; }
 
         #endregion
     }
