@@ -57,7 +57,29 @@ namespace Server.Api.Controllers
                     new { controller = "Users", id = userToCreate.Id }, userToReturn);
             }
 
-            return BadRequest(result.Errors);
+            ErrorModel errorModel = this.BuildErrorModel(result.Errors);
+
+            return BadRequest(errorModel); // LowerCase problem probably
+        }
+
+        private ErrorModel BuildErrorModel(IEnumerable<IdentityError> errors)
+        {
+            ErrorModel model = new ErrorModel();
+
+            foreach (var error in errors)
+            {
+                if (error.Code.IndexOf("UserName") > -1)
+                {
+                    model.Username.Add(error.Description);
+                }
+
+                if (error.Code.IndexOf("Email") > -1)
+                {
+                    model.Email.Add(error.Description);
+                }
+            }
+
+            return model;
         }
 
         [HttpPost("login")]
