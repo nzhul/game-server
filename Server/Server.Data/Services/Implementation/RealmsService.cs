@@ -224,16 +224,16 @@ namespace Server.Data.Services.Implementation
             switch (level)
             {
                 case 1:
-                    width = 90;
-                    height = 60;
+                    width = 50;
+                    height = 30;
                     break;
                 default:
-                    width = 90;
-                    height = 60;
+                    width = 50;
+                    height = 30;
                     break;
             }
 
-            Map generatedMap = TryGenerateMap(width, height);
+            Map generatedMap = TryGenerateMap(height, width); // width and height are swapped on purpose.
 
             Region newRegion = new Region();
             newRegion.Name = name;

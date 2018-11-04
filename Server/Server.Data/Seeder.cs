@@ -147,7 +147,9 @@ namespace Server.Data
 
                 var adminUser = new User
                 {
-                    UserName = "nzhul"
+                    UserName = "nzhul",
+                    Gender = "male",
+                    Email = "dobromirivanov1@gmail.com"
                 };
 
                 IdentityResult result = _userManager.CreateAsync(adminUser, "password").Result;

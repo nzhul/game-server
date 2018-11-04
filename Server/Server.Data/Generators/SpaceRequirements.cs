@@ -16,47 +16,47 @@ namespace Server.Data.Generators
             // □□■□□
             Dwellings.Add(DwellingType.Castle, new List<Coord>()
             {
-                new Coord { X = -1, Y = -2 },
-                new Coord { X = 0, Y = -2 },
-                new Coord { X = 1, Y = -2 },
-
-                new Coord { X = -2, Y = -1 },
-                new Coord { X = -1, Y = -1 },
-                new Coord { X = 0, Y = -1 },
-                new Coord { X = 1, Y = -1 },
                 new Coord { X = 2, Y = -1 },
-
-                new Coord { X = -2, Y = 0 },
-                new Coord { X = -1, Y = 0 },
-                new Coord { X = 0, Y = 0 },
-                new Coord { X = 1, Y = 0 },
                 new Coord { X = 2, Y = 0 },
+                new Coord { X = 2, Y = 1 },
+
+                new Coord { X = 1, Y = -2 },
+                new Coord { X = 1, Y = -1 },
+                new Coord { X = 1, Y = 0 },
+                new Coord { X = 1, Y = 1 },
+                new Coord { X = 1, Y = 2 },
+
+                new Coord { X = 0, Y = -2 },
+                new Coord { X = 0, Y = -1 },
+                new Coord { X = 0, Y = 0 },
+                new Coord { X = 0, Y = 1 },
+                new Coord { X = 0, Y = 2 },
             });
 
             // □□□
             // □■□
             Dwellings.Add(DwellingType.WoodMine, new List<Coord>()
             {
-                new Coord { X = -1, Y = -1 },
-                new Coord { X = 0, Y = -1 },
                 new Coord { X = 1, Y = -1 },
-
-                new Coord { X = -1, Y = 0 },
-                new Coord { X = 0, Y = 0 },
                 new Coord { X = 1, Y = 0 },
+                new Coord { X = 1, Y = 1 },
+
+                new Coord { X = 0, Y = -1 },
+                new Coord { X = 0, Y = 0 },
+                new Coord { X = 0, Y = 1 },
             });
 
             // □□□
             // □■□
             Dwellings.Add(DwellingType.StoneMine, new List<Coord>()
             {
-                new Coord { X = -1, Y = -1 },
-                new Coord { X = 0, Y = -1 },
                 new Coord { X = 1, Y = -1 },
-
-                new Coord { X = -1, Y = 0 },
-                new Coord { X = 0, Y = 0 },
                 new Coord { X = 1, Y = 0 },
+                new Coord { X = 1, Y = 1 },
+
+                new Coord { X = 0, Y = -1 },
+                new Coord { X = 0, Y = 0 },
+                new Coord { X = 0, Y = 1 },
             });
 
 
