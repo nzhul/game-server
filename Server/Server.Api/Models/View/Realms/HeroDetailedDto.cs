@@ -6,6 +6,10 @@ namespace Server.Api.Models.View.Realms
     {
         public int Id { get; set; }
 
+        public int X { get; set; }
+
+        public int Y { get; set; }
+
         public string Name { get; set; }
 
         public DateTime LastActivity { get; set; }

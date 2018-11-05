@@ -570,7 +570,7 @@ namespace Server.Data.Generators
             Coord castlePosition = this.TryGetSafePosition(mainRoom, PlacementStrategy.FarFromEdge, 4, SpaceRequirements.Dwellings[DwellingType.Castle]);
             this.MarkPositionAsOccupied(castlePosition, SpaceRequirements.Dwellings[DwellingType.Castle], mainRoom);
             CreateDwelling("CastleName", emptyMap, castlePosition, DwellingType.Castle);
-            emptyMap.InitialHeroPosition = castlePosition;
+            emptyMap.InitialHeroPosition = new Coord(castlePosition.X - 1, castlePosition.Y);
 
             // 2. Place wood mines -> min 2 - max 4
             PlaceDwelling(emptyMap, "WoodMine", DwellingType.WoodMine, 2, 3);
