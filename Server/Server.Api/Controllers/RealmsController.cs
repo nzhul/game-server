@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -142,15 +141,5 @@ namespace Server.Api.Controllers
                 return BadRequest("Cannot query specified regions!");
             }
         }
-
-        //private IList<RegionDetailedDto> ManualMatrixMap(IList<Region> regions, IList<RegionDetailedDto> regionsToReturn)
-        //{
-        //    for (int i = 0; i < regionsToReturn.Count; i++)
-        //    {
-        //        regionsToReturn[i].Matrix = regions[i].Matrix;
-        //    }
-
-        //    return regionsToReturn;
-        //}
     }
 }
