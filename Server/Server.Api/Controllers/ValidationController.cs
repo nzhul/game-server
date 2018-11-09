@@ -10,6 +10,8 @@ namespace Server.Api.Controllers
     [Route("api/[controller]")]
     public class ValidationController : ControllerBase
     {
+        // TODO: Move all current logic from validationService to hero controller
+        // TODO: create controllers/services arround entites. Not functionality.
         private readonly IValidationService _validationService;
 
         private readonly IHeroesService _heroesService;
@@ -20,6 +22,7 @@ namespace Server.Api.Controllers
             _heroesService = heroesService;
         }
 
+        // TODO: move this endpoint in HeroesController
         [HttpPut("heroes/{heroId}/{x}/{y}")]
         public async Task<IActionResult> UpdateHeroPosition(int heroId, int x, int y)
         {
