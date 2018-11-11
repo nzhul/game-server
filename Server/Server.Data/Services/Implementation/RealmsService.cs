@@ -227,6 +227,18 @@ namespace Server.Data.Services.Implementation
                     width = 50;
                     height = 30;
                     break;
+                case 2:
+                    width = 70;
+                    height = 50;
+                    break;
+                case 3:
+                    width = 100;
+                    height = 70;
+                    break;
+                case 4:
+                    width = 140;
+                    height = 90;
+                    break;
                 default:
                     width = 50;
                     height = 30;
