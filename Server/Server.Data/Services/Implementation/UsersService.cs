@@ -30,9 +30,40 @@ namespace Server.Data.Services.Implementation
             return "Cannot find friend request!";
         }
 
-        public async Task<string> BlockUser(int blockerId, int blockedId)
+        public async Task<string> BlockUser(int senderId, int recieverId)
         {
-            throw new NotImplementedException();
+            var friendship = await _context.Friendships
+                .FirstOrDefaultAsync(x => (x.SenderId == senderId && x.RecieverId == recieverId) || (x.SenderId == recieverId && x.RecieverId == senderId));
+
+            if (friendship == null)
+            {
+                var sender = await this.GetUser(senderId);
+                var reciever = await this.GetUser(recieverId);
+
+                if (reciever == null)
+                {
+                    return $"Cannot find user with id: {recieverId}";
+                }
+
+                friendship = new Friendship
+                {
+                    SenderId = sender.Id,
+                    Sender = sender,
+                    Reciever = reciever,
+                    RecieverId = reciever.Id,
+                    State = FriendshipState.Blocked,
+                    RequestTime = DateTime.UtcNow
+                };
+
+                sender.SendFriendRequests.Add(friendship);
+                reciever.RecievedFriendRequests.Add(friendship);
+                _context.Friendships.Add(friendship);
+            }
+
+            friendship.State = FriendshipState.Blocked;
+            await _context.SaveChangesAsync();
+
+            return null;
         }
 
         public async Task<IEnumerable<User>> GetFriends(int userId)
@@ -114,14 +145,12 @@ namespace Server.Data.Services.Implementation
 
         public async Task<string> SendFriendRequest(int senderId, string usernameOrEmail)
         {
-            string response = null;
-
             var sender = await this.GetUser(senderId);
             var reciever = await this.GetUser(usernameOrEmail);
 
             if (reciever == null)
             {
-                response = $"Cannot find user: {usernameOrEmail}";
+                return $"Cannot find user: {usernameOrEmail}";
             }
 
             var newFriendship = new Friendship
@@ -139,7 +168,7 @@ namespace Server.Data.Services.Implementation
             _context.Friendships.Add(newFriendship);
             await _context.SaveChangesAsync();
 
-            return response;
+            return null;
         }
     }
 }

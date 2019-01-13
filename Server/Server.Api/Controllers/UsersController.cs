@@ -93,6 +93,23 @@ namespace Server.Api.Controllers
             }
         }
 
+        [HttpPost("block/{userId}")]
+        public async Task<IActionResult> BlockUser(int userId)
+        {
+            var currentUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+
+            string result = await _usersService.BlockUser(currentUserId, userId);
+
+            if (string.IsNullOrEmpty(result))
+            {
+                return Ok();
+            }
+            else
+            {
+                return BadRequest(result);
+            }
+        }
+
         [HttpGet("{userId}/friends")]
         public async Task<IActionResult> GetFriends(int userId)
         {
