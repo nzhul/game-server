@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Server.Data.Migrations
 {
-    public partial class init : Migration
+    public partial class Init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -43,6 +43,7 @@ namespace Server.Data.Migrations
                     LockoutEnd = table.Column<DateTimeOffset>(nullable: true),
                     LockoutEnabled = table.Column<bool>(nullable: false),
                     AccessFailedCount = table.Column<int>(nullable: false),
+                    Discriminator = table.Column<string>(nullable: true),
                     Gender = table.Column<string>(nullable: true),
                     DateOfBirth = table.Column<DateTime>(nullable: false),
                     LastActive = table.Column<DateTime>(nullable: false),
@@ -53,7 +54,9 @@ namespace Server.Data.Migrations
                     CreatedBy = table.Column<string>(nullable: true),
                     CreatedAt = table.Column<DateTime>(nullable: false),
                     ModifiedBy = table.Column<string>(nullable: true),
-                    ModifiedAt = table.Column<DateTime>(nullable: false)
+                    ModifiedAt = table.Column<DateTime>(nullable: false),
+                    ActiveConnection = table.Column<int>(nullable: false),
+                    OnlineStatus = table.Column<byte>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -247,6 +250,33 @@ namespace Server.Data.Migrations
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Friendships",
+                columns: table => new
+                {
+                    SenderId = table.Column<int>(nullable: false),
+                    RecieverId = table.Column<int>(nullable: false),
+                    RequestTime = table.Column<DateTime>(nullable: true),
+                    BecameFriendsTime = table.Column<DateTime>(nullable: true),
+                    State = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Friendships", x => new { x.SenderId, x.RecieverId });
+                    table.ForeignKey(
+                        name: "FK_Friendships_AspNetUsers_RecieverId",
+                        column: x => x.RecieverId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Friendships_AspNetUsers_SenderId",
+                        column: x => x.SenderId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -686,6 +716,11 @@ namespace Server.Data.Migrations
                 column: "RegionId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Friendships_RecieverId",
+                table: "Friendships",
+                column: "RecieverId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Heroes_AvatarId",
                 table: "Heroes",
                 column: "AvatarId");
@@ -780,6 +815,9 @@ namespace Server.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "Dwelling");
+
+            migrationBuilder.DropTable(
+                name: "Friendships");
 
             migrationBuilder.DropTable(
                 name: "Items");

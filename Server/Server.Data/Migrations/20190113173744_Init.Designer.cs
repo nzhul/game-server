@@ -10,8 +10,8 @@ using Server.Data;
 namespace Server.Data.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20181021141800_init")]
-    partial class init
+    [Migration("20190113173744_Init")]
+    partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -538,6 +538,25 @@ namespace Server.Data.Migrations
                     b.ToTable("Avatars");
                 });
 
+            modelBuilder.Entity("Server.Models.Users.Friendship", b =>
+                {
+                    b.Property<int>("SenderId");
+
+                    b.Property<int>("RecieverId");
+
+                    b.Property<DateTime?>("BecameFriendsTime");
+
+                    b.Property<DateTime?>("RequestTime");
+
+                    b.Property<int>("State");
+
+                    b.HasKey("SenderId", "RecieverId");
+
+                    b.HasIndex("RecieverId");
+
+                    b.ToTable("Friendships");
+                });
+
             modelBuilder.Entity("Server.Models.Users.Message", b =>
                 {
                     b.Property<int>("Id")
@@ -643,6 +662,8 @@ namespace Server.Data.Migrations
 
                     b.Property<int>("AccessFailedCount");
 
+                    b.Property<int>("ActiveConnection");
+
                     b.Property<string>("City");
 
                     b.Property<string>("ConcurrencyStamp")
@@ -657,6 +678,8 @@ namespace Server.Data.Migrations
                     b.Property<int>("CurrentRealmId");
 
                     b.Property<DateTime>("DateOfBirth");
+
+                    b.Property<string>("Discriminator");
 
                     b.Property<string>("Email")
                         .HasMaxLength(256);
@@ -682,6 +705,8 @@ namespace Server.Data.Migrations
 
                     b.Property<string>("NormalizedUserName")
                         .HasMaxLength(256);
+
+                    b.Property<byte>("OnlineStatus");
 
                     b.Property<string>("PasswordHash");
 
@@ -845,6 +870,19 @@ namespace Server.Data.Migrations
                     b.HasOne("Server.Models.Users.User", "User")
                         .WithMany("Avatars")
                         .HasForeignKey("UserId");
+                });
+
+            modelBuilder.Entity("Server.Models.Users.Friendship", b =>
+                {
+                    b.HasOne("Server.Models.Users.User", "Reciever")
+                        .WithMany("RecievedFriendRequests")
+                        .HasForeignKey("RecieverId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Server.Models.Users.User", "Sender")
+                        .WithMany("SendFriendRequests")
+                        .HasForeignKey("SenderId")
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("Server.Models.Users.Message", b =>

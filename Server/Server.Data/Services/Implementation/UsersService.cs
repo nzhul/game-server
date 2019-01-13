@@ -1,8 +1,10 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Server.Data.Services.Abstraction;
+using Server.Models;
 using Server.Models.Pagination;
 using Server.Models.Users;
 
@@ -14,9 +16,60 @@ namespace Server.Data.Services.Implementation
         {
         }
 
+        public async Task<string> ApproveFriendRequest(int senderId, int recieverId)
+        {
+            var friendship = await _context.Friendships.FirstOrDefaultAsync(x => x.SenderId == senderId && x.RecieverId == recieverId);
+            if (friendship != null)
+            {
+                friendship.State = FriendshipState.Approved;
+                await _context.SaveChangesAsync();
+
+                return null;
+            }
+
+            return "Cannot find friend request!";
+        }
+
+        public async Task<string> BlockUser(int blockerId, int blockedId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<IEnumerable<User>> GetFriends(int userId)
+        {
+            IEnumerable<User> friends = null;
+
+            var dbUser = await this.GetUser(userId);
+            if (dbUser != null)
+            {
+                friends = _context.Users
+                    .Where(u => u.RecievedFriendRequests.Any(f => f.SenderId == userId && f.RecieverId == u.Id && f.State == FriendshipState.Approved) ||
+                           u.SendFriendRequests.Any(f => f.SenderId == u.Id && f.RecieverId == userId && f.State == FriendshipState.Approved))
+                    .ToList();
+            }
+
+            return friends;
+        }
+
         public async Task<User> GetUser(int id)
         {
             return await _context.Users.Include(p => p.Photos).FirstOrDefaultAsync(u => u.Id == id);
+        }
+
+        public async Task<User> GetUser(string usernameOrEmail)
+        {
+            User dbUser = null;
+
+            if (Utilities.IsEmail(usernameOrEmail))
+            {
+                dbUser = await _context.Users.FirstOrDefaultAsync(u => u.Email == usernameOrEmail);
+            }
+            else
+            {
+                dbUser = await _context.Users.FirstOrDefaultAsync(u => u.UserName == usernameOrEmail);
+            }
+
+            return dbUser;
         }
 
         public async Task<PagedList<User>> GetUsers(UserParams userParams)
@@ -27,7 +80,7 @@ namespace Server.Data.Services.Implementation
 
             if (!string.IsNullOrEmpty(userParams.Gender) && userParams.Gender != "undefined")
             {
-                users = users.Where(u => u.Gender == userParams.Gender);   
+                users = users.Where(u => u.Gender == userParams.Gender);
             }
 
             if (userParams.MinAge != 18 || userParams.MaxAge != 99)
@@ -52,6 +105,41 @@ namespace Server.Data.Services.Implementation
             }
 
             return await PagedList<User>.CreateAsync(users, userParams.PageNumber, userParams.PageSize);
+        }
+
+        public async Task<string> RejectFriendRequest(int requestId, int recieverId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<string> SendFriendRequest(int senderId, string usernameOrEmail)
+        {
+            string response = null;
+
+            var sender = await this.GetUser(senderId);
+            var reciever = await this.GetUser(usernameOrEmail);
+
+            if (reciever == null)
+            {
+                response = $"Cannot find user: {usernameOrEmail}";
+            }
+
+            var newFriendship = new Friendship
+            {
+                SenderId = sender.Id,
+                Sender = sender,
+                Reciever = reciever,
+                RecieverId = reciever.Id,
+                State = FriendshipState.Pending,
+                RequestTime = DateTime.UtcNow
+            };
+
+            sender.SendFriendRequests.Add(newFriendship);
+            reciever.RecievedFriendRequests.Add(newFriendship);
+            _context.Friendships.Add(newFriendship);
+            await _context.SaveChangesAsync();
+
+            return response;
         }
     }
 }

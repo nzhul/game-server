@@ -112,6 +112,14 @@ namespace Server.Api.Controllers
             return Unauthorized();
         }
 
+        [Authorize]
+        [HttpGet("logout")]
+        public async Task<IActionResult> Logout()
+        {
+            await _signInManager.SignOutAsync();
+            return Ok();
+        }
+
         private async Task<string> GenerateJwtToken(User user)
         {
             var claims = new List<Claim>

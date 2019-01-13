@@ -1,12 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 using Microsoft.AspNetCore.Identity;
 
 namespace Server.Models.Users
 {
     public class User : IdentityUser<int>, IAuditedEntity
     {
+        public string Discriminator { get; set; }
+
         public string Gender { get; set; }
 
         public DateTime DateOfBirth { get; set; }
@@ -29,6 +33,21 @@ namespace Server.Models.Users
 
         public ICollection<UserRole> UserRoles { get; set; }
 
+        public virtual ICollection<Friendship> SendFriendRequests { get; set; }
+
+        public virtual ICollection<Friendship> RecievedFriendRequests { get; set; }
+
+        [NotMapped]
+        public virtual ICollection<Friendship> Friends
+        {
+            get
+            {
+                var friends = SendFriendRequests.Where(x => x.IsApproved).ToList();
+                friends.AddRange(RecievedFriendRequests.Where(x => x.IsApproved));
+                return friends;
+            }
+        }
+
         public int CurrentRealmId { get; set; }
 
         public string CreatedBy { get; set; }
@@ -39,12 +58,18 @@ namespace Server.Models.Users
 
         public DateTime ModifiedAt { get; set; }
 
+        public int ActiveConnection { get; set; }
+
+        public byte OnlineStatus { get; set; }
+
         public User()
         {
             this.Photos = new Collection<Photo>();
             this.MessagesSent = new Collection<Message>();
             this.MessagesRecieved = new Collection<Message>();
             this.Avatars = new Collection<Avatar>();
+            this.SendFriendRequests = new Collection<Friendship>();
+            this.RecievedFriendRequests = new Collection<Friendship>();
         }
     }
 }

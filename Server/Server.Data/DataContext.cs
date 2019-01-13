@@ -44,9 +44,26 @@ namespace Server.Data
 
         public DbSet<CastleBlueprint> CastleBlueprints { get; set; }
 
+        public DbSet<Friendship> Friendships { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+
+            builder.Entity<Friendship>()
+                .HasKey(fs => new { fs.SenderId, fs.RecieverId });
+
+            builder.Entity<Friendship>()
+                .HasOne(u => u.Sender)
+                .WithMany(fs => fs.SendFriendRequests)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasForeignKey(u => u.SenderId);
+
+            builder.Entity<Friendship>()
+                .HasOne(u => u.Reciever)
+                .WithMany(fs => fs.RecievedFriendRequests)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasForeignKey(u => u.RecieverId);
 
             builder.Entity<UserRole>(userRole =>
             {
