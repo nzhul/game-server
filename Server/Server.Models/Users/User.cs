@@ -37,17 +37,6 @@ namespace Server.Models.Users
 
         public virtual ICollection<Friendship> RecievedFriendRequests { get; set; }
 
-        [NotMapped]
-        public virtual ICollection<Friendship> Friends
-        {
-            get
-            {
-                var friends = SendFriendRequests.Where(x => x.IsApproved).ToList();
-                friends.AddRange(RecievedFriendRequests.Where(x => x.IsApproved));
-                return friends;
-            }
-        }
-
         public int CurrentRealmId { get; set; }
 
         public string CreatedBy { get; set; }
