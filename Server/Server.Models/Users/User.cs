@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
 using Microsoft.AspNetCore.Identity;
 
 namespace Server.Models.Users
@@ -53,12 +51,12 @@ namespace Server.Models.Users
 
         public User()
         {
-            this.Photos = new Collection<Photo>();
-            this.MessagesSent = new Collection<Message>();
-            this.MessagesRecieved = new Collection<Message>();
-            this.Avatars = new Collection<Avatar>();
-            this.SendFriendRequests = new Collection<Friendship>();
-            this.RecievedFriendRequests = new Collection<Friendship>();
+            Photos = new Collection<Photo>();
+            MessagesSent = new Collection<Message>();
+            MessagesRecieved = new Collection<Message>();
+            Avatars = new Collection<Avatar>();
+            SendFriendRequests = new Collection<Friendship>();
+            RecievedFriendRequests = new Collection<Friendship>();
         }
     }
 }

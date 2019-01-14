@@ -20,16 +20,16 @@ namespace Server.Api.Controllers
 
         public UsersController(IUsersService usersService, IMapper mapper)
         {
-            this._usersService = usersService;
-            this._mapper = mapper;
+            _usersService = usersService;
+            _mapper = mapper;
         }
 
         [HttpGet("{id}", Name = "GetUser")]
         public async Task<IActionResult> GetUser(int id)
         {
-            var user = await this._usersService.GetUser(id);
+            User user = await _usersService.GetUser(id);
 
-            var userToReturn = _mapper.Map<UserForDetailedDto>(user);
+            UserForDetailedDto userToReturn = _mapper.Map<UserForDetailedDto>(user);
 
             return Ok(userToReturn);
         }
@@ -37,7 +37,7 @@ namespace Server.Api.Controllers
         [HttpGet]
         public async Task<IActionResult> GetUsers(UserParams userParams)
         {
-            var currentUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            int currentUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
 
             // var dbUser = await _usersService.GetUser(currentUserId);
 
@@ -48,9 +48,9 @@ namespace Server.Api.Controllers
             //     userParams.Gender = dbUser.Gender == "male" ? "female" : "male";
             // }
 
-            var users = await this._usersService.GetUsers(userParams);
+            Server.Models.Pagination.PagedList<User> users = await _usersService.GetUsers(userParams);
 
-            var usersToReturn = _mapper.Map<IEnumerable<UserForListDto>>(users);
+            IEnumerable<UserForListDto> usersToReturn = _mapper.Map<IEnumerable<UserForListDto>>(users);
 
             Response.AddPagination(users.CurrentPage, users.PageSize, users.TotalCount, users.TotalPages);
 
@@ -60,7 +60,7 @@ namespace Server.Api.Controllers
         [HttpPost("addfriend/{usernameOrEmail}")]
         public async Task<IActionResult> SendFriendRequest(string usernameOrEmail)
         {
-            var currentUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            int currentUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
 
             string result = await _usersService.SendFriendRequest(currentUserId, usernameOrEmail);
 
@@ -77,9 +77,9 @@ namespace Server.Api.Controllers
         [HttpPost("approvefriend/{senderId}")]
         public async Task<IActionResult> ApproveFriendRequest(int senderId)
         {
-            var currentUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value); // currentUserId is the reciever
+            int currentUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value); // currentUserId is the reciever
 
-            var recieverId = currentUserId;
+            int recieverId = currentUserId;
 
             string result = await _usersService.ApproveFriendRequest(senderId, recieverId);
 
@@ -96,7 +96,7 @@ namespace Server.Api.Controllers
         [HttpPost("block/{userId}")]
         public async Task<IActionResult> BlockUser(int userId)
         {
-            var currentUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            int currentUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
 
             string result = await _usersService.BlockUser(currentUserId, userId);
 
@@ -118,16 +118,56 @@ namespace Server.Api.Controllers
                 return Unauthorized();
             }
 
-            var friends = await _usersService.GetFriends(userId);
+            IEnumerable<User> friends = await _usersService.GetFriends(userId);
 
             if (friends != null)
             {
-                var usersToReturn = _mapper.Map<IEnumerable<UserForListDto>>(friends);
+                IEnumerable<UserForListDto> usersToReturn = _mapper.Map<IEnumerable<UserForListDto>>(friends);
                 return Ok(usersToReturn);
             }
             else
             {
                 return NoContent();
+            }
+        }
+
+        [HttpPut("{userId}/setoffline")]
+        public async Task<IActionResult> SetOffline(int userId)
+        {
+            if (userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
+            {
+                return Unauthorized();
+            }
+
+            string result = await _usersService.SetOffline(userId);
+
+            if (string.IsNullOrEmpty(result))
+            {
+                return Ok();
+            }
+            else
+            {
+                return BadRequest(result);
+            }
+        }
+
+        [HttpPut("{userId}/setonline/{connectionId}")]
+        public async Task<IActionResult> SetOnline(int userId, int connectionId)
+        {
+            if (userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
+            {
+                return Unauthorized();
+            }
+
+            string result = await _usersService.SetOnline(userId, connectionId);
+
+            if (string.IsNullOrEmpty(result))
+            {
+                return Ok();
+            }
+            else
+            {
+                return BadRequest(result);
             }
         }
     }

@@ -44,5 +44,20 @@ namespace Server.Data.Services.Abstraction
         Task<string> BlockUser(int blockerId, int blockedId);
 
         Task<IEnumerable<User>> GetFriends(int userId);
+
+        /// <summary>
+        /// Sets the user as offline
+        /// </summary>
+        /// <param name="userId">the id of the user to be set as offline</param>
+        /// <returns>Null if success. Error message on fail</returns>
+        Task<string> SetOffline(int userId);
+
+        /// <summary>
+        /// Sets the user as online
+        /// </summary>
+        /// <param name="userId">the id of the user to be set as online</param>
+        /// <param name="connectionId">the id of the connection in the dedicated server</param>
+        /// <returns>Null if success. Error message on fail</returns>
+        Task<string> SetOnline(int userId, int connectionId);
     }
 }

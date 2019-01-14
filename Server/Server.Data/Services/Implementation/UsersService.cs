@@ -18,7 +18,7 @@ namespace Server.Data.Services.Implementation
 
         public async Task<string> ApproveFriendRequest(int senderId, int recieverId)
         {
-            var friendship = await _context.Friendships.FirstOrDefaultAsync(x => x.SenderId == senderId && x.RecieverId == recieverId);
+            Friendship friendship = await _context.Friendships.FirstOrDefaultAsync(x => x.SenderId == senderId && x.RecieverId == recieverId);
             if (friendship != null)
             {
                 friendship.State = FriendshipState.Approved;
@@ -32,13 +32,13 @@ namespace Server.Data.Services.Implementation
 
         public async Task<string> BlockUser(int senderId, int recieverId)
         {
-            var friendship = await _context.Friendships
+            Friendship friendship = await _context.Friendships
                 .FirstOrDefaultAsync(x => (x.SenderId == senderId && x.RecieverId == recieverId) || (x.SenderId == recieverId && x.RecieverId == senderId));
 
             if (friendship == null)
             {
-                var sender = await this.GetUser(senderId);
-                var reciever = await this.GetUser(recieverId);
+                User sender = await GetUser(senderId);
+                User reciever = await GetUser(recieverId);
 
                 if (reciever == null)
                 {
@@ -70,7 +70,7 @@ namespace Server.Data.Services.Implementation
         {
             IEnumerable<User> friends = null;
 
-            var dbUser = await this.GetUser(userId);
+            User dbUser = await GetUser(userId);
             if (dbUser != null)
             {
                 friends = _context.Users
@@ -105,7 +105,7 @@ namespace Server.Data.Services.Implementation
 
         public async Task<PagedList<User>> GetUsers(UserParams userParams)
         {
-            var users = _context.Users.Include(p => p.Photos).OrderByDescending(u => u.LastActive).AsQueryable();
+            IQueryable<User> users = _context.Users.Include(p => p.Photos).OrderByDescending(u => u.LastActive).AsQueryable();
 
             users = users.Where(u => u.Id != userParams.UserId);
 
@@ -116,8 +116,8 @@ namespace Server.Data.Services.Implementation
 
             if (userParams.MinAge != 18 || userParams.MaxAge != 99)
             {
-                var min = DateTime.Today.AddYears(-userParams.MaxAge - 1);
-                var max = DateTime.Today.AddYears(-userParams.MinAge);
+                DateTime min = DateTime.Today.AddYears(-userParams.MaxAge - 1);
+                DateTime max = DateTime.Today.AddYears(-userParams.MinAge);
 
                 users = users.Where(u => u.DateOfBirth >= min && u.DateOfBirth <= max);
             }
@@ -145,15 +145,15 @@ namespace Server.Data.Services.Implementation
 
         public async Task<string> SendFriendRequest(int senderId, string usernameOrEmail)
         {
-            var sender = await this.GetUser(senderId);
-            var reciever = await this.GetUser(usernameOrEmail);
+            User sender = await GetUser(senderId);
+            User reciever = await GetUser(usernameOrEmail);
 
             if (reciever == null)
             {
                 return $"Cannot find user: {usernameOrEmail}";
             }
 
-            var newFriendship = new Friendship
+            Friendship newFriendship = new Friendship
             {
                 SenderId = sender.Id,
                 Sender = sender,
@@ -166,6 +166,43 @@ namespace Server.Data.Services.Implementation
             sender.SendFriendRequests.Add(newFriendship);
             reciever.RecievedFriendRequests.Add(newFriendship);
             _context.Friendships.Add(newFriendship);
+            await _context.SaveChangesAsync();
+
+            return null;
+        }
+
+        public async Task<string> SetOffline(int userId)
+        {
+            User dbUser = await GetUser(userId);
+
+            if (dbUser == null)
+            {
+                return $"Cannot find user with Id: {userId}";
+            }
+
+            dbUser.ActiveConnection = 0;
+            dbUser.OnlineStatus = 0;
+            await _context.SaveChangesAsync();
+
+            return null;
+        }
+
+        public async Task<string> SetOnline(int userId, int connectionId)
+        {
+            User dbUser = await GetUser(userId);
+
+            if (dbUser == null)
+            {
+                return $"Cannot find user with Id: {userId}";
+            }
+
+            if (connectionId == 0)
+            {
+                return $"connection id cannot be 0";
+            }
+
+            dbUser.ActiveConnection = connectionId;
+            dbUser.OnlineStatus = 1;
             await _context.SaveChangesAsync();
 
             return null;
