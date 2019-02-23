@@ -180,76 +180,77 @@ namespace Server.Data
                     _context.Realms.Add(newRealm);
                     _context.SaveChanges();
 
-                    for (int y = 0; y < 5; y++)
-                    {
-                        Region newRegion = new Region
-                        {
-                            Name = regionNames[y],
-                            Level = r.Next(1, 5)
-                        };
+                    // Creating regions
+                    //for (int y = 0; y < 5; y++)
+                    //{
+                    //    Region newRegion = new Region
+                    //    {
+                    //        Name = regionNames[y],
+                    //        Level = r.Next(1, 5)
+                    //    };
 
-                        newRealm.Regions.Add(newRegion);
-                        _context.SaveChanges();
-                    }
+                    //    newRealm.Regions.Add(newRegion);
+                    //    _context.SaveChanges();
+                    //}
                 }
             }
 
-            if (!_context.Avatars.Any())
-            {
-                foreach (var user in users)
-                {
-                    foreach (var realm in realms)
-                    {
-                        Avatar newAvatar = new Avatar();
-                        newAvatar.Wood = r.Next(0, 1000);
-                        newAvatar.Ore = r.Next(0, 1000);
-                        newAvatar.Gold = r.Next(0, 1000);
-                        newAvatar.Gems = r.Next(0, 1000);
-                        newAvatar.UserId = user.Id;
-                        newAvatar.RealmId = realm.Id;
+            //if (!_context.Avatars.Any())
+            //{
+            //    foreach (var user in users)
+            //    {
+            //        foreach (var realm in realms)
+            //        {
+            //            Avatar newAvatar = new Avatar();
+            //            newAvatar.Wood = r.Next(0, 1000);
+            //            newAvatar.Ore = r.Next(0, 1000);
+            //            newAvatar.Gold = r.Next(0, 1000);
+            //            newAvatar.Gems = r.Next(0, 1000);
+            //            newAvatar.UserId = user.Id;
+            //            newAvatar.RealmId = realm.Id;
 
-                        _context.Avatars.Add(newAvatar);
-                        avatars.Add(newAvatar);
-                    }
-                }
+            //            _context.Avatars.Add(newAvatar);
+            //            avatars.Add(newAvatar);
+            //        }
+            //    }
 
-                _context.SaveChanges();
+            //    _context.SaveChanges();
 
-                foreach (var avatar in avatars)
-                {
-                    int iterations = r.Next(2, 5);
-                    for (int i = 0; i < iterations; i++)
-                    {
-                        int regionId = r.Next(1, realmNames.Length * 5);
-                        Hero newHero = new Hero
-                        {
-                            Name = GetRandomHeroName(_context, regionId),
-                            LastActivity = GetRandomDate(),
-                            TimePlayed = new TimeSpan(r.Next(0, 100), r.Next(0, 23), r.Next(0, 59), r.Next(0, 59)),
-                            Level = r.Next(1, 60),
-                            BlueprintId = r.Next(1, 6),
-                            RegionId = regionId,
-                            Attack = r.Next(0, 3),
-                            Defence = r.Next(0, 3),
-                            PersonalAttack = r.Next(5, 10),
-                            PersonalDefense = r.Next(5, 10),
-                            Magic = r.Next(0, 3),
-                            MagicPower = r.Next(0, 3),
-                            Dodge = r.Next(0, 2),
-                            Health = r.Next(20, 60),
-                            MinDamage = r.Next(7, 12),
-                            MaxDamage = r.Next(13, 25),
-                            MagicResistance = r.Next(0, 2),
-                            Avatar = avatar
-                        };
+            //    foreach (var avatar in avatars)
+            //    {
+            //        int iterations = r.Next(2, 5);
+            //        for (int i = 0; i < iterations; i++)
+            //        {
+            //            int regionId = r.Next(1, realmNames.Length * 5);
+            //            Hero newHero = new Hero
+            //            {
+            //                Name = GetRandomHeroName(_context, regionId),
+            //                LastActivity = GetRandomDate(),
+            //                TimePlayed = new TimeSpan(r.Next(0, 100), r.Next(0, 23), r.Next(0, 59), r.Next(0, 59)),
+            //                Level = r.Next(1, 60),
+            //                BlueprintId = r.Next(1, 6),
+            //                RegionId = regionId,
+            //                Attack = r.Next(0, 3),
+            //                Defence = r.Next(0, 3),
+            //                PersonalAttack = r.Next(5, 10),
+            //                PersonalDefense = r.Next(5, 10),
+            //                Magic = r.Next(0, 3),
+            //                MagicPower = r.Next(0, 3),
+            //                Dodge = r.Next(0, 2),
+            //                Health = r.Next(20, 60),
+            //                MinDamage = r.Next(7, 12),
+            //                MaxDamage = r.Next(13, 25),
+            //                MagicResistance = r.Next(0, 2),
+            //                Avatar = avatar
+            //            };
 
-                        avatar.Heroes.Add(newHero);
-                        heroes.Add(newHero);
-                        _context.SaveChanges();
-                    }
-                }
+            //            avatar.Heroes.Add(newHero);
+            //            heroes.Add(newHero);
+            //            _context.SaveChanges();
+            //        }
+            //    }
 
-            }
+            //}
 
         }
 
