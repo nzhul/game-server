@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using Server.Models.Castles;
 using Server.Models.Heroes;
+using Server.Models.MapEntities;
 using Server.Models.Realms;
 
 namespace Server.Models.Users
@@ -24,6 +25,8 @@ namespace Server.Models.Users
 
         public virtual ICollection<Castle> Castles { get; set; }
 
+        public virtual ICollection<AvatarDwelling> AvatarDwellings { get; set; }
+
         public int? RealmId { get; set; }
 
         public virtual Realm Realm { get; set; }
@@ -36,6 +39,7 @@ namespace Server.Models.Users
         {
             this.Heroes = new Collection<Hero>();
             this.Castles = new Collection<Castle>();
+            this.AvatarDwellings = new Collection<AvatarDwelling>();
         }
     }
 }

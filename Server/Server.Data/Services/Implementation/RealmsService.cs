@@ -9,6 +9,7 @@ using Server.Data.Generators;
 using Server.Data.Services.Abstraction;
 using Server.Models;
 using Server.Models.Heroes;
+using Server.Models.MapEntities;
 using Server.Models.Pagination;
 using Server.Models.Realms;
 using Server.Models.Realms.Input;
@@ -120,6 +121,7 @@ namespace Server.Data.Services.Implementation
         {
             var avatars = await _context.Avatars
                 .Include(a => a.Heroes).ThenInclude(x => x.Blueprint)
+                .Include(a => a.AvatarDwellings).ThenInclude(x => x.Dwelling).ThenInclude(x => x.Region)
                 .FirstOrDefaultAsync(a => a.RealmId == realmId && a.UserId == userId);
 
             if (avatars != null)
@@ -153,27 +155,14 @@ namespace Server.Data.Services.Implementation
                     // Info: with every new user/avatar created in any realm - we will create new Region that will be "His special starting zone realm"
                     Region region = await this.CreateRegion("RegionName_" + DateTime.UtcNow.Ticks.ToString(), 1, dbRealm);
 
-                    if (avatarInThisRealm != null)
+                    if (avatarInThisRealm == null)
                     {
-                        // if user has avatar in this realm
-                        // add hero to this avatar
 
                         //TODO: Get heroBlueprint for this hero class and use its data to populate the Hero Fields.
 
                         // TODO replace this with region level 1.
                         // There must be only 5 regions per realm and each region should have level
                         // The new hero will always start at level 1 region.
-
-
-                        Hero newHero = CreateHero(input.HeroName, blueprint, region, avatarInThisRealm);
-
-                        avatarInThisRealm.Heroes.Add(newHero);
-                        await _context.SaveChangesAsync();
-                    }
-                    else
-                    {
-                        // else
-                        // create avatar and then add hero
 
                         avatarInThisRealm = new Avatar
                         {
@@ -184,17 +173,39 @@ namespace Server.Data.Services.Implementation
                         };
                         _context.Avatars.Add(avatarInThisRealm);
                         await _context.SaveChangesAsync();
-
-                        Hero newHero = CreateHero(input.HeroName, blueprint, region, avatarInThisRealm);
-                        avatarInThisRealm.Heroes.Add(newHero);
-                        await _context.SaveChangesAsync();
                     }
+
+                    // 1. Assign hero to avatar
+                    Hero newHero = CreateHero(input.HeroName, blueprint, region, avatarInThisRealm);
+                    avatarInThisRealm.Heroes.Add(newHero);
+
+                    // 2. Assign Castle and waypoint to avatar 
+                    this.AssignDwelling(avatarInThisRealm, region, DwellingType.Castle, true);
+                    this.AssignDwelling(avatarInThisRealm, region, DwellingType.Waypoint, false); // TODO: remove the waypoint assignment!
+
+                    await _context.SaveChangesAsync();
 
                     return avatarInThisRealm;
                 }
             }
 
             return null;
+        }
+
+        private void AssignDwelling(Avatar avatar, Region region, DwellingType type, bool isOwner)
+        {
+            var dwellings = region.Dwellings.Where(d => d.Type == type);
+
+            foreach (var dwelling in dwellings)
+            {
+                avatar.AvatarDwellings.Add(new AvatarDwelling { Avatar = avatar, Dwelling = dwelling });
+
+                if (isOwner)
+                {
+                    dwelling.Owner = avatar;
+                    dwelling.OwnerId = avatar.Id;
+                }
+            }
         }
 
         private Hero CreateHero(string heroName, HeroBlueprint blueprint, Region region, Avatar avatar)
@@ -205,8 +216,8 @@ namespace Server.Data.Services.Implementation
             // do the same for player castle.
 
             Hero newHero = new Hero();
-            newHero.X = region.InitialHeroPosition.X;
-            newHero.Y = region.InitialHeroPosition.Y;
+            newHero.X = region.InitialHeroPosition.Row;
+            newHero.Y = region.InitialHeroPosition.Col;
             newHero.Name = heroName;
             newHero = _mapper.Map(blueprint, newHero);
             newHero.Region = region;

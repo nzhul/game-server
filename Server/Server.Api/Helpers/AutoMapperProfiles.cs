@@ -3,8 +3,10 @@ using AutoMapper;
 using Server.Api.Controllers;
 using Server.Api.Models.Input;
 using Server.Api.Models.View;
+using Server.Api.Models.View.Avatars;
 using Server.Api.Models.View.Realms;
 using Server.Models.Heroes;
+using Server.Models.MapEntities;
 using Server.Models.Realms;
 using Server.Models.Users;
 
@@ -58,6 +60,13 @@ namespace Server.Api.Helpers
             // REGIONS
             CreateMap<Region, RegionDetailedDto>();
             CreateMap<Room, RoomDetailedDto>();
+
+            // DWELLINGS
+            CreateMap<Dwelling, DwellingDetailedDto>();
+            CreateMap<Dwelling, WaypointDto>()
+                .ForMember( x => x.RegionId, opt => opt.MapFrom(u => u.Region.Id))
+                .ForMember( x => x.RegionLevel, opt => opt.MapFrom(u => u.Region.Level))
+                .ForMember( x => x.RegionName, opt => opt.MapFrom(u => u.Region.Name));
 
             // AVATARS
             CreateMap<Hero, HeroDetailedDto>()

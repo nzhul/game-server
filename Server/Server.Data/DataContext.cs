@@ -65,6 +65,22 @@ namespace Server.Data
                 .OnDelete(DeleteBehavior.Restrict)
                 .HasForeignKey(u => u.RecieverId);
 
+            // Many to many
+            builder.Entity<AvatarDwelling>(avatarDwelling =>
+            {
+                avatarDwelling.HasKey(ad => new { ad.AvatarId, ad.DwellingId });
+
+                avatarDwelling.HasOne(ad => ad.Avatar)
+                .WithMany(a => a.AvatarDwellings)
+                .HasForeignKey(ad => ad.AvatarId)
+                .IsRequired();
+
+                avatarDwelling.HasOne(ad => ad.Dwelling)
+                .WithMany(a => a.AvatarDwellings)
+                .HasForeignKey(ad => ad.DwellingId)
+                .IsRequired();
+            });
+
             builder.Entity<UserRole>(userRole =>
             {
                 userRole.HasKey(ur => new { ur.UserId, ur.RoleId });

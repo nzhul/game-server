@@ -311,9 +311,9 @@ namespace Server.Data.Migrations
 
                     b.Property<string>("OccupiedTilesString");
 
-                    b.Property<int>("OwnerId");
+                    b.Property<int?>("OwnerId");
 
-                    b.Property<int?>("RegionId");
+                    b.Property<int>("RegionId");
 
                     b.Property<int>("Type");
 
@@ -322,6 +322,8 @@ namespace Server.Data.Migrations
                     b.Property<int>("Y");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("OwnerId");
 
                     b.HasIndex("RegionId");
 
@@ -534,6 +536,19 @@ namespace Server.Data.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Avatars");
+                });
+
+            modelBuilder.Entity("Server.Models.Users.AvatarDwelling", b =>
+                {
+                    b.Property<int>("AvatarId");
+
+                    b.Property<int>("DwellingId");
+
+                    b.HasKey("AvatarId", "DwellingId");
+
+                    b.HasIndex("DwellingId");
+
+                    b.ToTable("AvatarDwelling");
                 });
 
             modelBuilder.Entity("Server.Models.Users.Friendship", b =>
@@ -822,9 +837,14 @@ namespace Server.Data.Migrations
 
             modelBuilder.Entity("Server.Models.MapEntities.Dwelling", b =>
                 {
-                    b.HasOne("Server.Models.Realms.Region")
+                    b.HasOne("Server.Models.Users.Avatar", "Owner")
+                        .WithMany()
+                        .HasForeignKey("OwnerId");
+
+                    b.HasOne("Server.Models.Realms.Region", "Region")
                         .WithMany("Dwellings")
-                        .HasForeignKey("RegionId");
+                        .HasForeignKey("RegionId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Server.Models.MapEntities.MonsterPack", b =>
@@ -868,6 +888,19 @@ namespace Server.Data.Migrations
                     b.HasOne("Server.Models.Users.User", "User")
                         .WithMany("Avatars")
                         .HasForeignKey("UserId");
+                });
+
+            modelBuilder.Entity("Server.Models.Users.AvatarDwelling", b =>
+                {
+                    b.HasOne("Server.Models.Users.Avatar", "Avatar")
+                        .WithMany("AvatarDwellings")
+                        .HasForeignKey("AvatarId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Server.Models.MapEntities.Dwelling", "Dwelling")
+                        .WithMany("AvatarDwellings")
+                        .HasForeignKey("DwellingId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Server.Models.Users.Friendship", b =>

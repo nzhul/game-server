@@ -12,12 +12,12 @@ namespace Server.Models
 
         public Coord(int x, int y)
         {
-            this.X = x;
-            this.Y = y;
+            this.Row = x;
+            this.Col = y;
         }
 
-        public int X { get; set; }
+        public int Row { get; set; }
 
-        public int Y { get; set; }
+        public int Col { get; set; }
     }
 }

@@ -16,53 +16,60 @@ namespace Server.Data.Generators
             // □□■□□
             Dwellings.Add(DwellingType.Castle, new List<Coord>()
             {
-                new Coord { X = 2, Y = -1 },
-                new Coord { X = 2, Y = 0 },
-                new Coord { X = 2, Y = 1 },
+                new Coord { Row = 2, Col = -1 },
+                new Coord { Row = 2, Col = 0 },
+                new Coord { Row = 2, Col = 1 },
 
-                new Coord { X = 1, Y = -2 },
-                new Coord { X = 1, Y = -1 },
-                new Coord { X = 1, Y = 0 },
-                new Coord { X = 1, Y = 1 },
-                new Coord { X = 1, Y = 2 },
+                new Coord { Row = 1, Col = -2 },
+                new Coord { Row = 1, Col = -1 },
+                new Coord { Row = 1, Col = 0 },
+                new Coord { Row = 1, Col = 1 },
+                new Coord { Row = 1, Col = 2 },
 
-                new Coord { X = 0, Y = -2 },
-                new Coord { X = 0, Y = -1 },
-                new Coord { X = 0, Y = 0 },
-                new Coord { X = 0, Y = 1 },
-                new Coord { X = 0, Y = 2 },
+                new Coord { Row = 0, Col = -2 },
+                new Coord { Row = 0, Col = -1 },
+                new Coord { Row = 0, Col = 0 },
+                new Coord { Row = 0, Col = 1 },
+                new Coord { Row = 0, Col = 2 },
             });
 
             // □□□
             // □■□
             Dwellings.Add(DwellingType.WoodMine, new List<Coord>()
             {
-                new Coord { X = 1, Y = -1 },
-                new Coord { X = 1, Y = 0 },
-                new Coord { X = 1, Y = 1 },
+                new Coord { Row = 1, Col = -1 },
+                new Coord { Row = 1, Col = 0 },
+                new Coord { Row = 1, Col = 1 },
 
-                new Coord { X = 0, Y = -1 },
-                new Coord { X = 0, Y = 0 },
-                new Coord { X = 0, Y = 1 },
+                new Coord { Row = 0, Col = -1 },
+                new Coord { Row = 0, Col = 0 },
+                new Coord { Row = 0, Col = 1 },
             });
 
             // □□□
             // □■□
             Dwellings.Add(DwellingType.StoneMine, new List<Coord>()
             {
-                new Coord { X = 1, Y = -1 },
-                new Coord { X = 1, Y = 0 },
-                new Coord { X = 1, Y = 1 },
+                new Coord { Row = 1, Col = -1 },
+                new Coord { Row = 1, Col = 0 },
+                new Coord { Row = 1, Col = 1 },
 
-                new Coord { X = 0, Y = -1 },
-                new Coord { X = 0, Y = 0 },
-                new Coord { X = 0, Y = 1 },
+                new Coord { Row = 0, Col = -1 },
+                new Coord { Row = 0, Col = 0 },
+                new Coord { Row = 0, Col = 1 },
+            });
+
+            // ■
+            Dwellings.Add(DwellingType.Waypoint, new List<Coord>()
+            {
+                new Coord { Row = 0, Col = 0 }
             });
 
 
+            // ■
             Monsters.Add(MonsterType.Spider, new List<Coord>()
             {
-                new Coord { X = 0, Y = 0 }
+                new Coord { Row = 0, Col = 0 }
             });
         }
         public static Dictionary<DwellingType, List<Coord>> Dwellings { get; set; }

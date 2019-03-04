@@ -169,7 +169,7 @@ namespace Server.GeneratorTesting
             {
                 foreach (Coord coord in room.EdgeTiles)
                 {
-                    Console.SetCursorPosition(coord.X, coord.Y);
+                    Console.SetCursorPosition(coord.Row, coord.Col);
                     Console.Write('\u25A0');
                 }
             }
@@ -179,7 +179,7 @@ namespace Server.GeneratorTesting
         private static void PaintHero(Map map, Random r)
         {
             Coord randomPositionInMainRoom = map.Rooms[0].Tiles[r.Next(map.Rooms[0].Tiles.Count)];
-            Console.SetCursorPosition(randomPositionInMainRoom.X, randomPositionInMainRoom.Y);
+            Console.SetCursorPosition(randomPositionInMainRoom.Row, randomPositionInMainRoom.Col);
             Console.ForegroundColor = ConsoleColor.Red;
             Console.Write('\u2588');
             Console.ForegroundColor = ConsoleColor.White;
@@ -202,7 +202,7 @@ namespace Server.GeneratorTesting
 
                 foreach (Coord coord in room.Tiles)
                 {
-                    Console.SetCursorPosition(coord.X, coord.Y);
+                    Console.SetCursorPosition(coord.Row, coord.Col);
                     //Console.Write('\u2591');
                     Console.Write('\u2588');
                 }
@@ -217,7 +217,7 @@ namespace Server.GeneratorTesting
 
             foreach (var item in room.Tiles)
             {
-                if (item.X == x && item.Y == y)
+                if (item.Row == x && item.Col == y)
                 {
                     isInRoom = true;
                 }

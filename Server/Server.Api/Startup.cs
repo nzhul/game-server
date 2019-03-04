@@ -67,7 +67,7 @@ namespace Server.Api
             services.AddScoped<IUsersService, UsersService>();
             services.AddScoped<IRealmsService, RealmsService>();
             services.AddScoped<IHeroesService, HeroesService>();
-            services.AddScoped<IValidationService, ValidationService>();
+            services.AddScoped<IAvatarsService, AvatarsService>();
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {

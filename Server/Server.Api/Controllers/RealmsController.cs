@@ -1,15 +1,19 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Server.Api.Helpers;
+using Server.Api.Models.View.Avatars;
 using Server.Api.Models.View.Realms;
 using Server.Data.Services.Abstraction;
 using Server.Models;
+using Server.Models.MapEntities;
 using Server.Models.Realms;
 using Server.Models.Realms.Input;
+using Server.Models.Users;
 
 namespace Server.Api.Controllers
 {
@@ -83,6 +87,7 @@ namespace Server.Api.Controllers
             return Ok();
         }
 
+        //TODO: move to AvatarsController.cs
         [HttpGet("{realmId}/users/{userId}/avatar")]
         [ProducesResponseType(200, Type = typeof(AvatarDetailedDto))]
         public async Task<IActionResult> GetUserAvatarForRealm(int realmId, int userId)
@@ -91,9 +96,36 @@ namespace Server.Api.Controllers
 
             var avatarToReturn = _mapper.Map<AvatarDetailedDto>(avatar);
 
+            if (avatarToReturn != null)
+            {
+                ManualMapDwellings(avatarToReturn, avatar.AvatarDwellings);
+            }
+
             return Ok(avatarToReturn);
         }
 
+        private void ManualMapDwellings(AvatarDetailedDto avatarToReturn, ICollection<AvatarDwelling> avatarDwellings)
+        {
+            avatarToReturn.Dwellings = new List<DwellingDetailedDto>();
+            avatarToReturn.Waypoints = new List<WaypointDto>();
+            foreach (var ad in avatarDwellings)
+            {
+                // Map dwellings
+                var dwellingDto = _mapper.Map<DwellingDetailedDto>(ad.Dwelling);
+                avatarToReturn.Dwellings.Add(dwellingDto);
+
+                // Map Waypoints
+                if (ad.Dwelling.Type == DwellingType.Waypoint)
+                {
+                    var waypointDto = _mapper.Map<WaypointDto>(ad.Dwelling);
+                    avatarToReturn.Waypoints.Add(waypointDto);
+                }
+            }
+            
+            
+        }
+
+        //TODO: move to AvatarsController.cs
         [HttpPost("{realmId}/users/{userId}/avatar")]
         [ProducesResponseType(200, Type = typeof(AvatarDetailedDto))]
         public async Task<IActionResult> CreateHeroOrAvatarWithHero(int realmId, int userId, [FromBody] AvatarWithHeroCreationDto input)

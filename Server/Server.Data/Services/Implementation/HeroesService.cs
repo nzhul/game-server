@@ -28,9 +28,9 @@ namespace Server.Data.Services.Implementation
             return false;
         }
 
-        public async Task<Hero> GetHeroWithRegion(int heroId)
+        public async Task<Hero> GetHero(int heroId)
         {
-            return await _context.Heroes.Include(h => h.Region).FirstOrDefaultAsync(h => h.Id == heroId);
+            return await _context.Heroes.FirstOrDefaultAsync(h => h.Id == heroId);
         }
 
         public async Task<Hero> UpdateHeroPosition(Hero hero, int x, int y)

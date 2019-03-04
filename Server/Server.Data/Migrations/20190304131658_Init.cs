@@ -450,19 +450,25 @@ namespace Server.Data.Migrations
                     X = table.Column<int>(nullable: false),
                     Y = table.Column<int>(nullable: false),
                     Type = table.Column<int>(nullable: false),
-                    OwnerId = table.Column<int>(nullable: false),
-                    OccupiedTilesString = table.Column<string>(nullable: true),
-                    RegionId = table.Column<int>(nullable: true)
+                    OwnerId = table.Column<int>(nullable: true),
+                    RegionId = table.Column<int>(nullable: false),
+                    OccupiedTilesString = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Dwelling", x => x.Id);
                     table.ForeignKey(
+                        name: "FK_Dwelling_Avatars_OwnerId",
+                        column: x => x.OwnerId,
+                        principalTable: "Avatars",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
                         name: "FK_Dwelling_Regions_RegionId",
                         column: x => x.RegionId,
                         principalTable: "Regions",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -617,6 +623,30 @@ namespace Server.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "AvatarDwelling",
+                columns: table => new
+                {
+                    AvatarId = table.Column<int>(nullable: false),
+                    DwellingId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AvatarDwelling", x => new { x.AvatarId, x.DwellingId });
+                    table.ForeignKey(
+                        name: "FK_AvatarDwelling_Avatars_AvatarId",
+                        column: x => x.AvatarId,
+                        principalTable: "Avatars",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_AvatarDwelling_Dwelling_DwellingId",
+                        column: x => x.DwellingId,
+                        principalTable: "Dwelling",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Items",
                 columns: table => new
                 {
@@ -686,6 +716,11 @@ namespace Server.Data.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_AvatarDwelling_DwellingId",
+                table: "AvatarDwelling",
+                column: "DwellingId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Avatars_RealmId",
                 table: "Avatars",
                 column: "RealmId");
@@ -709,6 +744,11 @@ namespace Server.Data.Migrations
                 name: "IX_Castles_RegionId",
                 table: "Castles",
                 column: "RegionId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Dwelling_OwnerId",
+                table: "Dwelling",
+                column: "OwnerId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Dwelling_RegionId",
@@ -811,10 +851,10 @@ namespace Server.Data.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Castles");
+                name: "AvatarDwelling");
 
             migrationBuilder.DropTable(
-                name: "Dwelling");
+                name: "Castles");
 
             migrationBuilder.DropTable(
                 name: "Friendships");
@@ -839,6 +879,9 @@ namespace Server.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "Dwelling");
 
             migrationBuilder.DropTable(
                 name: "CastleBlueprints");

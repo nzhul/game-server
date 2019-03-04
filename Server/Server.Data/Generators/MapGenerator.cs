@@ -124,12 +124,14 @@ namespace Server.Data.Generators
 
             foreach (var room in rooms)
             {
-                Room newRoom = new Room();
-                newRoom.RoomSize = room.roomSize;
-                newRoom.IsMainRoom = room.isMainRoom;
-                newRoom.IsAccessibleFromMainRoom = room.isAccessibleFromMainRoom;
-                newRoom.TilesString = this.StringifyCoordCollection(room.tiles);
-                newRoom.EdgeTilesString = this.StringifyCoordCollection(room.edgeTiles);
+                Room newRoom = new Room
+                {
+                    RoomSize = room.roomSize,
+                    IsMainRoom = room.isMainRoom,
+                    IsAccessibleFromMainRoom = room.isAccessibleFromMainRoom,
+                    TilesString = this.StringifyCoordCollection(room.tiles),
+                    EdgeTilesString = this.StringifyCoordCollection(room.edgeTiles)
+                };
                 dbRooms.Add(newRoom);
             }
 
@@ -139,7 +141,7 @@ namespace Server.Data.Generators
         /// <summary>
         /// Returns a collection of survivingRooms for the map
         /// </summary>
-        List<TempRoom> ProcessMap(int minWallSize, int minRoomSize)
+        private List<TempRoom> ProcessMap(int minWallSize, int minRoomSize)
         {
             List<List<Coord>> wallRegions = GetRegions(1);
 
@@ -149,7 +151,7 @@ namespace Server.Data.Generators
                 {
                     foreach (Coord tile in wallRegion)
                     {
-                        this.Matrix[tile.X, tile.Y] = 0;
+                        this.Matrix[tile.Row, tile.Col] = 0;
                     }
                 }
             }
@@ -164,7 +166,7 @@ namespace Server.Data.Generators
                 {
                     foreach (Coord tile in roomRegion)
                     {
-                        this.Matrix[tile.X, tile.Y] = 1;
+                        this.Matrix[tile.Row, tile.Col] = 1;
                     }
                 }
                 else
@@ -183,7 +185,7 @@ namespace Server.Data.Generators
             return survivingRooms;
         }
 
-        void ConnectClosestRooms(List<TempRoom> allRooms, bool forceAccessibilityFromMainRoom = false)
+        private void ConnectClosestRooms(List<TempRoom> allRooms, bool forceAccessibilityFromMainRoom = false)
         {
             List<TempRoom> roomListA = new List<TempRoom>();
             List<TempRoom> roomListB = new List<TempRoom>();
@@ -240,7 +242,7 @@ namespace Server.Data.Generators
                             Coord tileA = roomA.edgeTiles[tileIndexA];
                             Coord tileB = roomB.edgeTiles[tileIndexB];
 
-                            int distanceBetweenRooms = (int)(Math.Pow(tileA.X - tileB.X, 2) + Math.Pow(tileA.Y - tileB.Y, 2));
+                            int distanceBetweenRooms = (int)(Math.Pow(tileA.Row - tileB.Row, 2) + Math.Pow(tileA.Col - tileB.Col, 2));
                             if (distanceBetweenRooms < bestDistance || !possibleConnectionFound)
                             {
                                 bestDistance = distanceBetweenRooms;
@@ -279,7 +281,7 @@ namespace Server.Data.Generators
         /// <param name="roomB">Second room</param>
         /// <param name="tileA">Closest tile from room A</param>
         /// <param name="tileB">Closest tile from room B</param>
-        void CreatePassage(TempRoom roomA, TempRoom roomB, Coord tileA, Coord tileB)
+        private void CreatePassage(TempRoom roomA, TempRoom roomB, Coord tileA, Coord tileB)
         {
             TempRoom.ConnectRooms(roomA, roomB);
             List<Coord> line = GetLine(tileA, tileB);
@@ -290,7 +292,7 @@ namespace Server.Data.Generators
             }
         }
 
-        void DrawCircle(Coord c, int r)
+        private void DrawCircle(Coord c, int r)
         {
             for (int x = -r; x <= r; x++)
             {
@@ -298,8 +300,8 @@ namespace Server.Data.Generators
                 {
                     if (x * x + y * y <= r * r)
                     {
-                        int realX = c.X + x;
-                        int realY = c.Y + y;
+                        int realX = c.Row + x;
+                        int realY = c.Col + y;
 
                         if (IsInMapRange(realX, realY))
                         {
@@ -310,15 +312,15 @@ namespace Server.Data.Generators
             }
         }
 
-        List<Coord> GetLine(Coord from, Coord to)
+        private List<Coord> GetLine(Coord from, Coord to)
         {
             List<Coord> line = new List<Coord>();
 
-            int x = from.X;
-            int y = from.Y;
+            int x = from.Row;
+            int y = from.Col;
 
-            int dx = to.X - from.X;
-            int dy = to.Y - from.Y;
+            int dx = to.Row - from.Row;
+            int dy = to.Col - from.Col;
 
             bool inverted = false;
 
@@ -378,7 +380,7 @@ namespace Server.Data.Generators
         /// </summary>
         /// <param name="tileType"></param>
         /// <returns></returns>
-        List<List<Coord>> GetRegions(int tileType)
+        private List<List<Coord>> GetRegions(int tileType)
         {
             List<List<Coord>> regions = new List<List<Coord>>();
             int[,] mapFlags = new int[this.Width, this.Height];
@@ -395,7 +397,7 @@ namespace Server.Data.Generators
                         // mark all tiles in the new region as "looked at" so we dont have overlapping regions.
                         foreach (Coord tile in newRegion)
                         {
-                            mapFlags[tile.X, tile.Y] = 1;
+                            mapFlags[tile.Row, tile.Col] = 1;
                         }
                     }
                 }
@@ -410,7 +412,7 @@ namespace Server.Data.Generators
         /// <param name="startX"></param>
         /// <param name="startY"></param>
         /// <returns></returns>
-        List<Coord> GetRegionTiles(int startX, int startY)
+        private List<Coord> GetRegionTiles(int startX, int startY)
         {
             List<Coord> tiles = new List<Coord>();
             int[,] mapFlags = new int[this.Width, this.Height];
@@ -425,11 +427,11 @@ namespace Server.Data.Generators
                 Coord tile = queue.Dequeue();
                 tiles.Add(tile);
 
-                for (int x = tile.X - 1; x <= tile.X + 1; x++)
+                for (int x = tile.Row - 1; x <= tile.Row + 1; x++)
                 {
-                    for (int y = tile.Y - 1; y <= tile.Y + 1; y++)
+                    for (int y = tile.Col - 1; y <= tile.Col + 1; y++)
                     {
-                        if (IsInMapRange(x, y) && (y == tile.Y || x == tile.X))
+                        if (IsInMapRange(x, y) && (y == tile.Col || x == tile.Row))
                         {
                             if (mapFlags[x, y] == 0 && this.Matrix[x, y] == tileType)
                             {
@@ -444,7 +446,7 @@ namespace Server.Data.Generators
             return tiles;
         }
 
-        void SmoothMap()
+        private void SmoothMap()
         {
             for (int x = 0; x < this.Width; x++)
             {
@@ -464,7 +466,7 @@ namespace Server.Data.Generators
             }
         }
 
-        int GetSurroundingWallCount(int gridX, int gridY)
+        private int GetSurroundingWallCount(int gridX, int gridY)
         {
             int wallCount = 0;
             for (int neighbourX = gridX - 1; neighbourX <= gridX + 1; neighbourX++)
@@ -488,12 +490,12 @@ namespace Server.Data.Generators
             return wallCount;
         }
 
-        bool IsInMapRange(int x, int y)
+        private bool IsInMapRange(int x, int y)
         {
             return x >= 0 && x < this.Width && y >= 0 && y < this.Height;
         }
 
-        void RandomFillMap(int width, int height, int randomFillPercent)
+        private void RandomFillMap(int width, int height, int randomFillPercent)
         {
             Random r = new Random(this.Seed.GetHashCode());
 
@@ -514,13 +516,13 @@ namespace Server.Data.Generators
             }
         }
 
-        string StringifyCoordCollection(List<Coord> coordinates)
+        private string StringifyCoordCollection(List<Coord> coordinates)
         {
             StringBuilder sb = new StringBuilder();
 
             foreach (var coord in coordinates)
             {
-                sb.Append($"{coord.X}:{coord.Y};");
+                sb.Append($"{coord.Row}:{coord.Col};");
             }
 
             return sb.ToString();
@@ -570,9 +572,12 @@ namespace Server.Data.Generators
             Coord castlePosition = this.TryGetSafePosition(mainRoom, PlacementStrategy.FarFromEdge, 4, SpaceRequirements.Dwellings[DwellingType.Castle]);
             this.MarkPositionAsOccupied(castlePosition, SpaceRequirements.Dwellings[DwellingType.Castle], mainRoom);
             CreateDwelling("CastleName", emptyMap, castlePosition, DwellingType.Castle);
-            emptyMap.InitialHeroPosition = new Coord(castlePosition.X - 1, castlePosition.Y);
+            emptyMap.InitialHeroPosition = new Coord(castlePosition.Col, castlePosition.Row - 1);
 
-            // 2. Place wood mines -> min 2 - max 4
+            // 2. Place waypoint
+            PlaceDwelling(emptyMap, "Waypoint", DwellingType.Waypoint, 1, 1);
+
+            // 3. Place wood mines -> min 2 - max 4
             PlaceDwelling(emptyMap, "WoodMine", DwellingType.WoodMine, 2, 3);
 
             PlaceDwelling(emptyMap, "StoneMine", DwellingType.StoneMine, 2, 3);
@@ -585,20 +590,20 @@ namespace Server.Data.Generators
             // repeat this process untill safe position is found.
 
 
-            // 3. Place gold mine -> min 0 - max 2
+            // 4. Place gold mine -> min 0 - max 2
             if (!MapIsFullForDwellings)
             {
 
             }
 
-            // 4. Place other mines -> min 2 - max 4
+            // 5. Place other mines -> min 2 - max 4
 
             if (!MapIsFullForDwellings)
             {
 
             }
 
-            // 5. Place monsters
+            // 6. Place monsters
 
             if (!MapIsFullForMonstersOrTreasure)
             {
@@ -631,8 +636,8 @@ namespace Server.Data.Generators
             MonsterPack monster = new MonsterPack()
             {
                 Type = MonsterType.Spider,
-                X = position.X,
-                Y = position.Y,
+                X = position.Col,
+                Y = position.Row,
                 Name = name + DateTime.Now.Ticks.ToString(),
                 OccupiedTilesString = this.StringifyCoordCollection(this.ApplyPointShift(position, SpaceRequirements.Monsters[type])),
                 Disposition = Disposition.Savage,
@@ -671,8 +676,8 @@ namespace Server.Data.Generators
             Dwelling dwelling = new Dwelling()
             {
                 Type = type,
-                X = position.X,
-                Y = position.Y,
+                X = position.Col,
+                Y = position.Row,
                 Name = name + DateTime.Now.Ticks.ToString(),
                 //OwnerId = 1, //TODO: pass this as parameter in MapGeneration function.
                 OccupiedTilesString = this.StringifyCoordCollection(this.ApplyPointShift(position, SpaceRequirements.Dwellings[type])),
@@ -685,11 +690,11 @@ namespace Server.Data.Generators
         {
             foreach (Coord offset in additionalRequiredSpace)
             {
-                Coord updatedCoord = new Coord(safePosition.X + offset.X, safePosition.Y + offset.Y);
-                this.PopulatedMatrix[updatedCoord.X, updatedCoord.Y] = 3;
+                Coord updatedCoord = new Coord(safePosition.Row + offset.Row, safePosition.Col + offset.Col);
+                this.PopulatedMatrix[updatedCoord.Row, updatedCoord.Col] = 3;
                 room.FreeCellsLeft--;
             }
-            this.PopulatedMatrix[safePosition.X, safePosition.Y] = 2;
+            this.PopulatedMatrix[safePosition.Row, safePosition.Col] = 2;
             room.FreeCellsLeft--;
         }
 
@@ -735,7 +740,7 @@ namespace Server.Data.Generators
 
             foreach (var item in list)
             {
-                updatedList.Add(new Coord(position.X + item.X, position.Y + item.Y));
+                updatedList.Add(new Coord(position.Col + item.Col, position.Row + item.Row));
             }
 
             return updatedList;
@@ -788,7 +793,7 @@ namespace Server.Data.Generators
 
             if (positionIsSafe)
             {
-                this.TempRoomTiles.RemoveAll(t => t.X == position.X && t.Y == position.Y);
+                this.TempRoomTiles.RemoveAll(t => t.Row == position.Row && t.Col == position.Col);
                 return position;
             }
 
@@ -867,7 +872,7 @@ namespace Server.Data.Generators
 
         private int GetDistanceFromEdge(Coord coord, CheckDirection direction)
         {
-            Coord shiftingCoord = new Coord(coord.X, coord.Y);
+            Coord shiftingCoord = new Coord(coord.Row, coord.Col);
 
             int XOffset = 0;
             int YOffset = 0;
@@ -901,8 +906,8 @@ namespace Server.Data.Generators
                 }
                 else
                 {
-                    shiftingCoord.X += XOffset;
-                    shiftingCoord.Y += YOffset;
+                    shiftingCoord.Row += XOffset;
+                    shiftingCoord.Col += YOffset;
                     distance++;
                 }
             }
@@ -912,7 +917,7 @@ namespace Server.Data.Generators
 
         private bool IsOnEdge(List<Coord> edges, Coord coord)
         {
-            return edges.Any(t => t.X == coord.X && t.Y == coord.Y);
+            return edges.Any(t => t.Row == coord.Row && t.Col == coord.Col);
         }
 
         //TODO: test if this is working!
@@ -920,15 +925,15 @@ namespace Server.Data.Generators
         {
             bool colliding = false;
 
-            if (this.PopulatedMatrix[coord.X, coord.Y] != 0)
+            if (this.PopulatedMatrix[coord.Row, coord.Col] != 0)
             {
                 colliding = true;
             }
 
             foreach (Coord offset in additionalRequiredSpace)
             {
-                Coord updatedCoord = new Coord(coord.X + offset.X, coord.Y + offset.Y);
-                if (this.PopulatedMatrix[updatedCoord.X, updatedCoord.Y] != 0)
+                Coord updatedCoord = new Coord(coord.Row + offset.Row, coord.Col + offset.Col);
+                if (this.PopulatedMatrix[updatedCoord.Row, updatedCoord.Col] != 0)
                 {
                     colliding = true;
                 }
@@ -964,11 +969,11 @@ namespace Server.Data.Generators
 
                 foreach (Coord tile in tiles)
                 {
-                    for (int x = tile.X - 1; x <= tile.X + 1; x++)
+                    for (int x = tile.Row - 1; x <= tile.Row + 1; x++)
                     {
-                        for (int y = tile.Y - 1; y <= tile.Y + 1; y++)
+                        for (int y = tile.Col - 1; y <= tile.Col + 1; y++)
                         {
-                            if (x == tile.X || y == tile.Y)
+                            if (x == tile.Row || y == tile.Col)
                             {
                                 if (map[x, y] == 1)
                                 {

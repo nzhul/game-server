@@ -1,14 +1,30 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations.Schema;
 using Server.Models.Parsers;
+using Server.Models.Realms;
+using Server.Models.Users;
 
 namespace Server.Models.MapEntities
 {
     public class Dwelling : MapEntity
     {
+        public Dwelling()
+        {
+            this.AvatarDwellings = new Collection<AvatarDwelling>();
+        }
+
+        public virtual ICollection<AvatarDwelling> AvatarDwellings { get; set; }
+
         public DwellingType Type { get; set; }
 
-        public int OwnerId { get; set; }
+        public int? OwnerId { get; set; }
+
+        public Avatar Owner { get; set; }
+
+        public int RegionId { get; set; }
+
+        public Region Region { get; set; }
 
         private string _occupiedTilesString;
 

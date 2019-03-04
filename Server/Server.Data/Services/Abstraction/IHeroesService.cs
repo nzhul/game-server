@@ -5,7 +5,7 @@ namespace Server.Data.Services.Abstraction
 {
     public interface IHeroesService : IService
     {
-        Task<Hero> GetHeroWithRegion(int heroId);
+        Task<Hero> GetHero(int heroId);
 
         Task<bool> DeleteHero(int heroId);
 

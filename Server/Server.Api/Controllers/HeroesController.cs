@@ -4,6 +4,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Server.Data.Services.Abstraction;
+using Server.Models.Heroes;
 
 namespace Server.Api.Controllers
 {
@@ -32,6 +33,22 @@ namespace Server.Api.Controllers
             if (result)
             {
                 return NoContent();
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
+        [HttpPut("heroes/{heroId}/{x}/{y}")]
+        public async Task<IActionResult> UpdateHeroPosition(int heroId, int x, int y)
+        {
+            Hero dbHero = await _heroesService.GetHero(heroId);
+
+            if (dbHero != null)
+            {
+                await _heroesService.UpdateHeroPosition(dbHero, x, y);
+                return Ok();
             }
             else
             {
