@@ -1,7 +1,7 @@
-﻿using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Server.Data.Services.Abstraction;
 using Server.Models.Heroes;
+using System.Threading.Tasks;
 
 namespace Server.Data.Services.Implementation
 {
@@ -33,10 +33,19 @@ namespace Server.Data.Services.Implementation
             return await _context.Heroes.FirstOrDefaultAsync(h => h.Id == heroId);
         }
 
-        public async Task<Hero> UpdateHeroPosition(Hero hero, int x, int y)
+        public async Task<Hero> UpdateHeroPosition(Hero hero, int x, int y, int regionId)
         {
             hero.X = x;
             hero.Y = y;
+
+            if (hero.RegionId != regionId)
+            {
+                var oldRegion = await _context.Regions.FirstOrDefaultAsync(r => r.Id == hero.RegionId);
+                oldRegion.Heroes.Remove(hero);
+
+                var newRegion = await _context.Regions.FirstOrDefaultAsync(r => r.Id == regionId);
+                newRegion.Heroes.Add(hero);
+            }
 
             await base.SaveAll();
 

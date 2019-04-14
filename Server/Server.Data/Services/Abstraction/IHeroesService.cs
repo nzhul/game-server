@@ -9,6 +9,6 @@ namespace Server.Data.Services.Abstraction
 
         Task<bool> DeleteHero(int heroId);
 
-        Task<Hero> UpdateHeroPosition(Hero hero, int x, int y);
+        Task<Hero> UpdateHeroPosition(Hero hero, int x, int y, int regionId);
     }
 }

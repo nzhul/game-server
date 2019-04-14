@@ -153,7 +153,7 @@ namespace Server.Data.Services.Implementation
 
                     // TODO: this line is not tested!
                     // Info: with every new user/avatar created in any realm - we will create new Region that will be "His special starting zone realm"
-                    Region region = await this.CreateRegion("RegionName_" + DateTime.UtcNow.Ticks.ToString(), 1, dbRealm);
+                    Region region = await this.CreateRegion("R_" + DateTime.UtcNow.Ticks.ToString(), 1, dbRealm);
 
                     if (avatarInThisRealm == null)
                     {
