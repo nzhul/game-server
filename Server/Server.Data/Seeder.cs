@@ -145,20 +145,8 @@ namespace Server.Data
                     _userManager.AddToRoleAsync(user, "User").Wait();
                 }
 
-                var adminUser = new User
-                {
-                    UserName = "nzhul",
-                    Gender = "male",
-                    Email = "dobromirivanov1@gmail.com"
-                };
-
-                IdentityResult result = _userManager.CreateAsync(adminUser, "password").Result;
-
-                if (result.Succeeded)
-                {
-                    var admin = _userManager.FindByNameAsync("nzhul").Result;
-                    _userManager.AddToRolesAsync(admin, new[] { "Admin", "Moderator", "VIP", "User" }).Wait();
-                }
+                AddAdminUser(_userManager, "nzhul", "dobromirivanov1@gmail.com");
+                AddAdminUser(_userManager, "system", "system@email.com");
 
                 _context.SaveChanges();
             }
@@ -252,6 +240,24 @@ namespace Server.Data
 
             //}
 
+        }
+
+        private static void AddAdminUser(UserManager<User> _userManager, string username, string email)
+        {
+            var adminUser = new User
+            {
+                UserName = username,
+                Gender = "male",
+                Email = email
+            };
+
+            IdentityResult result = _userManager.CreateAsync(adminUser, "password").Result;
+
+            if (result.Succeeded)
+            {
+                var admin = _userManager.FindByNameAsync(username).Result;
+                _userManager.AddToRolesAsync(admin, new[] { "Admin", "Moderator", "VIP", "User" }).Wait();
+            }
         }
 
         private static ICollection<HeroBlueprint> InitializeHeroBluePrints(DataContext _context)

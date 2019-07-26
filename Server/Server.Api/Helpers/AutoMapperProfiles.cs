@@ -23,7 +23,7 @@ namespace Server.Api.Helpers
             })
             .ForMember(dest => dest.Age, opt =>
             {
-                opt.ResolveUsing(d => d.DateOfBirth.CalculateAge());
+                opt.MapFrom(d => d.DateOfBirth.CalculateAge());
             });
 
             CreateMap<User, UserForDetailedDto>()
@@ -33,7 +33,7 @@ namespace Server.Api.Helpers
             })
             .ForMember(dest => dest.Age, opt =>
             {
-                opt.ResolveUsing(d => d.DateOfBirth.CalculateAge());
+                opt.MapFrom(d => d.DateOfBirth.CalculateAge());
             });
 
             CreateMap<Photo, PhotosForDetailedDto>();
@@ -52,7 +52,7 @@ namespace Server.Api.Helpers
             CreateMap<Realm, RealmListItemDto>()
                 .ForMember(x => x.AvatarsCount, opt =>
                 {
-                    opt.ResolveUsing(d => d.Avatars.Count);
+                    opt.MapFrom(d => d.Avatars.Count);
                 })
                 .ForMember(x => x.RealmType, opt => opt.MapFrom(u => u.Type.ToString()))
                 .ForMember(x => x.ResetDate, opt => opt.MapFrom(u => u.ResetDate.ToString("dd MMMM yyyy")));
