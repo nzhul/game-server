@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Server.Models;
+using Server.Models.Heroes;
 using Server.Models.MapEntities;
 using Server.Models.Realms;
 
@@ -619,7 +620,7 @@ namespace Server.Data.Generators
                     Room randomRoom = this.GetRandomRoom(availibleRooms); //TODO: keep in mind that there might not be availible rooms and this can fail!
                     this.ResetTempVariables(randomRoom);
 
-                    var monsterType = MonsterType.Spider;
+                    var monsterType = CreatureType.Spider;
                     var spaceRequired = SpaceRequirements.Monsters[monsterType];
                     Coord monsterPosition = this.TryGetSafePosition(randomRoom, PlacementStrategy.Random, 2, spaceRequired);
                     this.MarkPositionAsOccupied(monsterPosition, spaceRequired, randomRoom);
@@ -631,22 +632,58 @@ namespace Server.Data.Generators
             return emptyMap;
         }
 
-        private void CreateMonster(string name, Map emptyMap, Coord position, MonsterType type)
+        private void CreateMonster(string name, Map emptyMap, Coord position, CreatureType type)
         {
-            MonsterPack monster = new MonsterPack()
+            Hero neutralHero = new Hero()
             {
-                Type = MonsterType.Spider,
+                Type = HeroType.Placeholder,
                 X = position.Col,
                 Y = position.Row,
                 Name = name + DateTime.Now.Ticks.ToString(),
-                OccupiedTilesString = this.StringifyCoordCollection(this.ApplyPointShift(position, SpaceRequirements.Monsters[type])),
-                Disposition = Disposition.Savage,
-                // ItemReward = this.GetRandomLevel1Item(); - call cached version of database for ItemBluePrint with the required level
-                Quantity = rand.Next(5, 10),
-                RewardType = TreasureType.Gold,
+                NPCData = new NPCData
+                {
+                    OccupiedTilesString = this.StringifyCoordCollection(this.ApplyPointShift(position, SpaceRequirements.Monsters[type])),
+                    Disposition = Disposition.Savage,
+                    // ItemReward = this.GetRandomLevel1Item(); - call cached version of database for ItemBluePrint with the required level,
+                    RewardType = TreasureType.Gold,
+                },
+                IsNPC = true
             };
 
-            emptyMap.MonsterPacks.Add(monster);
+            this.AddUnitsToHero(neutralHero);
+
+            emptyMap.Heroes.Add(neutralHero);
+        }
+
+        private void AddUnitsToHero(Hero neutralHero)
+        {
+            var unit1 = new Unit
+            {
+                Quantity = 1,
+                Type = CreatureType.Swordsman,
+                X = 0,
+                Y = 0
+            };
+
+            var unit2 = new Unit
+            {
+                Quantity = 2,
+                Type = CreatureType.Spider,
+                X = 0,
+                Y = 0
+            };
+
+            var unit3 = new Unit
+            {
+                Quantity = 2,
+                Type = CreatureType.Mage,
+                X = 0,
+                Y = 0
+            };
+
+            neutralHero.Units.Add(unit1);
+            neutralHero.Units.Add(unit2);
+            neutralHero.Units.Add(unit3);
         }
 
         private void PlaceDwelling(Map emptyMap, string name, DwellingType type, int minCount, int maxCount)

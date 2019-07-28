@@ -58,7 +58,9 @@ namespace Server.Api.Helpers
                 .ForMember(x => x.ResetDate, opt => opt.MapFrom(u => u.ResetDate.ToString("dd MMMM yyyy")));
 
             // REGIONS
-            CreateMap<Region, RegionDetailedDto>();
+            CreateMap<Region, RegionDetailedDto>()
+                .ForMember(x => x.Heroes, opt => opt.MapFrom(u => u.Heroes.Where(h => !h.IsNPC)))
+                .ForMember(x => x.NpcHeroes, opt => opt.MapFrom(u => u.Heroes.Where(h => h.IsNPC)));
             CreateMap<Room, RoomDetailedDto>();
 
             // DWELLINGS
@@ -77,6 +79,9 @@ namespace Server.Api.Helpers
                 {
                     opt.MapFrom(u => u.Heroes);
                 });
+
+            // UNITS
+            CreateMap<Unit, UnitDetailedDto>();
 
             // BLUEPRINTS
             CreateMap<HeroBlueprint, Hero>()

@@ -1,4 +1,7 @@
-﻿using System;
+﻿using Server.Models.Heroes;
+using Server.Models.MapEntities;
+using System;
+using System.Collections.Generic;
 
 namespace Server.Api.Models.View.Realms
 {
@@ -9,6 +12,8 @@ namespace Server.Api.Models.View.Realms
         public int X { get; set; }
 
         public int Y { get; set; }
+
+        public HeroType Type { get; set; }
 
         public string Name { get; set; }
 
@@ -45,5 +50,11 @@ namespace Server.Api.Models.View.Realms
         public string Class { get; set; }
 
         public string RegionId { get; set; }
+
+        public NPCData NPCData { get; set; }
+
+        public bool IsNPC { get; set; }
+
+        public ICollection<UnitDetailedDto> Units { get; set; }
     }
 }

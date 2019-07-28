@@ -9,7 +9,7 @@ namespace Server.Data.Generators
         static SpaceRequirements()
         {
             Dwellings = new Dictionary<DwellingType, List<Coord>>();
-            Monsters = new Dictionary<MonsterType, List<Coord>>();
+            Monsters = new Dictionary<CreatureType, List<Coord>>();
 
             //  □□□
             // □□□□□
@@ -67,13 +67,13 @@ namespace Server.Data.Generators
 
 
             // ■
-            Monsters.Add(MonsterType.Spider, new List<Coord>()
+            Monsters.Add(CreatureType.Spider, new List<Coord>()
             {
                 new Coord { Row = 0, Col = 0 }
             });
         }
         public static Dictionary<DwellingType, List<Coord>> Dwellings { get; set; }
 
-        public static Dictionary<MonsterType, List<Coord>> Monsters { get; set; }
+        public static Dictionary<CreatureType, List<Coord>> Monsters { get; set; }
     }
 }

@@ -10,14 +10,14 @@ using Server.Data;
 namespace Server.Data.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20190304131658_Init")]
+    [Migration("20190728132248_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.1.4-rtm-31024")
+                .HasAnnotation("ProductVersion", "2.2.6-servicing-10079")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -151,6 +151,8 @@ namespace Server.Data.Migrations
 
                     b.Property<int>("Health");
 
+                    b.Property<bool>("IsNPC");
+
                     b.Property<DateTime>("LastActivity");
 
                     b.Property<int>("Level");
@@ -169,6 +171,8 @@ namespace Server.Data.Migrations
 
                     b.Property<string>("ModifiedBy");
 
+                    b.Property<int?>("NPCDataId");
+
                     b.Property<string>("Name");
 
                     b.Property<int>("PersonalAttack");
@@ -179,6 +183,8 @@ namespace Server.Data.Migrations
 
                     b.Property<long>("TimePlayedTicks");
 
+                    b.Property<int>("Type");
+
                     b.Property<int>("X");
 
                     b.Property<int>("Y");
@@ -188,6 +194,8 @@ namespace Server.Data.Migrations
                     b.HasIndex("AvatarId");
 
                     b.HasIndex("BlueprintId");
+
+                    b.HasIndex("NPCDataId");
 
                     b.HasIndex("RegionId");
 
@@ -241,6 +249,37 @@ namespace Server.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("HeroBlueprints");
+                });
+
+            modelBuilder.Entity("Server.Models.Heroes.Unit", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("CreatedAt");
+
+                    b.Property<string>("CreatedBy");
+
+                    b.Property<int?>("HeroId");
+
+                    b.Property<DateTime>("ModifiedAt");
+
+                    b.Property<string>("ModifiedBy");
+
+                    b.Property<int>("Quantity");
+
+                    b.Property<int>("Type");
+
+                    b.Property<int>("X");
+
+                    b.Property<int>("Y");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("HeroId");
+
+                    b.ToTable("Unit");
                 });
 
             modelBuilder.Entity("Server.Models.Items.Item", b =>
@@ -332,31 +371,19 @@ namespace Server.Data.Migrations
                     b.ToTable("Dwelling");
                 });
 
-            modelBuilder.Entity("Server.Models.MapEntities.MonsterPack", b =>
+            modelBuilder.Entity("Server.Models.MapEntities.NPCData", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<DateTime>("CreatedAt");
-
-                    b.Property<string>("CreatedBy");
-
                     b.Property<int>("Disposition");
 
                     b.Property<int?>("ItemRewardId");
 
-                    b.Property<DateTime>("ModifiedAt");
-
-                    b.Property<string>("ModifiedBy");
-
-                    b.Property<string>("Name");
+                    b.Property<int>("MapRepresentation");
 
                     b.Property<string>("OccupiedTilesString");
-
-                    b.Property<int>("Quantity");
-
-                    b.Property<int?>("RegionId");
 
                     b.Property<int>("RewardQuantity");
 
@@ -366,19 +393,11 @@ namespace Server.Data.Migrations
 
                     b.Property<int>("TroopsRewardType");
 
-                    b.Property<int>("Type");
-
-                    b.Property<int>("X");
-
-                    b.Property<int>("Y");
-
                     b.HasKey("Id");
 
                     b.HasIndex("ItemRewardId");
 
-                    b.HasIndex("RegionId");
-
-                    b.ToTable("MonsterPack");
+                    b.ToTable("NPCData");
                 });
 
             modelBuilder.Entity("Server.Models.MapEntities.Treasure", b =>
@@ -820,9 +839,20 @@ namespace Server.Data.Migrations
                         .WithMany()
                         .HasForeignKey("BlueprintId");
 
+                    b.HasOne("Server.Models.MapEntities.NPCData", "NPCData")
+                        .WithMany()
+                        .HasForeignKey("NPCDataId");
+
                     b.HasOne("Server.Models.Realms.Region", "Region")
                         .WithMany("Heroes")
                         .HasForeignKey("RegionId");
+                });
+
+            modelBuilder.Entity("Server.Models.Heroes.Unit", b =>
+                {
+                    b.HasOne("Server.Models.Heroes.Hero", "Hero")
+                        .WithMany("Units")
+                        .HasForeignKey("HeroId");
                 });
 
             modelBuilder.Entity("Server.Models.Items.Item", b =>
@@ -849,15 +879,11 @@ namespace Server.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("Server.Models.MapEntities.MonsterPack", b =>
+            modelBuilder.Entity("Server.Models.MapEntities.NPCData", b =>
                 {
                     b.HasOne("Server.Models.Items.ItemBlueprint", "ItemReward")
                         .WithMany()
                         .HasForeignKey("ItemRewardId");
-
-                    b.HasOne("Server.Models.Realms.Region")
-                        .WithMany("MonsterPacks")
-                        .HasForeignKey("RegionId");
                 });
 
             modelBuilder.Entity("Server.Models.MapEntities.Treasure", b =>

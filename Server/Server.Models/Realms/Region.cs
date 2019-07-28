@@ -24,8 +24,6 @@ namespace Server.Models.Realms
 
         public ICollection<Castle> Castles { get; set; }
 
-        public ICollection<MonsterPack> MonsterPacks { get; set; }
-
         public ICollection<Treasure> Treasures { get; set; }
 
         public ICollection<Dwelling> Dwellings { get; set; }
@@ -35,7 +33,6 @@ namespace Server.Models.Realms
             this.Rooms = new Collection<Room>();
             this.Heroes = new Collection<Hero>();
             this.Castles = new Collection<Castle>();
-            this.MonsterPacks = new Collection<MonsterPack>();
             this.Treasures = new Collection<Treasure>();
             this.Dwellings = new Collection<Dwelling>();
         }

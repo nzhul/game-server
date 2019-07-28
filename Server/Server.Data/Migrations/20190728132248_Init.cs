@@ -344,6 +344,32 @@ namespace Server.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "NPCData",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    MapRepresentation = table.Column<int>(nullable: false),
+                    Disposition = table.Column<int>(nullable: false),
+                    RewardType = table.Column<int>(nullable: false),
+                    RewardQuantity = table.Column<int>(nullable: false),
+                    ItemRewardId = table.Column<int>(nullable: true),
+                    TroopsRewardType = table.Column<int>(nullable: false),
+                    TroopsRewardQuantity = table.Column<int>(nullable: false),
+                    OccupiedTilesString = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_NPCData", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_NPCData_ItemBlueprints_ItemRewardId",
+                        column: x => x.ItemRewardId,
+                        principalTable: "ItemBlueprints",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Avatars",
                 columns: table => new
                 {
@@ -484,8 +510,6 @@ namespace Server.Data.Migrations
                     Name = table.Column<string>(nullable: true),
                     X = table.Column<int>(nullable: false),
                     Y = table.Column<int>(nullable: false),
-                    LastActivity = table.Column<DateTime>(nullable: false),
-                    TimePlayedTicks = table.Column<long>(nullable: false),
                     Level = table.Column<int>(nullable: false),
                     Attack = table.Column<int>(nullable: false),
                     Defence = table.Column<int>(nullable: false),
@@ -498,6 +522,11 @@ namespace Server.Data.Migrations
                     MinDamage = table.Column<int>(nullable: false),
                     MaxDamage = table.Column<int>(nullable: false),
                     MagicResistance = table.Column<int>(nullable: false),
+                    Type = table.Column<int>(nullable: false),
+                    LastActivity = table.Column<DateTime>(nullable: false),
+                    TimePlayedTicks = table.Column<long>(nullable: false),
+                    NPCDataId = table.Column<int>(nullable: true),
+                    IsNPC = table.Column<bool>(nullable: false),
                     BlueprintId = table.Column<int>(nullable: true),
                     RegionId = table.Column<int>(nullable: true),
                     AvatarId = table.Column<int>(nullable: true)
@@ -518,48 +547,13 @@ namespace Server.Data.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
+                        name: "FK_Heroes_NPCData_NPCDataId",
+                        column: x => x.NPCDataId,
+                        principalTable: "NPCData",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
                         name: "FK_Heroes_Regions_RegionId",
-                        column: x => x.RegionId,
-                        principalTable: "Regions",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "MonsterPack",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    CreatedBy = table.Column<string>(nullable: true),
-                    CreatedAt = table.Column<DateTime>(nullable: false),
-                    ModifiedBy = table.Column<string>(nullable: true),
-                    ModifiedAt = table.Column<DateTime>(nullable: false),
-                    Name = table.Column<string>(nullable: true),
-                    X = table.Column<int>(nullable: false),
-                    Y = table.Column<int>(nullable: false),
-                    Type = table.Column<int>(nullable: false),
-                    Quantity = table.Column<int>(nullable: false),
-                    Disposition = table.Column<int>(nullable: false),
-                    RewardType = table.Column<int>(nullable: false),
-                    RewardQuantity = table.Column<int>(nullable: false),
-                    ItemRewardId = table.Column<int>(nullable: true),
-                    TroopsRewardType = table.Column<int>(nullable: false),
-                    TroopsRewardQuantity = table.Column<int>(nullable: false),
-                    OccupiedTilesString = table.Column<string>(nullable: true),
-                    RegionId = table.Column<int>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_MonsterPack", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_MonsterPack_ItemBlueprints_ItemRewardId",
-                        column: x => x.ItemRewardId,
-                        principalTable: "ItemBlueprints",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_MonsterPack_Regions_RegionId",
                         column: x => x.RegionId,
                         principalTable: "Regions",
                         principalColumn: "Id",
@@ -676,6 +670,33 @@ namespace Server.Data.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Unit",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    CreatedBy = table.Column<string>(nullable: true),
+                    CreatedAt = table.Column<DateTime>(nullable: false),
+                    ModifiedBy = table.Column<string>(nullable: true),
+                    ModifiedAt = table.Column<DateTime>(nullable: false),
+                    X = table.Column<int>(nullable: false),
+                    Y = table.Column<int>(nullable: false),
+                    Type = table.Column<int>(nullable: false),
+                    Quantity = table.Column<int>(nullable: false),
+                    HeroId = table.Column<int>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Unit", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Unit_Heroes_HeroId",
+                        column: x => x.HeroId,
+                        principalTable: "Heroes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -771,6 +792,11 @@ namespace Server.Data.Migrations
                 column: "BlueprintId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Heroes_NPCDataId",
+                table: "Heroes",
+                column: "NPCDataId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Heroes_RegionId",
                 table: "Heroes",
                 column: "RegionId");
@@ -796,14 +822,9 @@ namespace Server.Data.Migrations
                 column: "SenderId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_MonsterPack_ItemRewardId",
-                table: "MonsterPack",
+                name: "IX_NPCData_ItemRewardId",
+                table: "NPCData",
                 column: "ItemRewardId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_MonsterPack_RegionId",
-                table: "MonsterPack",
-                column: "RegionId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Photos_UserId",
@@ -831,6 +852,11 @@ namespace Server.Data.Migrations
                 name: "IX_Treasure_RegionId",
                 table: "Treasure",
                 column: "RegionId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Unit_HeroId",
+                table: "Unit",
+                column: "HeroId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -866,9 +892,6 @@ namespace Server.Data.Migrations
                 name: "Messages");
 
             migrationBuilder.DropTable(
-                name: "MonsterPack");
-
-            migrationBuilder.DropTable(
                 name: "Photos");
 
             migrationBuilder.DropTable(
@@ -876,6 +899,9 @@ namespace Server.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "Treasure");
+
+            migrationBuilder.DropTable(
+                name: "Unit");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
@@ -890,19 +916,22 @@ namespace Server.Data.Migrations
                 name: "Heroes");
 
             migrationBuilder.DropTable(
-                name: "ItemBlueprints");
-
-            migrationBuilder.DropTable(
                 name: "Avatars");
 
             migrationBuilder.DropTable(
                 name: "HeroBlueprints");
 
             migrationBuilder.DropTable(
+                name: "NPCData");
+
+            migrationBuilder.DropTable(
                 name: "Regions");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "ItemBlueprints");
 
             migrationBuilder.DropTable(
                 name: "Realms");

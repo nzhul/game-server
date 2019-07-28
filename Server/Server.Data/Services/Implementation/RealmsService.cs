@@ -39,7 +39,6 @@ namespace Server.Data.Services.Implementation
                 .Include(r => r.Regions).ThenInclude(c => c.Rooms) // Do not wonder why you cannot see nested entities :)
                 .Include(r => r.Regions).ThenInclude(c => c.Heroes) // Not sure about this duplication ?
                 .Include(r => r.Regions).ThenInclude(c => c.Castles)
-                .Include(r => r.Regions).ThenInclude(c => c.MonsterPacks)
                 .FirstOrDefaultAsync(r => r.Id == id);
         }
 
@@ -121,6 +120,7 @@ namespace Server.Data.Services.Implementation
         {
             var avatars = await _context.Avatars
                 .Include(a => a.Heroes).ThenInclude(x => x.Blueprint)
+                .Include(a => a.Heroes).ThenInclude(x => x.Units)
                 .Include(a => a.AvatarDwellings).ThenInclude(x => x.Dwelling).ThenInclude(x => x.Region)
                 .FirstOrDefaultAsync(a => a.RealmId == realmId && a.UserId == userId);
 
@@ -224,7 +224,40 @@ namespace Server.Data.Services.Implementation
             newHero.Avatar = avatar;
             newHero.Blueprint = blueprint;
 
+            this.AddUnitsToHero(newHero);
+
             return newHero;
+        }
+
+        private void AddUnitsToHero(Hero neutralHero)
+        {
+            var unit1 = new Unit
+            {
+                Quantity = 1,
+                Type = CreatureType.Swordsman,
+                X = 0,
+                Y = 0
+            };
+
+            var unit2 = new Unit
+            {
+                Quantity = 2,
+                Type = CreatureType.Spider,
+                X = 0,
+                Y = 0
+            };
+
+            var unit3 = new Unit
+            {
+                Quantity = 2,
+                Type = CreatureType.Mage,
+                X = 0,
+                Y = 0
+            };
+
+            neutralHero.Units.Add(unit1);
+            neutralHero.Units.Add(unit2);
+            neutralHero.Units.Add(unit3);
         }
 
         private async Task<Region> CreateRegion(string name, int level, Realm realm)
@@ -265,9 +298,13 @@ namespace Server.Data.Services.Implementation
             newRegion.MatrixString = generatedMap.MatrixString;
             newRegion.Rooms = generatedMap.Rooms;
             newRegion.Dwellings = generatedMap.Dwellings;
-            newRegion.MonsterPacks = generatedMap.MonsterPacks;
             newRegion.Treasures = generatedMap.Treasures;
             newRegion.InitialHeroPosition = generatedMap.InitialHeroPosition;
+
+            foreach (var hero in generatedMap.Heroes)
+            {
+                newRegion.Heroes.Add(hero);
+            }
 
             _context.Regions.Add(newRegion);
             await _context.SaveChangesAsync();
@@ -386,9 +423,9 @@ namespace Server.Data.Services.Implementation
         {
             var regions = await _context.Regions
                 .Include(r => r.Rooms)
-                .Include(r => r.Heroes)
+                .Include(r => r.Heroes).ThenInclude(r => r.NPCData)
+                .Include(r => r.Heroes).ThenInclude(r => r.Units)
                 .Include(r => r.Castles)
-                .Include(r => r.MonsterPacks)
                 .Include(r => r.Treasures)
                 .Include(r => r.Dwellings)
                 .Where(r => regionIds.Contains(r.Id))

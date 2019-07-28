@@ -45,8 +45,6 @@ namespace Server.Data.Generators
 
         public List<Hero> Heroes { get; set; }
 
-        public List<MonsterPack> MonsterPacks { get; set; }
-
         public List<Treasure> Treasures { get; set; }
 
         public List<Dwelling> Dwellings { get; set; }
@@ -60,7 +58,6 @@ namespace Server.Data.Generators
             this.Dwellings = new List<Dwelling>();
             this.Rooms = new List<Room>();
             this.Heroes = new List<Hero>();
-            this.MonsterPacks = new List<MonsterPack>();
             this.Treasures = new List<Treasure>();
         }
     }

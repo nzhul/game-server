@@ -1,6 +1,6 @@
 ﻿namespace Server.Models.MapEntities
 {
-    public enum MonsterType
+    public enum CreatureType
     {
         // Underworld
         Spider = 0,

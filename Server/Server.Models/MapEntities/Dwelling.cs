@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel.DataAnnotations.Schema;
-using Server.Models.Parsers;
+﻿using Server.Models.Parsers;
 using Server.Models.Realms;
 using Server.Models.Users;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Server.Models.MapEntities
 {

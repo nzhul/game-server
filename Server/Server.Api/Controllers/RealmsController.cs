@@ -160,6 +160,8 @@ namespace Server.Api.Controllers
         [HttpGet("{realmId}/regions")]
         public async Task<IActionResult> GetRegions(int realmId, [FromQuery] int[] regionIds)
         {
+            // TODO: GetRegions is Loading a ton of stuff here!
+            // Minimize the load from the database!
             IList<Region> regions = await this._realmsService.GetRegions(regionIds);
 
             if (regions != null && regions.Count > 0)

@@ -1,15 +1,17 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using Server.Models.Items;
+﻿using Server.Models.Items;
 using Server.Models.Parsers;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Server.Models.MapEntities
 {
-    public class MonsterPack : MapEntity
+    public class NPCData
     {
-        public MonsterType Type { get; set; }
+        [Key]
+        public int Id { get; set; }
 
-        public int Quantity { get; set; }
+        public CreatureType MapRepresentation { get; set; }
 
         public Disposition Disposition { get; set; }
 
@@ -26,7 +28,7 @@ namespace Server.Models.MapEntities
         /// </summary>
         public ItemBlueprint ItemReward { get; set; }
 
-        public MonsterType TroopsRewardType { get; set; }
+        public CreatureType TroopsRewardType { get; set; }
 
         public int TroopsRewardQuantity { get; set; }
 

@@ -40,7 +40,6 @@ namespace Server.Api.Controllers
         /// Explores all waypoints in his REALM.
         /// </summary>
         /// <param name="avatarId"></param>
-        /// <param name="dwellingType">Type of the dwelling we wish to explore</param>
         /// <returns></returns>
         [HttpPut("{avatarId}/explore")]
         public async Task<IActionResult> Explore(int avatarId,[FromBody] ExploreParams exploreParams)
