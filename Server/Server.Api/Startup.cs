@@ -63,7 +63,7 @@ namespace Server.Api
             services.AddDbContext<DataContext>(x => x.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"))
             .ConfigureWarnings(warnings => warnings.Ignore(CoreEventId.IncludeIgnoredWarning)));
             services.AddCors();
-            services.AddAutoMapper();
+            services.AddAutoMapper(typeof(AutoMapperProfiles).GetTypeInfo().Assembly);
             services.AddScoped<IUsersService, UsersService>();
             services.AddScoped<IRealmsService, RealmsService>();
             services.AddScoped<IHeroesService, HeroesService>();

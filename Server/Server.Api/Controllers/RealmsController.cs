@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Server.Api.Helpers;
@@ -160,13 +162,11 @@ namespace Server.Api.Controllers
         [HttpGet("{realmId}/regions")]
         public async Task<IActionResult> GetRegions(int realmId, [FromQuery] int[] regionIds)
         {
-            // TODO: GetRegions is Loading a ton of stuff here!
-            // Minimize the load from the database!
-            IList<Region> regions = await this._realmsService.GetRegions(regionIds);
+            var regions = this._realmsService.GetRegions(regionIds);
 
-            if (regions != null && regions.Count > 0)
+            if (regions != null)
             {
-                IList<RegionDetailedDto> regionsToReturn = _mapper.Map<IList<Region>, IList<RegionDetailedDto>>(regions);
+                var regionsToReturn = regions.ProjectTo<RegionDetailedDto>(_mapper.ConfigurationProvider);
 
                 return Ok(regionsToReturn);
             }

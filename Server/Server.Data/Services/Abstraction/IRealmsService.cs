@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using Server.Models;
+﻿using Server.Models;
 using Server.Models.Pagination;
 using Server.Models.Realms;
 using Server.Models.Realms.Input;
 using Server.Models.Users;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Server.Data.Services.Abstraction
 {
@@ -22,6 +22,6 @@ namespace Server.Data.Services.Abstraction
 
         Task<Realm> CreateRealm(string name);
 
-        Task<IList<Region>> GetRegions(int[] regionIds);
+        IQueryable<Region> GetRegions(int[] regionIds);
     }
 }

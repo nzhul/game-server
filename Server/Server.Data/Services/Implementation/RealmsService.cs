@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Server.Data.Generators;
 using Server.Data.Services.Abstraction;
@@ -14,6 +9,10 @@ using Server.Models.Pagination;
 using Server.Models.Realms;
 using Server.Models.Realms.Input;
 using Server.Models.Users;
+using System;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Server.Data.Services.Implementation
 {
@@ -223,6 +222,7 @@ namespace Server.Data.Services.Implementation
             newHero.Region = region;
             newHero.Avatar = avatar;
             newHero.Blueprint = blueprint;
+            newHero.NPCData = new NPCData();
 
             this.AddUnitsToHero(newHero);
 
@@ -419,17 +419,16 @@ namespace Server.Data.Services.Implementation
 
         }
 
-        public async Task<IList<Region>> GetRegions(int[] regionIds)
+        public IQueryable<Region> GetRegions(int[] regionIds)
         {
-            var regions = await _context.Regions
+            var regions = _context.Regions
                 .Include(r => r.Rooms)
                 .Include(r => r.Heroes).ThenInclude(r => r.NPCData)
                 .Include(r => r.Heroes).ThenInclude(r => r.Units)
                 .Include(r => r.Castles)
                 .Include(r => r.Treasures)
                 .Include(r => r.Dwellings)
-                .Where(r => regionIds.Contains(r.Id))
-                .ToListAsync();
+                .Where(r => regionIds.Contains(r.Id));
 
             return regions;
         }

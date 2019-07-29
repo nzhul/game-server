@@ -1,17 +1,14 @@
-﻿using Server.Models.Heroes;
+﻿using Microsoft.EntityFrameworkCore;
 using Server.Models.Items;
 using Server.Models.Parsers;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Server.Models.MapEntities
 {
+    [Owned]
     public class NPCData
     {
-        [Key]
-        public int Id { get; set; }
-
         public CreatureType MapRepresentation { get; set; }
 
         public Disposition Disposition { get; set; }
@@ -32,10 +29,6 @@ namespace Server.Models.MapEntities
         public CreatureType TroopsRewardType { get; set; }
 
         public int TroopsRewardQuantity { get; set; }
-
-        public int? HeroId { get; set; }
-
-        public virtual Hero Hero { get; set; }
 
         private string _occupiedTilesString;
 

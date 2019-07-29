@@ -499,6 +499,14 @@ namespace Server.Data.Migrations
                     Type = table.Column<int>(nullable: false),
                     LastActivity = table.Column<DateTime>(nullable: false),
                     TimePlayedTicks = table.Column<long>(nullable: false),
+                    NPCData_MapRepresentation = table.Column<int>(nullable: false),
+                    NPCData_Disposition = table.Column<int>(nullable: false),
+                    NPCData_RewardType = table.Column<int>(nullable: false),
+                    NPCData_RewardQuantity = table.Column<int>(nullable: false),
+                    NPCData_ItemRewardId = table.Column<int>(nullable: true),
+                    NPCData_TroopsRewardType = table.Column<int>(nullable: false),
+                    NPCData_TroopsRewardQuantity = table.Column<int>(nullable: false),
+                    NPCData_OccupiedTilesString = table.Column<string>(nullable: true),
                     IsNPC = table.Column<bool>(nullable: false),
                     BlueprintId = table.Column<int>(nullable: true),
                     RegionId = table.Column<int>(nullable: true),
@@ -523,6 +531,12 @@ namespace Server.Data.Migrations
                         name: "FK_Heroes_Regions_RegionId",
                         column: x => x.RegionId,
                         principalTable: "Regions",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Heroes_ItemBlueprints_NPCData_ItemRewardId",
+                        column: x => x.NPCData_ItemRewardId,
+                        principalTable: "ItemBlueprints",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -635,39 +649,6 @@ namespace Server.Data.Migrations
                         principalTable: "Heroes",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "NPCData",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    MapRepresentation = table.Column<int>(nullable: false),
-                    Disposition = table.Column<int>(nullable: false),
-                    RewardType = table.Column<int>(nullable: false),
-                    RewardQuantity = table.Column<int>(nullable: false),
-                    ItemRewardId = table.Column<int>(nullable: true),
-                    TroopsRewardType = table.Column<int>(nullable: false),
-                    TroopsRewardQuantity = table.Column<int>(nullable: false),
-                    HeroId = table.Column<int>(nullable: true),
-                    OccupiedTilesString = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_NPCData", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_NPCData_Heroes_HeroId",
-                        column: x => x.HeroId,
-                        principalTable: "Heroes",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_NPCData_ItemBlueprints_ItemRewardId",
-                        column: x => x.ItemRewardId,
-                        principalTable: "ItemBlueprints",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -797,6 +778,11 @@ namespace Server.Data.Migrations
                 column: "RegionId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Heroes_NPCData_ItemRewardId",
+                table: "Heroes",
+                column: "NPCData_ItemRewardId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Items_BlueprintId",
                 table: "Items",
                 column: "BlueprintId");
@@ -815,18 +801,6 @@ namespace Server.Data.Migrations
                 name: "IX_Messages_SenderId",
                 table: "Messages",
                 column: "SenderId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_NPCData_HeroId",
-                table: "NPCData",
-                column: "HeroId",
-                unique: true,
-                filter: "[HeroId] IS NOT NULL");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_NPCData_ItemRewardId",
-                table: "NPCData",
-                column: "ItemRewardId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Photos_UserId",
@@ -894,9 +868,6 @@ namespace Server.Data.Migrations
                 name: "Messages");
 
             migrationBuilder.DropTable(
-                name: "NPCData");
-
-            migrationBuilder.DropTable(
                 name: "Photos");
 
             migrationBuilder.DropTable(
@@ -918,9 +889,6 @@ namespace Server.Data.Migrations
                 name: "CastleBlueprints");
 
             migrationBuilder.DropTable(
-                name: "ItemBlueprints");
-
-            migrationBuilder.DropTable(
                 name: "Heroes");
 
             migrationBuilder.DropTable(
@@ -931,6 +899,9 @@ namespace Server.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "Regions");
+
+            migrationBuilder.DropTable(
+                name: "ItemBlueprints");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
