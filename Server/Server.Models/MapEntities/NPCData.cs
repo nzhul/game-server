@@ -1,4 +1,5 @@
-﻿using Server.Models.Items;
+﻿using Server.Models.Heroes;
+using Server.Models.Items;
 using Server.Models.Parsers;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -31,6 +32,10 @@ namespace Server.Models.MapEntities
         public CreatureType TroopsRewardType { get; set; }
 
         public int TroopsRewardQuantity { get; set; }
+
+        public int? HeroId { get; set; }
+
+        public virtual Hero Hero { get; set; }
 
         private string _occupiedTilesString;
 

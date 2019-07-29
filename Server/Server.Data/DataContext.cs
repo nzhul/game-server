@@ -9,6 +9,7 @@ using Server.Models;
 using Server.Models.Castles;
 using Server.Models.Heroes;
 using Server.Models.Items;
+using Server.Models.MapEntities;
 using Server.Models.Realms;
 using Server.Models.Users;
 
@@ -113,6 +114,16 @@ namespace Server.Data
             builder.Entity<Hero>()
                 .HasOne(u => u.Avatar)
                 .WithMany(u => u.Heroes)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<Unit>()
+                .HasOne(u => u.Hero)
+                .WithMany(u => u.Units)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<NPCData>()
+                .HasOne(x => x.Hero)
+                .WithOne(x => x.NPCData)
                 .OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<Item>()

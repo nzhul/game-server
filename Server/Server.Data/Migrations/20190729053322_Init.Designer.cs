@@ -10,7 +10,7 @@ using Server.Data;
 namespace Server.Data.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20190728132248_Init")]
+    [Migration("20190729053322_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -171,8 +171,6 @@ namespace Server.Data.Migrations
 
                     b.Property<string>("ModifiedBy");
 
-                    b.Property<int?>("NPCDataId");
-
                     b.Property<string>("Name");
 
                     b.Property<int>("PersonalAttack");
@@ -194,8 +192,6 @@ namespace Server.Data.Migrations
                     b.HasIndex("AvatarId");
 
                     b.HasIndex("BlueprintId");
-
-                    b.HasIndex("NPCDataId");
 
                     b.HasIndex("RegionId");
 
@@ -379,6 +375,8 @@ namespace Server.Data.Migrations
 
                     b.Property<int>("Disposition");
 
+                    b.Property<int?>("HeroId");
+
                     b.Property<int?>("ItemRewardId");
 
                     b.Property<int>("MapRepresentation");
@@ -394,6 +392,10 @@ namespace Server.Data.Migrations
                     b.Property<int>("TroopsRewardType");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("HeroId")
+                        .IsUnique()
+                        .HasFilter("[HeroId] IS NOT NULL");
 
                     b.HasIndex("ItemRewardId");
 
@@ -839,10 +841,6 @@ namespace Server.Data.Migrations
                         .WithMany()
                         .HasForeignKey("BlueprintId");
 
-                    b.HasOne("Server.Models.MapEntities.NPCData", "NPCData")
-                        .WithMany()
-                        .HasForeignKey("NPCDataId");
-
                     b.HasOne("Server.Models.Realms.Region", "Region")
                         .WithMany("Heroes")
                         .HasForeignKey("RegionId");
@@ -852,7 +850,8 @@ namespace Server.Data.Migrations
                 {
                     b.HasOne("Server.Models.Heroes.Hero", "Hero")
                         .WithMany("Units")
-                        .HasForeignKey("HeroId");
+                        .HasForeignKey("HeroId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Server.Models.Items.Item", b =>
@@ -881,6 +880,11 @@ namespace Server.Data.Migrations
 
             modelBuilder.Entity("Server.Models.MapEntities.NPCData", b =>
                 {
+                    b.HasOne("Server.Models.Heroes.Hero", "Hero")
+                        .WithOne("NPCData")
+                        .HasForeignKey("Server.Models.MapEntities.NPCData", "HeroId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
                     b.HasOne("Server.Models.Items.ItemBlueprint", "ItemReward")
                         .WithMany()
                         .HasForeignKey("ItemRewardId");
