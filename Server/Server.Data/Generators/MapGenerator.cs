@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Server.Models;
 using Server.Models.Heroes;
+using Server.Models.Heroes.Units;
 using Server.Models.MapEntities;
 using Server.Models.Realms;
 

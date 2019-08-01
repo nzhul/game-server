@@ -6,6 +6,7 @@ using Server.Api.Models.View;
 using Server.Api.Models.View.Avatars;
 using Server.Api.Models.View.Realms;
 using Server.Models.Heroes;
+using Server.Models.Heroes.Units;
 using Server.Models.MapEntities;
 using Server.Models.Realms;
 using Server.Models.Users;

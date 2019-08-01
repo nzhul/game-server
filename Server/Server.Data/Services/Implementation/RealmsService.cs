@@ -4,6 +4,7 @@ using Server.Data.Generators;
 using Server.Data.Services.Abstraction;
 using Server.Models;
 using Server.Models.Heroes;
+using Server.Models.Heroes.Units;
 using Server.Models.MapEntities;
 using Server.Models.Pagination;
 using Server.Models.Realms;

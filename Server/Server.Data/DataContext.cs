@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Server.Models;
 using Server.Models.Castles;
 using Server.Models.Heroes;
+using Server.Models.Heroes.Units;
 using Server.Models.Items;
 using Server.Models.Realms;
 using Server.Models.Users;
@@ -45,6 +46,8 @@ namespace Server.Data
         public DbSet<CastleBlueprint> CastleBlueprints { get; set; }
 
         public DbSet<Friendship> Friendships { get; set; }
+
+        public DbSet<UnitConfiguration> UnitConfigurations { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -148,7 +151,9 @@ namespace Server.Data
                 .HasField("_roomSize")
                 .UsePropertyAccessMode(PropertyAccessMode.Property);
 
-
+            builder.Entity<UnitConfiguration>()
+                .HasIndex(x => x.Type)
+                .IsUnique();
         }
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default(CancellationToken))

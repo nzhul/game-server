@@ -1,6 +1,6 @@
 ﻿using Server.Models.MapEntities;
 
-namespace Server.Models.Heroes
+namespace Server.Models.Heroes.Units
 {
     public class Unit : Entity
     {
