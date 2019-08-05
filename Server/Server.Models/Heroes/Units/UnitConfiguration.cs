@@ -1,10 +1,17 @@
 ﻿using Server.Models.MapEntities;
+using System.Collections.Generic;
 
 namespace Server.Models.Heroes.Units
 {
     public class UnitConfiguration
     {
+        public int Id { get; set; }
+
         public CreatureType Type { get; set; }
+
+        public int MovementPoints { get; set; }
+
+        public int ActionPoints { get; set; }
 
         public int MinDamage { get; set; }
 
@@ -32,6 +39,12 @@ namespace Server.Models.Heroes.Units
 
         public int FoodCost { get; set; }
 
-        //public IList<Ability> Abilities { get; set; }
+        public ICollection<UnitConfigurationAbility> UnitConfigurationAbilitys { get; set; }
+
+        public ICollection<UnitConfigurationUpgrade> UnitConfigurationUpgrades { get; set; }
+
+        //public ICollection<Ability> Abilities { get; set; }
+
+        //public ICollection<Upgrade> Upgrades { get; set; }
     }
 }

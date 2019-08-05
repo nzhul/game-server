@@ -49,6 +49,10 @@ namespace Server.Data
 
         public DbSet<UnitConfiguration> UnitConfigurations { get; set; }
 
+        public DbSet<Ability> Abilities { get; set; }
+
+        public DbSet<Upgrade> Upgrades { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
@@ -154,6 +158,38 @@ namespace Server.Data
             builder.Entity<UnitConfiguration>()
                 .HasIndex(x => x.Type)
                 .IsUnique();
+
+            // Many to many
+            builder.Entity<UnitConfigurationAbility>(unitConfigurationAbility =>
+            {
+                unitConfigurationAbility.HasKey(ad => new { ad.UnitConfigurationId, ad.AbilityId });
+
+                unitConfigurationAbility.HasOne(ad => ad.UnitConfiguration)
+                .WithMany(a => a.UnitConfigurationAbilitys)
+                .HasForeignKey(ad => ad.UnitConfigurationId)
+                .IsRequired();
+
+                unitConfigurationAbility.HasOne(ad => ad.Ability)
+                .WithMany(a => a.UnitConfigurationAbilitys)
+                .HasForeignKey(ad => ad.AbilityId)
+                .IsRequired();
+            });
+
+            // Many to many
+            builder.Entity<UnitConfigurationUpgrade>(unitConfigurationUpgrade =>
+            {
+                unitConfigurationUpgrade.HasKey(ad => new { ad.UnitConfigurationId, ad.UpgradeId });
+
+                unitConfigurationUpgrade.HasOne(ad => ad.UnitConfiguration)
+                .WithMany(a => a.UnitConfigurationUpgrades)
+                .HasForeignKey(ad => ad.UnitConfigurationId)
+                .IsRequired();
+
+                unitConfigurationUpgrade.HasOne(ad => ad.Upgrade)
+                .WithMany(a => a.UnitConfigurationUpgrades)
+                .HasForeignKey(ad => ad.UpgradeId)
+                .IsRequired();
+            });
         }
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default(CancellationToken))

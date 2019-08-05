@@ -245,7 +245,28 @@ namespace Server.Data.Migrations
                     b.ToTable("HeroBlueprints");
                 });
 
-            modelBuilder.Entity("Server.Models.Heroes.Unit", b =>
+            modelBuilder.Entity("Server.Models.Heroes.Units.Ability", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("DamageAmount");
+
+                    b.Property<int>("HealingAmount");
+
+                    b.Property<bool>("IsHeroAbility");
+
+                    b.Property<int>("Levels");
+
+                    b.Property<int>("Name");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Abilities");
+                });
+
+            modelBuilder.Entity("Server.Models.Heroes.Units.Unit", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -274,6 +295,97 @@ namespace Server.Data.Migrations
                     b.HasIndex("HeroId");
 
                     b.ToTable("Unit");
+                });
+
+            modelBuilder.Entity("Server.Models.Heroes.Units.UnitConfiguration", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("ActionPoints");
+
+                    b.Property<int>("Armor");
+
+                    b.Property<int>("BuildTime");
+
+                    b.Property<int>("CreatureLevel");
+
+                    b.Property<int>("FoodCost");
+
+                    b.Property<int>("GemsCost");
+
+                    b.Property<int>("GoldCost");
+
+                    b.Property<int>("Hitpoints");
+
+                    b.Property<int>("Mana");
+
+                    b.Property<int>("MaxDamage");
+
+                    b.Property<int>("MinDamage");
+
+                    b.Property<int>("MovementPoints");
+
+                    b.Property<int>("OreCost");
+
+                    b.Property<int>("Speed");
+
+                    b.Property<int>("Type");
+
+                    b.Property<int>("WoodCost");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Type")
+                        .IsUnique();
+
+                    b.ToTable("UnitConfigurations");
+                });
+
+            modelBuilder.Entity("Server.Models.Heroes.Units.UnitConfigurationAbility", b =>
+                {
+                    b.Property<int>("UnitConfigurationId");
+
+                    b.Property<int>("AbilityId");
+
+                    b.HasKey("UnitConfigurationId", "AbilityId");
+
+                    b.HasIndex("AbilityId");
+
+                    b.ToTable("UnitConfigurationAbility");
+                });
+
+            modelBuilder.Entity("Server.Models.Heroes.Units.UnitConfigurationUpgrade", b =>
+                {
+                    b.Property<int>("UnitConfigurationId");
+
+                    b.Property<int>("UpgradeId");
+
+                    b.HasKey("UnitConfigurationId", "UpgradeId");
+
+                    b.HasIndex("UpgradeId");
+
+                    b.ToTable("UnitConfigurationUpgrade");
+                });
+
+            modelBuilder.Entity("Server.Models.Heroes.Units.Upgrade", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("GoldCost");
+
+                    b.Property<int>("Name");
+
+                    b.Property<int>("TimeCost");
+
+                    b.Property<int>("WoodCost");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Upgrades");
                 });
 
             modelBuilder.Entity("Server.Models.Items.Item", b =>
@@ -847,11 +959,37 @@ namespace Server.Data.Migrations
                         });
                 });
 
-            modelBuilder.Entity("Server.Models.Heroes.Unit", b =>
+            modelBuilder.Entity("Server.Models.Heroes.Units.Unit", b =>
                 {
                     b.HasOne("Server.Models.Heroes.Hero", "Hero")
                         .WithMany("Units")
                         .HasForeignKey("HeroId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Server.Models.Heroes.Units.UnitConfigurationAbility", b =>
+                {
+                    b.HasOne("Server.Models.Heroes.Units.Ability", "Ability")
+                        .WithMany("UnitConfigurationAbilitys")
+                        .HasForeignKey("AbilityId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Server.Models.Heroes.Units.UnitConfiguration", "UnitConfiguration")
+                        .WithMany("UnitConfigurationAbilitys")
+                        .HasForeignKey("UnitConfigurationId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Server.Models.Heroes.Units.UnitConfigurationUpgrade", b =>
+                {
+                    b.HasOne("Server.Models.Heroes.Units.UnitConfiguration", "UnitConfiguration")
+                        .WithMany("UnitConfigurationUpgrades")
+                        .HasForeignKey("UnitConfigurationId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Server.Models.Heroes.Units.Upgrade", "Upgrade")
+                        .WithMany("UnitConfigurationUpgrades")
+                        .HasForeignKey("UpgradeId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 

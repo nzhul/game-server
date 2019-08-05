@@ -9,6 +9,23 @@ namespace Server.Data.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "Abilities",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Name = table.Column<int>(nullable: false),
+                    IsHeroAbility = table.Column<bool>(nullable: false),
+                    Levels = table.Column<int>(nullable: false),
+                    HealingAmount = table.Column<int>(nullable: false),
+                    DamageAmount = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Abilities", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AspNetRoles",
                 columns: table => new
                 {
@@ -144,6 +161,50 @@ namespace Server.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Realms", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UnitConfigurations",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Type = table.Column<int>(nullable: false),
+                    MovementPoints = table.Column<int>(nullable: false),
+                    ActionPoints = table.Column<int>(nullable: false),
+                    MinDamage = table.Column<int>(nullable: false),
+                    MaxDamage = table.Column<int>(nullable: false),
+                    Hitpoints = table.Column<int>(nullable: false),
+                    Mana = table.Column<int>(nullable: false),
+                    Armor = table.Column<int>(nullable: false),
+                    Speed = table.Column<int>(nullable: false),
+                    CreatureLevel = table.Column<int>(nullable: false),
+                    BuildTime = table.Column<int>(nullable: false),
+                    WoodCost = table.Column<int>(nullable: false),
+                    OreCost = table.Column<int>(nullable: false),
+                    GoldCost = table.Column<int>(nullable: false),
+                    GemsCost = table.Column<int>(nullable: false),
+                    FoodCost = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UnitConfigurations", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Upgrades",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Name = table.Column<int>(nullable: false),
+                    WoodCost = table.Column<int>(nullable: false),
+                    GoldCost = table.Column<int>(nullable: false),
+                    TimeCost = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Upgrades", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -401,6 +462,54 @@ namespace Server.Data.Migrations
                         principalTable: "Realms",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UnitConfigurationAbility",
+                columns: table => new
+                {
+                    UnitConfigurationId = table.Column<int>(nullable: false),
+                    AbilityId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UnitConfigurationAbility", x => new { x.UnitConfigurationId, x.AbilityId });
+                    table.ForeignKey(
+                        name: "FK_UnitConfigurationAbility_Abilities_AbilityId",
+                        column: x => x.AbilityId,
+                        principalTable: "Abilities",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_UnitConfigurationAbility_UnitConfigurations_UnitConfigurationId",
+                        column: x => x.UnitConfigurationId,
+                        principalTable: "UnitConfigurations",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UnitConfigurationUpgrade",
+                columns: table => new
+                {
+                    UnitConfigurationId = table.Column<int>(nullable: false),
+                    UpgradeId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UnitConfigurationUpgrade", x => new { x.UnitConfigurationId, x.UpgradeId });
+                    table.ForeignKey(
+                        name: "FK_UnitConfigurationUpgrade_UnitConfigurations_UnitConfigurationId",
+                        column: x => x.UnitConfigurationId,
+                        principalTable: "UnitConfigurations",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_UnitConfigurationUpgrade_Upgrades_UpgradeId",
+                        column: x => x.UpgradeId,
+                        principalTable: "Upgrades",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -833,6 +942,22 @@ namespace Server.Data.Migrations
                 name: "IX_Unit_HeroId",
                 table: "Unit",
                 column: "HeroId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UnitConfigurationAbility_AbilityId",
+                table: "UnitConfigurationAbility",
+                column: "AbilityId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UnitConfigurations_Type",
+                table: "UnitConfigurations",
+                column: "Type",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UnitConfigurationUpgrade_UpgradeId",
+                table: "UnitConfigurationUpgrade",
+                column: "UpgradeId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -880,6 +1005,12 @@ namespace Server.Data.Migrations
                 name: "Unit");
 
             migrationBuilder.DropTable(
+                name: "UnitConfigurationAbility");
+
+            migrationBuilder.DropTable(
+                name: "UnitConfigurationUpgrade");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
@@ -890,6 +1021,15 @@ namespace Server.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "Heroes");
+
+            migrationBuilder.DropTable(
+                name: "Abilities");
+
+            migrationBuilder.DropTable(
+                name: "UnitConfigurations");
+
+            migrationBuilder.DropTable(
+                name: "Upgrades");
 
             migrationBuilder.DropTable(
                 name: "Avatars");
