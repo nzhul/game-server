@@ -177,6 +177,8 @@ namespace Server.Data.Migrations
                     Hitpoints = table.Column<int>(nullable: false),
                     Mana = table.Column<int>(nullable: false),
                     Armor = table.Column<int>(nullable: false),
+                    AttackType = table.Column<int>(nullable: false),
+                    ArmorType = table.Column<int>(nullable: false),
                     Speed = table.Column<int>(nullable: false),
                     CreatureLevel = table.Column<int>(nullable: false),
                     BuildTime = table.Column<int>(nullable: false),

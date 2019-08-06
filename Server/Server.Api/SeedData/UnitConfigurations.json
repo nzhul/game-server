@@ -1,0 +1,22 @@
+[
+  {
+    "Type": "Shaman",
+    "MovementPoints": 4,
+    "ActionPoints": 2,
+    "MinDamage": 6,
+    "MaxDamage": 12,
+    "Hitpoints": 40,
+    "Mana": 20,
+    "Armor": 0
+  },
+  {
+    "Type": "Troll",
+    "MovementPoints": 5,
+    "ActionPoints": 1,
+    "MinDamage": 15,
+    "MaxDamage": 20,
+    "Hitpoints": 80,
+    "Mana": 0,
+    "Armor": 2
+  }
+]

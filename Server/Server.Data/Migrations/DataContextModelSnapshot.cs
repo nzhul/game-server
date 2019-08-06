@@ -307,6 +307,10 @@ namespace Server.Data.Migrations
 
                     b.Property<int>("Armor");
 
+                    b.Property<int>("ArmorType");
+
+                    b.Property<int>("AttackType");
+
                     b.Property<int>("BuildTime");
 
                     b.Property<int>("CreatureLevel");

@@ -1,4 +1,6 @@
-﻿using Server.Models.MapEntities;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using Server.Models.MapEntities;
 using System.Collections.Generic;
 
 namespace Server.Models.Heroes.Units
@@ -7,6 +9,7 @@ namespace Server.Models.Heroes.Units
     {
         public int Id { get; set; }
 
+        [JsonConverter(typeof(StringEnumConverter))]
         public CreatureType Type { get; set; }
 
         public int MovementPoints { get; set; }
@@ -22,6 +25,12 @@ namespace Server.Models.Heroes.Units
         public int Mana { get; set; }
 
         public int Armor { get; set; }
+
+        [JsonConverter(typeof(StringEnumConverter))]
+        public AttackType AttackType { get; set; }
+
+        [JsonConverter(typeof(StringEnumConverter))]
+        public ArmorType ArmorType { get; set; }
 
         public int Speed { get; set; }
 

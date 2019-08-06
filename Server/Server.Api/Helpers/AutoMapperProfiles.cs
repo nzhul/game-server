@@ -5,6 +5,7 @@ using Server.Api.Models.Input;
 using Server.Api.Models.View;
 using Server.Api.Models.View.Avatars;
 using Server.Api.Models.View.Realms;
+using Server.Api.Models.View.UnitConfigurations;
 using Server.Models.Heroes;
 using Server.Models.Heroes.Units;
 using Server.Models.MapEntities;
@@ -87,6 +88,9 @@ namespace Server.Api.Helpers
             // BLUEPRINTS
             CreateMap<HeroBlueprint, Hero>()
                 .ForMember(x => x.Id, opt => opt.Ignore());
+
+            // UNIT CONFIGURATIONS
+            CreateMap<UnitConfiguration, UnitConfigurationView>();
         }
     }
 }

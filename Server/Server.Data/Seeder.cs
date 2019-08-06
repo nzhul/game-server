@@ -5,6 +5,7 @@ using System.Text;
 using Microsoft.AspNetCore.Identity;
 using Newtonsoft.Json;
 using Server.Models.Heroes;
+using Server.Models.Heroes.Units;
 using Server.Models.Realms;
 using Server.Models.Users;
 
@@ -115,6 +116,7 @@ namespace Server.Data
             ICollection<Avatar> avatars = new List<Avatar>();
             ICollection<Hero> heroes = new List<Hero>();
             ICollection<HeroBlueprint> heroBlueprints = new List<HeroBlueprint>();
+            List<UnitConfiguration> unitConfigurations = new List<UnitConfiguration>();
 
             if (!_context.HeroBlueprints.Any())
             {
@@ -240,6 +242,18 @@ namespace Server.Data
 
             //}
 
+            if (!_context.UnitConfigurations.Any())
+            {
+                var configsData = System.IO.File.ReadAllText("SeedData/UnitConfigurations.json");
+                unitConfigurations = JsonConvert.DeserializeObject<List<UnitConfiguration>>(configsData);
+
+                foreach (var config in unitConfigurations)
+                {
+                    _context.UnitConfigurations.Add(config);
+                }
+
+                _context.SaveChanges();
+            }
         }
 
         private static void AddAdminUser(UserManager<User> _userManager, string username, string email)

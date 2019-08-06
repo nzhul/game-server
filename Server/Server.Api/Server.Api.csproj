@@ -7,6 +7,7 @@
   <NoWarn>$(NoWarn);1591</NoWarn>
 </PropertyGroup>
   <ItemGroup>
+    <Content Remove="SeedData\UnitConfigurations.json" />
     <Content Remove="SeedData\UserSeedData.json" />
   </ItemGroup>
   <ItemGroup>
@@ -18,6 +19,7 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="4.0.1" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="SeedData\UnitConfigurations.json" />
     <EmbeddedResource Include="SeedData\UserSeedData.json" />
   </ItemGroup>
   <ItemGroup>
