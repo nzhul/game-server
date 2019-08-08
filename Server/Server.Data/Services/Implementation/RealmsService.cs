@@ -230,35 +230,26 @@ namespace Server.Data.Services.Implementation
             return newHero;
         }
 
-        private void AddUnitsToHero(Hero neutralHero)
+        private void AddUnitsToHero(Hero hero)
         {
             var unit1 = new Unit
             {
                 Quantity = 1,
-                Type = CreatureType.Swordsman,
+                Type = CreatureType.Shaman,
                 X = 0,
-                Y = 0
+                Y = 1
             };
 
             var unit2 = new Unit
             {
                 Quantity = 2,
-                Type = CreatureType.Spider,
+                Type = CreatureType.Troll,
                 X = 0,
-                Y = 0
+                Y = 2
             };
 
-            var unit3 = new Unit
-            {
-                Quantity = 2,
-                Type = CreatureType.Mage,
-                X = 0,
-                Y = 0
-            };
-
-            neutralHero.Units.Add(unit1);
-            neutralHero.Units.Add(unit2);
-            neutralHero.Units.Add(unit3);
+            hero.Units.Add(unit1);
+            hero.Units.Add(unit2);
         }
 
         private async Task<Region> CreateRegion(string name, int level, Realm realm)

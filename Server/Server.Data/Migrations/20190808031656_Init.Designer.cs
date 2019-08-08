@@ -10,7 +10,7 @@ using Server.Data;
 namespace Server.Data.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20190806061148_Init")]
+    [Migration("20190808031656_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -317,6 +317,8 @@ namespace Server.Data.Migrations
 
                     b.Property<int>("CreatureLevel");
 
+                    b.Property<int>("Faction");
+
                     b.Property<int>("FoodCost");
 
                     b.Property<int>("GemsCost");
@@ -334,8 +336,6 @@ namespace Server.Data.Migrations
                     b.Property<int>("MovementPoints");
 
                     b.Property<int>("OreCost");
-
-                    b.Property<int>("Speed");
 
                     b.Property<int>("Type");
 

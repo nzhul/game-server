@@ -315,6 +315,8 @@ namespace Server.Data.Migrations
 
                     b.Property<int>("CreatureLevel");
 
+                    b.Property<int>("Faction");
+
                     b.Property<int>("FoodCost");
 
                     b.Property<int>("GemsCost");
@@ -332,8 +334,6 @@ namespace Server.Data.Migrations
                     b.Property<int>("MovementPoints");
 
                     b.Property<int>("OreCost");
-
-                    b.Property<int>("Speed");
 
                     b.Property<int>("Type");
 

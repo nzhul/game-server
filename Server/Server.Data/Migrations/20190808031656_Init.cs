@@ -170,6 +170,7 @@ namespace Server.Data.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Type = table.Column<int>(nullable: false),
+                    Faction = table.Column<int>(nullable: false),
                     MovementPoints = table.Column<int>(nullable: false),
                     ActionPoints = table.Column<int>(nullable: false),
                     MinDamage = table.Column<int>(nullable: false),
@@ -179,7 +180,6 @@ namespace Server.Data.Migrations
                     Armor = table.Column<int>(nullable: false),
                     AttackType = table.Column<int>(nullable: false),
                     ArmorType = table.Column<int>(nullable: false),
-                    Speed = table.Column<int>(nullable: false),
                     CreatureLevel = table.Column<int>(nullable: false),
                     BuildTime = table.Column<int>(nullable: false),
                     WoodCost = table.Column<int>(nullable: false),

@@ -1,13 +1,17 @@
 [
   {
     "Type": "Shaman",
+    "Faction": "Underworld",
     "MovementPoints": 4,
     "ActionPoints": 2,
     "MinDamage": 6,
     "MaxDamage": 12,
     "Hitpoints": 40,
     "Mana": 20,
-    "Armor": 0
+    "Armor": 0,
+    "AttackType": "Magic",
+    "ArmorType": "Unarmored",
+    "CreatureLevel": 5
   },
   {
     "Type": "Troll",
@@ -17,6 +21,9 @@
     "MaxDamage": 20,
     "Hitpoints": 80,
     "Mana": 0,
-    "Armor": 2
+    "Armor": 2,
+    "AttackType": "Normal",
+    "ArmorType": "Heavy",
+    "CreatureLevel": 4
   }
 ]
