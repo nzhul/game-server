@@ -6,6 +6,8 @@ using Server.Api.Models.View.UnitConfigurations;
 using Server.Data.Services.Abstraction;
 using Server.Models.MapEntities;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Server.Api.Controllers
 {
@@ -34,7 +36,7 @@ namespace Server.Api.Controllers
                 if (configurations != null)
                 {
                     var configsToReturn = configurations.ProjectTo<UnitConfigurationView>(_mapper.ConfigurationProvider);
-                    return Ok(configurations);
+                    return Ok(this.ConvertToDictionary(configsToReturn));
                 }
                 else
                 {
@@ -46,6 +48,21 @@ namespace Server.Api.Controllers
                 // LogException(ex);
                 return StatusCode(500, ex);
             }
+        }
+
+        private Dictionary<CreatureType, UnitConfigurationView> ConvertToDictionary(IQueryable<UnitConfigurationView> configsToReturn)
+        {
+            Dictionary<CreatureType, UnitConfigurationView> configs = new Dictionary<CreatureType, UnitConfigurationView>();
+
+            foreach (var config in configsToReturn)
+            {
+                if (!configs.ContainsKey(config.Type))
+                {
+                    configs.Add(config.Type, config);
+                }
+            }
+
+            return configs;
         }
     }
 }
