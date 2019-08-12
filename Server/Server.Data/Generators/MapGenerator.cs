@@ -661,7 +661,7 @@ namespace Server.Data.Generators
             var unit1 = new Unit
             {
                 Quantity = 1,
-                Type = CreatureType.Swordsman,
+                Type = CreatureType.Troll,
                 X = 0,
                 Y = 0
             };
@@ -669,7 +669,7 @@ namespace Server.Data.Generators
             var unit2 = new Unit
             {
                 Quantity = 2,
-                Type = CreatureType.Spider,
+                Type = CreatureType.Troll,
                 X = 0,
                 Y = 0
             };
@@ -677,7 +677,7 @@ namespace Server.Data.Generators
             var unit3 = new Unit
             {
                 Quantity = 2,
-                Type = CreatureType.Mage,
+                Type = CreatureType.Shaman,
                 X = 0,
                 Y = 0
             };

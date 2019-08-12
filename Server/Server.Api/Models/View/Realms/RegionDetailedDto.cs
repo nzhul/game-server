@@ -20,7 +20,7 @@ namespace Server.Api.Models.View.Realms
 
         public ICollection<HeroDetailedDto> Heroes { get; set; }
 
-        public ICollection<HeroDetailedDto> NpcHeroes { get; set; }
+        //public ICollection<HeroDetailedDto> NpcHeroes { get; set; }
 
         public ICollection<Treasure> Treasures { get; set; }
 

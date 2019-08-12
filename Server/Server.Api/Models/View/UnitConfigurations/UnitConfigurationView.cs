@@ -1,4 +1,6 @@
-﻿using Server.Models.MapEntities;
+﻿using Server.Models.Heroes;
+using Server.Models.Heroes.Units;
+using Server.Models.MapEntities;
 
 namespace Server.Api.Models.View.UnitConfigurations
 {
@@ -7,6 +9,8 @@ namespace Server.Api.Models.View.UnitConfigurations
         public int Id { get; set; }
 
         public CreatureType Type { get; set; }
+
+        public HeroFaction Faction { get; set; }
 
         public int MovementPoints { get; set; }
 
@@ -22,7 +26,9 @@ namespace Server.Api.Models.View.UnitConfigurations
 
         public int Armor { get; set; }
 
-        public int Speed { get; set; }
+        public AttackType AttackType { get; set; }
+
+        public ArmorType ArmorType { get; set; }
 
         public int CreatureLevel { get; set; }
 
