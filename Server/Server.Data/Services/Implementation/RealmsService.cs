@@ -218,6 +218,8 @@ namespace Server.Data.Services.Implementation
             Hero newHero = new Hero();
             newHero.X = region.InitialHeroPosition.Row;
             newHero.Y = region.InitialHeroPosition.Col;
+            newHero.StartX = 1;
+            newHero.StartY = 5;
             newHero.Name = heroName;
             newHero = _mapper.Map(blueprint, newHero);
             newHero.Region = region;
@@ -236,16 +238,16 @@ namespace Server.Data.Services.Implementation
             {
                 Quantity = 1,
                 Type = CreatureType.Shaman,
-                X = 0,
-                Y = 1
+                StartX = 0,
+                StartY = 2
             };
 
             var unit2 = new Unit
             {
                 Quantity = 2,
                 Type = CreatureType.Troll,
-                X = 0,
-                Y = 2
+                StartX = 0,
+                StartY = 4
             };
 
             hero.Units.Add(unit1);

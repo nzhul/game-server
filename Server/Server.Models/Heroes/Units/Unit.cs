@@ -4,9 +4,9 @@ namespace Server.Models.Heroes.Units
 {
     public class Unit : Entity
     {
-        public int X { get; set; }
+        public int StartX { get; set; }
 
-        public int Y { get; set; }
+        public int StartY { get; set; }
 
         public CreatureType Type { get; set; }
 

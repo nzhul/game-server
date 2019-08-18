@@ -44,6 +44,10 @@
     <Compile Remove="Migrations\20190805055926_Init.Designer.cs" />
     <Compile Remove="Migrations\20190806061148_Init.cs" />
     <Compile Remove="Migrations\20190806061148_Init.Designer.cs" />
+    <Compile Remove="Migrations\20190808031656_Init.cs" />
+    <Compile Remove="Migrations\20190808031656_Init.Designer.cs" />
+    <Compile Remove="Migrations\20190818145405_Init.cs" />
+    <Compile Remove="Migrations\20190818145405_Init.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

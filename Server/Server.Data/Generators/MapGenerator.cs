@@ -640,6 +640,8 @@ namespace Server.Data.Generators
                 Type = HeroType.Placeholder,
                 X = position.Col,
                 Y = position.Row,
+                StartX = 1,
+                StartY = 5,
                 Name = name + DateTime.Now.Ticks.ToString(),
                 NPCData = new NPCData
                 {
@@ -662,24 +664,24 @@ namespace Server.Data.Generators
             {
                 Quantity = 1,
                 Type = CreatureType.Troll,
-                X = 0,
-                Y = 0
+                StartX = 0,
+                StartY = 2
             };
 
             var unit2 = new Unit
             {
                 Quantity = 2,
                 Type = CreatureType.Troll,
-                X = 0,
-                Y = 0
+                StartX = 0,
+                StartY = 4
             };
 
             var unit3 = new Unit
             {
                 Quantity = 2,
                 Type = CreatureType.Shaman,
-                X = 0,
-                Y = 0
+                StartX = 0,
+                StartY = 8
             };
 
             neutralHero.Units.Add(unit1);

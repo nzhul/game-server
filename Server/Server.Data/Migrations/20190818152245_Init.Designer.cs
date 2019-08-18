@@ -10,7 +10,7 @@ using Server.Data;
 namespace Server.Data.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20190808031656_Init")]
+    [Migration("20190818152245_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -135,7 +135,7 @@ namespace Server.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("Attack");
+                    b.Property<int>("ActionPoints");
 
                     b.Property<int?>("AvatarId");
 
@@ -145,11 +145,9 @@ namespace Server.Data.Migrations
 
                     b.Property<string>("CreatedBy");
 
-                    b.Property<int>("Defence");
-
                     b.Property<int>("Dodge");
 
-                    b.Property<int>("Health");
+                    b.Property<int>("Hitpoints");
 
                     b.Property<bool>("IsNPC");
 
@@ -157,13 +155,13 @@ namespace Server.Data.Migrations
 
                     b.Property<int>("Level");
 
-                    b.Property<int>("Magic");
-
-                    b.Property<int>("MagicPower");
-
                     b.Property<int>("MagicResistance");
 
+                    b.Property<int>("MaxActionPoints");
+
                     b.Property<int>("MaxDamage");
+
+                    b.Property<int>("MaxMovementPoints");
 
                     b.Property<int>("MinDamage");
 
@@ -171,13 +169,15 @@ namespace Server.Data.Migrations
 
                     b.Property<string>("ModifiedBy");
 
+                    b.Property<int>("MovementPoints");
+
                     b.Property<string>("Name");
 
-                    b.Property<int>("PersonalAttack");
-
-                    b.Property<int>("PersonalDefense");
-
                     b.Property<int?>("RegionId");
+
+                    b.Property<int>("StartX");
+
+                    b.Property<int>("StartY");
 
                     b.Property<long>("TimePlayedTicks");
 
@@ -286,11 +286,11 @@ namespace Server.Data.Migrations
 
                     b.Property<int>("Quantity");
 
+                    b.Property<int>("StartX");
+
+                    b.Property<int>("StartY");
+
                     b.Property<int>("Type");
-
-                    b.Property<int>("X");
-
-                    b.Property<int>("Y");
 
                     b.HasKey("Id");
 

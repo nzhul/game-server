@@ -1,4 +1,5 @@
-﻿using Server.Models.Heroes;
+﻿using Server.Models;
+using Server.Models.Heroes;
 using Server.Models.MapEntities;
 using System;
 using System.Collections.Generic;
@@ -12,6 +13,10 @@ namespace Server.Api.Models.View.Realms
         public int X { get; set; }
 
         public int Y { get; set; }
+
+        public int StartX { get; set; }
+
+        public int StartY { get; set; }
 
         public HeroType Type { get; set; }
 

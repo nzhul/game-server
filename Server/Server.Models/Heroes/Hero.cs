@@ -20,23 +20,24 @@ namespace Server.Models.Heroes
     public class Hero : MapEntity
     {
         #region Attributes
+
+        public int StartX { get; set; }
+
+        public int StartY { get; set; }
+
         public int Level { get; set; }
 
-        public int Attack { get; set; }
+        public int MovementPoints { get; set; }
 
-        public int Defence { get; set; }
+        public int MaxMovementPoints { get; set; }
 
-        public int Magic { get; set; }
+        public int ActionPoints { get; set; }
 
-        public int MagicPower { get; set; }
-
-        public int PersonalAttack { get; set; }
-
-        public int PersonalDefense { get; set; }
+        public int MaxActionPoints { get; set; }
 
         public int Dodge { get; set; }
 
-        public int Health { get; set; }
+        public int Hitpoints { get; set; }
 
         public int MinDamage { get; set; }
 
