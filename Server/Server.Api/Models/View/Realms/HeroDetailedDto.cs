@@ -1,5 +1,4 @@
-﻿using Server.Models;
-using Server.Models.Heroes;
+﻿using Server.Models.Heroes;
 using Server.Models.MapEntities;
 using System;
 using System.Collections.Generic;
@@ -10,6 +9,11 @@ namespace Server.Api.Models.View.Realms
     {
         public int Id { get; set; }
 
+        /// <summary>
+        /// Id of the owner avatar
+        /// </summary>
+        public int OwnerId { get; set; }
+
         public int X { get; set; }
 
         public int Y { get; set; }
@@ -18,7 +22,7 @@ namespace Server.Api.Models.View.Realms
 
         public int StartY { get; set; }
 
-        public HeroType Type { get; set; }
+        public HeroType HeroType { get; set; }
 
         public string Name { get; set; }
 

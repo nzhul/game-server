@@ -75,7 +75,9 @@ namespace Server.Api.Helpers
             // AVATARS
             CreateMap<Hero, HeroDetailedDto>()
                 .ForMember(x => x.Class, opt => opt.MapFrom(u => u.Blueprint.Class))
-                .ForMember(x => x.Faction, opt => opt.MapFrom(u => u.Blueprint.Faction));
+                .ForMember(x => x.Faction, opt => opt.MapFrom(u => u.Blueprint.Faction))
+                .ForMember(x => x.OwnerId, opt => opt.MapFrom(u => u.AvatarId))
+                .ForMember(x => x.HeroType, opt => opt.MapFrom(u => u.Type));
             CreateMap<Avatar, AvatarDetailedDto>()
                 .ForMember(x => x.Heroes, opt =>
                 {
@@ -83,7 +85,10 @@ namespace Server.Api.Helpers
                 });
 
             // UNITS
-            CreateMap<Unit, UnitDetailedDto>();
+            CreateMap<Unit, UnitDetailedDto>()
+                .ForMember(x => x.OwnerId, opt => opt.MapFrom(u => u.Hero.AvatarId))
+                .ForMember(x => x.CreatureType, opt => opt.MapFrom(u => u.Type))
+                .ForMember(x => x.RegionId, opt => opt.MapFrom(u => u.Hero.RegionId));
 
             // BLUEPRINTS
             CreateMap<HeroBlueprint, Hero>()
