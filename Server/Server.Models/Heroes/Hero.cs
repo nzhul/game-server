@@ -29,21 +29,23 @@ namespace Server.Models.Heroes
 
         public int MovementPoints { get; set; }
 
-        public int MaxMovementPoints { get; set; }
-
         public int ActionPoints { get; set; }
-
-        public int MaxActionPoints { get; set; }
-
-        public int Dodge { get; set; }
-
-        public int Hitpoints { get; set; }
 
         public int MinDamage { get; set; }
 
         public int MaxDamage { get; set; }
 
-        public int MagicResistance { get; set; }
+        public int Hitpoints { get; set; }
+
+        public int Mana { get; set; }
+
+        public int Armor { get; set; }
+
+        public int Dodge { get; set; }
+
+        public AttackType AttackType { get; set; }
+
+        public ArmorType ArmorType { get; set; }
         #endregion
 
         public HeroType Type { get; set; }

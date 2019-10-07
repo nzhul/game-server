@@ -1,4 +1,5 @@
 ﻿using Server.Models.Heroes;
+using Server.Models.Heroes.Units;
 using Server.Models.MapEntities;
 using System;
 using System.Collections.Generic;
@@ -32,27 +33,25 @@ namespace Server.Api.Models.View.Realms
 
         public int Level { get; set; }
 
-        public int Attack { get; set; }
+        public int MovementPoints { get; set; }
 
-        public int Defence { get; set; }
-
-        public int Magic { get; set; }
-
-        public int MagicPower { get; set; }
-
-        public int PersonalAttack { get; set; }
-
-        public int PersonalDefense { get; set; }
-
-        public int Dodge { get; set; }
-
-        public int Health { get; set; }
+        public int ActionPoints { get; set; }
 
         public int MinDamage { get; set; }
 
         public int MaxDamage { get; set; }
 
-        public int MagicResistance { get; set; }
+        public int Hitpoints { get; set; }
+
+        public int Mana { get; set; }
+
+        public int Armor { get; set; }
+
+        public int Dodge { get; set; }
+
+        public AttackType AttackType { get; set; }
+
+        public ArmorType ArmorType { get; set; }
 
         public string Faction { get; set; }
 

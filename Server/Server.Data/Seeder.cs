@@ -1,13 +1,13 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Microsoft.AspNetCore.Identity;
 using Newtonsoft.Json;
 using Server.Models.Heroes;
 using Server.Models.Heroes.Units;
 using Server.Models.Realms;
 using Server.Models.Users;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
 namespace Server.Data
 {
@@ -287,17 +287,16 @@ namespace Server.Data
                     Description = Seeder.LoremIpsum(3, 10, 1, 3, 1),
                     PortraitImgUrl = RandomString(20),
                     Class = classes[i],
-                    Attack = r.Next(0, 3),
-                    Defense = r.Next(0, 3),
-                    PersonalAttack = r.Next(5, 10),
-                    PersonalDefense = r.Next(5, 10),
-                    Magic = r.Next(0, 3),
-                    MagicPower = r.Next(0, 3),
-                    Dodge = r.Next(0, 2),
-                    Health = r.Next(20, 60),
-                    MinDamage = r.Next(7, 12),
-                    MaxDamage = r.Next(13, 25),
-                    MagicResistance = r.Next(0, 2)
+                    MovementPoints = r.Next(3, 5),
+                    ActionPoints = r.Next(2, 5),
+                    MinDamage = r.Next(15, 20),
+                    MaxDamage = r.Next(30, 40),
+                    Hitpoints = r.Next(300, 500),
+                    Mana = r.Next(300, 500),
+                    Armor = r.Next(0, 3),
+                    Dodge = r.Next(0, 3),
+                    AttackType = AttackType.Hero,
+                    ArmorType = ArmorType.Hero
                 };
 
                 if (i < (float)classes.Length / 2)

@@ -25,6 +25,8 @@ namespace Server.Models.Heroes.Units
 
         public int Armor { get; set; }
 
+        public int Dodge { get; set; }
+
         public AttackType AttackType { get; set; }
 
         public ArmorType ArmorType { get; set; }

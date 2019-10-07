@@ -10,7 +10,7 @@ using Server.Data;
 namespace Server.Data.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20190818152245_Init")]
+    [Migration("20191001192912_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -137,6 +137,12 @@ namespace Server.Data.Migrations
 
                     b.Property<int>("ActionPoints");
 
+                    b.Property<int>("Armor");
+
+                    b.Property<int>("ArmorType");
+
+                    b.Property<int>("AttackType");
+
                     b.Property<int?>("AvatarId");
 
                     b.Property<int?>("BlueprintId");
@@ -155,13 +161,9 @@ namespace Server.Data.Migrations
 
                     b.Property<int>("Level");
 
-                    b.Property<int>("MagicResistance");
-
-                    b.Property<int>("MaxActionPoints");
+                    b.Property<int>("Mana");
 
                     b.Property<int>("MaxDamage");
-
-                    b.Property<int>("MaxMovementPoints");
 
                     b.Property<int>("MinDamage");
 
@@ -204,7 +206,13 @@ namespace Server.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("Attack");
+                    b.Property<int>("ActionPoints");
+
+                    b.Property<int>("Armor");
+
+                    b.Property<int>("ArmorType");
+
+                    b.Property<int>("AttackType");
 
                     b.Property<int>("Class");
 
@@ -212,21 +220,15 @@ namespace Server.Data.Migrations
 
                     b.Property<string>("CreatedBy");
 
-                    b.Property<int>("Defense");
-
                     b.Property<string>("Description");
 
                     b.Property<int>("Dodge");
 
                     b.Property<int>("Faction");
 
-                    b.Property<int>("Health");
+                    b.Property<int>("Hitpoints");
 
-                    b.Property<int>("Magic");
-
-                    b.Property<int>("MagicPower");
-
-                    b.Property<int>("MagicResistance");
+                    b.Property<int>("Mana");
 
                     b.Property<int>("MaxDamage");
 
@@ -236,9 +238,7 @@ namespace Server.Data.Migrations
 
                     b.Property<string>("ModifiedBy");
 
-                    b.Property<int>("PersonalAttack");
-
-                    b.Property<int>("PersonalDefense");
+                    b.Property<int>("MovementPoints");
 
                     b.Property<string>("PortraitImgUrl");
 
@@ -316,6 +316,8 @@ namespace Server.Data.Migrations
                     b.Property<int>("BuildTime");
 
                     b.Property<int>("CreatureLevel");
+
+                    b.Property<int>("Dodge");
 
                     b.Property<int>("Faction");
 
