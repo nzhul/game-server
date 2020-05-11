@@ -24,6 +24,11 @@ namespace Server.Data.Generators
             }
         }
 
+        public void Stringify() 
+        {
+            this.MatrixString = this.StringifyMatrix(this.Matrix);
+        }
+
         private string StringifyMatrix(int[,] matrix)
         {
             StringBuilder sb = new StringBuilder();
@@ -39,9 +44,11 @@ namespace Server.Data.Generators
             return sb.ToString();
         }
 
+        public Coord Position { get; set; }
+
         public string MatrixString { get; private set; }
 
-        public List<Room> Rooms { get; set; }
+        public List<TempRoom> Rooms { get; set; }
 
         public List<Hero> Heroes { get; set; }
 
@@ -56,7 +63,7 @@ namespace Server.Data.Generators
         public Map()
         {
             this.Dwellings = new List<Dwelling>();
-            this.Rooms = new List<Room>();
+            this.Rooms = new List<TempRoom>();
             this.Heroes = new List<Hero>();
             this.Treasures = new List<Treasure>();
         }

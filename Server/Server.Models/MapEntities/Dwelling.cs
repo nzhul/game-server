@@ -24,7 +24,7 @@ namespace Server.Models.MapEntities
 
         public int RegionId { get; set; }
 
-        public Region Region { get; set; }
+        public Game Region { get; set; }
 
         private string _occupiedTilesString;
 

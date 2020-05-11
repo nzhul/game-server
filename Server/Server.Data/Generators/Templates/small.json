@@ -1,0 +1,43 @@
+﻿{
+    "MapTemplate": "Small",
+    "Width": 41,
+    "Height": 10,
+    "Zones": [
+        {
+            "Id": "1",
+            "X": 0,
+            "Y": 0,
+            "Width": 10,
+            "Height": 10,
+            "Type": "HumanStart",
+            "Fuzziness": 20,
+            "Links": [
+                {
+                    "ZoneId": 2,
+                    "Guardians": {
+                        "Strength": 15
+                    },
+                    "Type": "Standard"
+                }
+            ]
+        },
+        {
+            "Id": "2",
+            "X": 31,
+            "Y": 0,
+            "Width": 10,
+            "Height": 10,
+            "Type": "Treasure",
+            "Fuzziness": 20,
+            "Links": [
+                {
+                    "ZoneId": 1,
+                    "Guardians": {
+                        "Strength": 15
+                    },
+                    "Type": "Standard"
+                }
+            ]
+        }
+    ]
+}

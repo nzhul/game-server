@@ -8,7 +8,7 @@ namespace Server.Models.Realms.Input
         [Required]
         public string HeroName { get; set; }
 
-        public HeroFaction HeroFaction { get; set; }
+        public Faction HeroFaction { get; set; }
 
         public HeroClass HeroClass { get; set; }
     }

@@ -12,6 +12,6 @@ namespace Server.Models.Castles
 
         public int? RegionId { get; set; }
 
-        public Region Region { get; set; }
+        public Game Region { get; set; }
     }
 }

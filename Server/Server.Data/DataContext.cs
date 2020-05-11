@@ -37,9 +37,7 @@ namespace Server.Data
 
         public DbSet<Item> Items { get; set; }
 
-        public DbSet<Realm> Realms { get; set; }
-
-        public DbSet<Region> Regions { get; set; }
+        public DbSet<Game> Games { get; set; }
 
         public DbSet<Castle> Castles { get; set; }
 
@@ -113,10 +111,6 @@ namespace Server.Data
                 .WithMany(u => u.MessagesRecieved)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            builder.Entity<Realm>()
-                .HasIndex(r => r.Name)
-                .IsUnique(true);
-
             builder.Entity<Hero>()
                 .HasOne(u => u.Avatar)
                 .WithMany(u => u.Heroes)
@@ -135,7 +129,7 @@ namespace Server.Data
                 .WithMany(u => u.Items)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            builder.Entity<Region>()
+            builder.Entity<Game>()
                 .Property(r => r.MatrixString)
                 .HasField("_matrixString")
                 .UsePropertyAccessMode(PropertyAccessMode.Property);
@@ -194,33 +188,33 @@ namespace Server.Data
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
-            this.ApplyAudition();
+            //this.ApplyAudition();
             return base.SaveChangesAsync(cancellationToken);
         }
 
         public override int SaveChanges()
         {
-            this.ApplyAudition();
+            //this.ApplyAudition();
             return base.SaveChanges();
         }
 
-        private void ApplyAudition()
-        {
-            var entities = this.ChangeTracker.Entries()
-                .Where(e => e.Entity is IAuditedEntity &&
-                    (e.State == EntityState.Added || e.State == EntityState.Modified));
+        //private void ApplyAudition()
+        //{
+        //    var entities = this.ChangeTracker.Entries()
+        //        .Where(e => e.Entity is IAuditedEntity &&
+        //            (e.State == EntityState.Added || e.State == EntityState.Modified));
 
-            foreach (var entry in entities)
-            {
-                var entity = (IAuditedEntity)entry.Entity;
+        //    foreach (var entry in entities)
+        //    {
+        //        var entity = (IAuditedEntity)entry.Entity;
 
-                if (entry.State == EntityState.Added)
-                {
-                    entity.CreatedAt = DateTime.UtcNow;
-                }
+        //        if (entry.State == EntityState.Added)
+        //        {
+        //            entity.CreatedAt = DateTime.UtcNow;
+        //        }
 
-                entity.ModifiedAt = DateTime.UtcNow;
-            }
-        }
+        //        entity.ModifiedAt = DateTime.UtcNow;
+        //    }
+        //}
     }
 }

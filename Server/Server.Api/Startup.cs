@@ -23,6 +23,7 @@ using Newtonsoft.Json.Serialization;
 using Server.Api.Helpers;
 using Server.Api.Infrastructure.Filters;
 using Server.Data;
+using Server.Data.Generators;
 using Server.Data.Services.Abstraction;
 using Server.Data.Services.Implementation;
 using Server.Models.Users;
@@ -67,10 +68,11 @@ namespace Server.Api
             services.AddCors();
             services.AddAutoMapper(typeof(AutoMapperProfiles).GetTypeInfo().Assembly);
             services.AddScoped<IUsersService, UsersService>();
-            services.AddScoped<IRealmsService, RealmsService>();
+            //services.AddScoped<IRealmsService, RealmsService>();
             services.AddScoped<IHeroesService, HeroesService>();
-            services.AddScoped<IAvatarsService, AvatarsService>();
+            //services.AddScoped<IAvatarsService, AvatarsService>();
             services.AddScoped<IUnitConfigurationsService, UnitConfigurationsService>();
+            services.AddScoped<IMapGenerator, MapGenerator>();
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {

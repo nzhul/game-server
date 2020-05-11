@@ -5,22 +5,17 @@ using System.ComponentModel.DataAnnotations.Schema;
 using Server.Models.Castles;
 using Server.Models.Heroes;
 using Server.Models.MapEntities;
+using Server.Models.Users;
 
 namespace Server.Models.Realms
 {
-    public class Region : Entity
+    public class Game : Entity
     {
         public string Name { get; set; }
 
-        public int Level { get; set; }
-
-        public int? RealmId { get; set; }
-
-        public Realm Realm { get; set; }
+        public ICollection<Hero> Heroes { get; set; }
 
         public ICollection<Room> Rooms { get; set; }
-
-        public ICollection<Hero> Heroes { get; set; }
 
         public ICollection<Castle> Castles { get; set; }
 
@@ -28,10 +23,13 @@ namespace Server.Models.Realms
 
         public ICollection<Dwelling> Dwellings { get; set; }
 
-        public Region()
+        public ICollection<Avatar> Avatars { get; set; }
+
+        public Game()
         {
-            this.Rooms = new Collection<Room>();
             this.Heroes = new Collection<Hero>();
+            this.Avatars = new Collection<Avatar>();
+            this.Rooms = new Collection<Room>();
             this.Castles = new Collection<Castle>();
             this.Treasures = new Collection<Treasure>();
             this.Dwellings = new Collection<Dwelling>();

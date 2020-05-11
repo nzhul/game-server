@@ -51,16 +51,16 @@ namespace Server.Api.Helpers
 
 
             // REALMS
-            CreateMap<Realm, RealmListItemDto>()
-                .ForMember(x => x.AvatarsCount, opt =>
-                {
-                    opt.MapFrom(d => d.Avatars.Count);
-                })
-                .ForMember(x => x.RealmType, opt => opt.MapFrom(u => u.Type.ToString()))
-                .ForMember(x => x.ResetDate, opt => opt.MapFrom(u => u.ResetDate.ToString("dd MMMM yyyy")));
+            //CreateMap<Realm, RealmListItemDto>()
+            //    .ForMember(x => x.AvatarsCount, opt =>
+            //    {
+            //        opt.MapFrom(d => d.Avatars.Count);
+            //    })
+            //    .ForMember(x => x.RealmType, opt => opt.MapFrom(u => u.Type.ToString()))
+            //    .ForMember(x => x.ResetDate, opt => opt.MapFrom(u => u.ResetDate.ToString("dd MMMM yyyy")));
 
             // REGIONS
-            CreateMap<Region, RegionDetailedDto>();
+            CreateMap<Game, RegionDetailedDto>();
                 //.ForMember(x => x.Heroes, opt => opt.MapFrom(u => u.Heroes.Where(h => !h.IsNPC)))
                 //.ForMember(x => x.NpcHeroes, opt => opt.MapFrom(u => u.Heroes.Where(h => h.IsNPC)));
             CreateMap<Room, RoomDetailedDto>();
@@ -69,7 +69,6 @@ namespace Server.Api.Helpers
             CreateMap<Dwelling, DwellingDetailedDto>();
             CreateMap<Dwelling, WaypointDto>()
                 .ForMember( x => x.RegionId, opt => opt.MapFrom(u => u.Region.Id))
-                .ForMember( x => x.RegionLevel, opt => opt.MapFrom(u => u.Region.Level))
                 .ForMember( x => x.RegionName, opt => opt.MapFrom(u => u.Region.Name));
 
             // AVATARS
@@ -88,7 +87,7 @@ namespace Server.Api.Helpers
             CreateMap<Unit, UnitDetailedDto>()
                 .ForMember(x => x.OwnerId, opt => opt.MapFrom(u => u.Hero.AvatarId))
                 .ForMember(x => x.CreatureType, opt => opt.MapFrom(u => u.Type))
-                .ForMember(x => x.RegionId, opt => opt.MapFrom(u => u.Hero.RegionId));
+                .ForMember(x => x.RegionId, opt => opt.MapFrom(u => u.Hero.GameId));
 
             // BLUEPRINTS
             CreateMap<HeroBlueprint, Hero>()

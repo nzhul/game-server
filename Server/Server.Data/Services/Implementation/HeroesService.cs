@@ -38,12 +38,12 @@ namespace Server.Data.Services.Implementation
             hero.X = x;
             hero.Y = y;
 
-            if (hero.RegionId != regionId)
+            if (hero.GameId != regionId)
             {
-                var oldRegion = await _context.Regions.FirstOrDefaultAsync(r => r.Id == hero.RegionId);
+                var oldRegion = await _context.Games.FirstOrDefaultAsync(r => r.Id == hero.GameId);
                 oldRegion.Heroes.Remove(hero);
 
-                var newRegion = await _context.Regions.FirstOrDefaultAsync(r => r.Id == regionId);
+                var newRegion = await _context.Games.FirstOrDefaultAsync(r => r.Id == regionId);
                 newRegion.Heroes.Add(hero);
             }
 

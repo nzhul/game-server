@@ -7,6 +7,8 @@ namespace Server.Models.Users
 {
     public class User : IdentityUser<int>, IAuditedEntity
     {
+        public int MMR { get; set; }
+
         public string Discriminator { get; set; }
 
         public string Gender { get; set; }

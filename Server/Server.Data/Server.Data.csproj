@@ -62,5 +62,13 @@
   <ItemGroup>
     <ProjectReference Include="..\Server.Models\Server.Models.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <None Update="Generators\Templates\small.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Generators\Templates\Default.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
 
 </Project>

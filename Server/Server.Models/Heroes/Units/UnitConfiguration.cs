@@ -9,7 +9,7 @@ namespace Server.Models.Heroes.Units
 
         public CreatureType Type { get; set; }
 
-        public HeroFaction Faction { get; set; }
+        public Faction Faction { get; set; }
 
         public int MovementPoints { get; set; }
 

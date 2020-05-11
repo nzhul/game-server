@@ -153,37 +153,37 @@ namespace Server.Data
                 _context.SaveChanges();
             }
 
-            ICollection<Realm> realms = new List<Realm>();
+            //ICollection<Realm> realms = new List<Realm>();
 
             Array realmTypes = Enum.GetValues(typeof(RealmType));
 
-            if (!_context.Realms.Any())
-            {
+            //if (!_context.Realms.Any())
+            //{
 
-                for (int i = 0; i < realmNames.Length; i++)
-                {
-                    Realm newRealm = new Realm();
-                    newRealm.Name = realmNames[i];
-                    newRealm.ResetDate = GetRandomDate();
-                    newRealm.Type = (RealmType)realmTypes.GetValue(r.Next(realmTypes.Length));
-                    realms.Add(newRealm);
-                    _context.Realms.Add(newRealm);
-                    _context.SaveChanges();
+            //    for (int i = 0; i < realmNames.Length; i++)
+            //    {
+            //        Realm newRealm = new Realm();
+            //        newRealm.Name = realmNames[i];
+            //        newRealm.ResetDate = GetRandomDate();
+            //        newRealm.Type = (RealmType)realmTypes.GetValue(r.Next(realmTypes.Length));
+            //        realms.Add(newRealm);
+            //        _context.Realms.Add(newRealm);
+            //        _context.SaveChanges();
 
-                    // Creating regions
-                    //for (int y = 0; y < 5; y++)
-                    //{
-                    //    Region newRegion = new Region
-                    //    {
-                    //        Name = regionNames[y],
-                    //        Level = r.Next(1, 5)
-                    //    };
+            //        // Creating regions
+            //        //for (int y = 0; y < 5; y++)
+            //        //{
+            //        //    Region newRegion = new Region
+            //        //    {
+            //        //        Name = regionNames[y],
+            //        //        Level = r.Next(1, 5)
+            //        //    };
 
-                    //    newRealm.Regions.Add(newRegion);
-                    //    _context.SaveChanges();
-                    //}
-                }
-            }
+            //        //    newRealm.Regions.Add(newRegion);
+            //        //    _context.SaveChanges();
+            //        //}
+            //    }
+            //}
 
             //if (!_context.Avatars.Any())
             //{
@@ -301,11 +301,11 @@ namespace Server.Data
 
                 if (i < (float)classes.Length / 2)
                 {
-                    bluePrint.Faction = HeroFaction.Sanctuary;
+                    bluePrint.Faction = Faction.Sanctuary;
                 }
                 else
                 {
-                    bluePrint.Faction = HeroFaction.Underworld;
+                    bluePrint.Faction = Faction.Underworld;
                 }
 
                 _context.HeroBlueprints.Add(bluePrint);
@@ -371,20 +371,20 @@ namespace Server.Data
               .Select(s => s[r.Next(s.Length)]).ToArray());
         }
 
-        private static string GetRandomHeroName(DataContext _context, int regionId)
-        {
-            Region region = _context.Regions.FirstOrDefault(r => r.Id == regionId);
+        //private static string GetRandomHeroName(DataContext _context, int regionId)
+        //{
+        //    Game region = _context.Games.FirstOrDefault(r => r.Id == regionId);
 
-            string heroName = string.Empty;
-            bool isFree = false;
+        //    string heroName = string.Empty;
+        //    bool isFree = false;
 
-            while (!isFree)
-            {
-                heroName = heroNames[r.Next(1, heroNames.Length)];
-                isFree = !region.Realm.Avatars.Any(a => a.Heroes.Any(h => h.Name == heroName));
-            }
+        //    while (!isFree)
+        //    {
+        //        heroName = heroNames[r.Next(1, heroNames.Length)];
+        //        isFree = !region.Realm.Avatars.Any(a => a.Heroes.Any(h => h.Name == heroName));
+        //    }
 
-            return heroName;
-        }
+        //    return heroName;
+        //}
     }
 }

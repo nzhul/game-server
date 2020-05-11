@@ -5,11 +5,11 @@
     /// </summary>
     public abstract class MapEntity : Entity
     {
-        public string Name { get; set; }
-
         public int X { get; set; }
 
         public int Y { get; set; }
+
+        //public string Name { get; set; }
 
         // contact point -> Coord
         // occupied/blocked points -> List<Coord>

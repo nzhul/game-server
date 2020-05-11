@@ -56,58 +56,10 @@ namespace Server.Models.Realms
         [NotMapped]
         public List<Coord> EdgeTiles { get; set; }
 
-        private int _roomSize;
-
-        public int RoomSize
-        {
-            get
-            {
-                return this._roomSize;
-            }
-            set
-            {
-                this._roomSize = value;
-                this.FreeCellsLeft = value;
-                this._minimumFreeCellsRequirementDwellings = (this.RoomSize * freePercentDwellings) / 100;
-                this._minimumFreeCellsRequirementMonstersAndTreasure = (this.RoomSize * freePercentMonstersAndTreasure) / 100;
-            }
-        }
+        public int RoomSize { get; set; }
 
         public bool IsMainRoom { get; set; }
 
         public bool IsAccessibleFromMainRoom { get; set; }
-
-        [NotMapped]
-        public int FreeCellsLeft { get; set; }
-
-        [NotMapped]
-        private readonly int freePercentDwellings = 95; // TODO: extract this in configuration
-
-        [NotMapped]
-        private readonly int freePercentMonstersAndTreasure = 91; // TODO: extract this in configuration
-
-        [NotMapped]
-        private int _minimumFreeCellsRequirementDwellings;
-
-        [NotMapped]
-        private int _minimumFreeCellsRequirementMonstersAndTreasure;
-
-        [NotMapped]
-        public bool AvailibleForDwellingPlacement
-        {
-            get
-            {
-                return this.FreeCellsLeft > this._minimumFreeCellsRequirementDwellings;
-            }
-        }
-
-        [NotMapped]
-        public bool AvailibleForMonsterOrTreasurePlacement
-        {
-            get
-            {
-                return this.FreeCellsLeft > this._minimumFreeCellsRequirementMonstersAndTreasure;
-            }
-        }
     }
 }

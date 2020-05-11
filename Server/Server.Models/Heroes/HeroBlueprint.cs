@@ -9,7 +9,7 @@ namespace Server.Models.Heroes
 
         public string PortraitImgUrl { get; set; }
 
-        public HeroFaction Faction { get; set; }
+        public Faction Faction { get; set; }
 
         public HeroClass Class { get; set; }
 

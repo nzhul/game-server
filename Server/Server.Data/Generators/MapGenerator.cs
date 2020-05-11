@@ -1,12 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
+using Newtonsoft.Json;
+using Server.Data.Generators.Models;
 using Server.Models;
 using Server.Models.Heroes;
 using Server.Models.Heroes.Units;
 using Server.Models.MapEntities;
 using Server.Models.Realms;
+using Server.Models.Realms.Input;
 
 namespace Server.Data.Generators
 {
@@ -33,7 +38,9 @@ namespace Server.Data.Generators
         /// </summary>
         public int[,] PopulatedMatrix { get; private set; }
 
-        private List<Room> PopulationRooms;
+        //public IList<Map> Zones { get; set; }
+
+        private List<TempRoom> PopulationRooms;
 
         private List<Coord> TempRoomTiles;
 
@@ -49,6 +56,8 @@ namespace Server.Data.Generators
 
         public string Seed { get; set; }
 
+        public IDictionary<MapTemplate, MapConfig> Templates { get; set; }
+
         public MapGenerator(string seed)
         {
             this.Seed = seed;
@@ -56,15 +65,126 @@ namespace Server.Data.Generators
 
         public MapGenerator()
         {
-            this.Seed = DateTime.UtcNow.Ticks.ToString();
+            this.Templates = this.LoadTemplates(); // TODO: extract this in static singleton so we dont have to load them every time.
         }
 
-        public Map GenerateMap(int width = 128,
+        public Map TryGenerateMap(StartGameConfig gameConfig)
+        {
+            var template = this.Templates[gameConfig.MapTemplate];
+            var zones = new List<Map>();
+
+            foreach (var zoneConfig in template.Zones)
+            {
+                var zone = this.TryGenerateZone(zoneConfig);
+                zone.Position = new Coord(zoneConfig.X, zoneConfig.Y);
+                zones.Add(zone);
+            }
+
+            var map = this.GenerateEmptyMap(template.Height, template.Width);
+            this.Width = template.Width;
+            this.Height = template.Height;
+            this.MergeZones(map, zones, template.Zones);
+
+            // 1. load template config
+            // 2. generate zones using template config, mapsize and mapdifficulty -> use default values for now.
+            // 3. merge zones into one big map.
+            // 4. Connect zones.
+            // 5. Assign players at random starting positions from the availible.
+            // 6. return the map.
+
+            return map;
+        }
+
+        private void MergeZones(Map map, List<Map> zones, IList<ZoneConfig> zoneConfigs)
+        {
+            map.Rooms = new List<TempRoom>();
+
+            for (int i = 0; i < zones.Count; i++)
+            {
+                var zone = zones[i];
+                var config = zoneConfigs[i];
+                var yShift = 0 + config.Y;
+                var xShift = 0 + config.X;
+
+                var height = zone.Matrix.GetLength(0); // rows
+                var width = zone.Matrix.GetLength(1); // cols
+
+                for (int y = 0; y < height; y++)
+                {
+                    for (int x = 0; x < width; x++)
+                    {
+                        var zoneTileValue = zone.Matrix[y, x];
+                        map.Matrix[y + yShift, x + xShift] = zoneTileValue;
+                    }
+                }
+
+                foreach (var room in zone.Rooms)
+                {
+                    var newRoom = this.ShiftRoom(room, yShift, xShift, map.Matrix);
+                    map.Rooms.Add(newRoom);
+                }
+            }
+
+            map.Rooms.Sort();
+            map.Rooms.ForEach(r => r.isMainRoom = false);
+            map.Rooms.ForEach(r => r.isAccessibleFromMainRoom = false);
+            map.Rooms[0].isMainRoom = true;
+            map.Rooms[0].isAccessibleFromMainRoom = true;
+
+            this.Matrix = map.Matrix;
+            ConnectClosestRooms(map.Rooms);
+            map.Matrix = this.Matrix;
+        }
+
+        private TempRoom ShiftRoom(TempRoom room, int yShift, int xShift, int[,] matrix)
+        {
+            var shiftedTiles = room.tiles.ToList();
+            shiftedTiles.ForEach(t => { t.Y += xShift; t.X += yShift; });
+
+            return new TempRoom(shiftedTiles, matrix);
+        }
+
+        public Map TryGenerateZone(ZoneConfig config)
+        {
+            Map generatedMap = null;
+
+            bool generationIsFailing = true;
+            bool retryLimitNotReached = true;
+            int retryLimit = 10;
+            int currentRetries = 0;
+
+            while (generationIsFailing && retryLimitNotReached)
+            {
+                try
+                {
+                    this.Seed = DateTime.UtcNow.Ticks.ToString();
+                    generatedMap = this.GenerateZone(config.Width, config.Height, randomFillPercent: config.Fuzziness);
+                    generatedMap = this.PopulateZone(generatedMap, 50, 50);
+                    generationIsFailing = false;
+                }
+                catch (Exception ex)
+                {
+                    if (currentRetries <= retryLimit)
+                    {
+                        currentRetries++;
+                    }
+                    else
+                    {
+                        retryLimitNotReached = false;
+                        throw ex;
+                    }
+                }
+            }
+
+            return generatedMap;
+        }
+
+        public Map GenerateZone(int width = 128,
             int height = 76,
             int borderSize = 0,
             int passageRadius = 1,
-            int minRoomSize = 50,
-            int minWallSize = 50,
+            int minRoomSize = 10,
+            int minWallSize = 10,
             int randomFillPercent = 47)
         {
             this.Width = width;
@@ -115,7 +235,7 @@ namespace Server.Data.Generators
 
             this.Matrix = borderedMap;
             map.Matrix = this.Matrix;
-            map.Rooms = this.TransformRoomEntities(rooms);
+            map.Rooms = rooms;
             map.Seed = this.Seed;
             return map;
         }
@@ -153,7 +273,7 @@ namespace Server.Data.Generators
                 {
                     foreach (Coord tile in wallRegion)
                     {
-                        this.Matrix[tile.Row, tile.Col] = 0;
+                        this.Matrix[tile.X, tile.Y] = 0;
                     }
                 }
             }
@@ -168,7 +288,7 @@ namespace Server.Data.Generators
                 {
                     foreach (Coord tile in roomRegion)
                     {
-                        this.Matrix[tile.Row, tile.Col] = 1;
+                        this.Matrix[tile.X, tile.Y] = 1;
                     }
                 }
                 else
@@ -244,7 +364,7 @@ namespace Server.Data.Generators
                             Coord tileA = roomA.edgeTiles[tileIndexA];
                             Coord tileB = roomB.edgeTiles[tileIndexB];
 
-                            int distanceBetweenRooms = (int)(Math.Pow(tileA.Row - tileB.Row, 2) + Math.Pow(tileA.Col - tileB.Col, 2));
+                            int distanceBetweenRooms = (int)(Math.Pow(tileA.X - tileB.X, 2) + Math.Pow(tileA.Y - tileB.Y, 2));
                             if (distanceBetweenRooms < bestDistance || !possibleConnectionFound)
                             {
                                 bestDistance = distanceBetweenRooms;
@@ -292,6 +412,9 @@ namespace Server.Data.Generators
             {
                 DrawCircle(c, this.PassageRadius);
             }
+
+            // ocupiedTilesString = line + DrawCircle coordinates.
+            // Invoke CreateDwelling(..., ocupiedTilesString);
         }
 
         private void DrawCircle(Coord c, int r)
@@ -302,12 +425,12 @@ namespace Server.Data.Generators
                 {
                     if (x * x + y * y <= r * r)
                     {
-                        int realX = c.Row + x;
-                        int realY = c.Col + y;
+                        int realX = c.X + x;
+                        int realY = c.Y + y;
 
-                        if (IsInMapRange(realX, realY))
+                        if (IsInMapRange(realY, realX))
                         {
-                            this.Matrix[realX, realY] = 0;
+                            this.Matrix[realX, realY] = 99;
                         }
                     }
                 }
@@ -318,11 +441,11 @@ namespace Server.Data.Generators
         {
             List<Coord> line = new List<Coord>();
 
-            int x = from.Row;
-            int y = from.Col;
+            int x = from.X;
+            int y = from.Y;
 
-            int dx = to.Row - from.Row;
-            int dy = to.Col - from.Col;
+            int dx = to.X - from.X;
+            int dy = to.Y - from.Y;
 
             bool inverted = false;
 
@@ -399,7 +522,7 @@ namespace Server.Data.Generators
                         // mark all tiles in the new region as "looked at" so we dont have overlapping regions.
                         foreach (Coord tile in newRegion)
                         {
-                            mapFlags[tile.Row, tile.Col] = 1;
+                            mapFlags[tile.X, tile.Y] = 1;
                         }
                     }
                 }
@@ -429,11 +552,11 @@ namespace Server.Data.Generators
                 Coord tile = queue.Dequeue();
                 tiles.Add(tile);
 
-                for (int x = tile.Row - 1; x <= tile.Row + 1; x++)
+                for (int x = tile.X - 1; x <= tile.X + 1; x++)
                 {
-                    for (int y = tile.Col - 1; y <= tile.Col + 1; y++)
+                    for (int y = tile.Y - 1; y <= tile.Y + 1; y++)
                     {
-                        if (IsInMapRange(x, y) && (y == tile.Col || x == tile.Row))
+                        if (IsInMapRange(x, y) && (y == tile.Y || x == tile.X))
                         {
                             if (mapFlags[x, y] == 0 && this.Matrix[x, y] == tileType)
                             {
@@ -524,7 +647,7 @@ namespace Server.Data.Generators
 
             foreach (var coord in coordinates)
             {
-                sb.Append($"{coord.Row}:{coord.Col};");
+                sb.Append($"{coord.X}:{coord.Y};");
             }
 
             return sb.ToString();
@@ -537,8 +660,12 @@ namespace Server.Data.Generators
         /// <param name="monsterStrength">in percent %</param>
         /// <param name="objectDencity">in percent %</param>
         /// <returns></returns>
-        public Map PopulateMap(Map emptyMap, int monsterStrength, int objectDencity)
+        public Map PopulateZone(Map emptyMap, int monsterStrength, int objectDencity)
         {
+            // reset flags
+            this.MapIsFullForMonstersOrTreasure = false;
+            this.MapIsFullForDwellings = false;
+
             this.rand = new Random(this.Seed.GetHashCode());
             this.PopulatedMatrix = emptyMap.Matrix;
             this.PopulationRooms = emptyMap.Rooms;
@@ -574,7 +701,7 @@ namespace Server.Data.Generators
             Coord castlePosition = this.TryGetSafePosition(mainRoom, PlacementStrategy.FarFromEdge, 4, SpaceRequirements.Dwellings[DwellingType.Castle]);
             this.MarkPositionAsOccupied(castlePosition, SpaceRequirements.Dwellings[DwellingType.Castle], mainRoom);
             CreateDwelling("CastleName", emptyMap, castlePosition, DwellingType.Castle);
-            emptyMap.InitialHeroPosition = new Coord(castlePosition.Col, castlePosition.Row - 1);
+            emptyMap.InitialHeroPosition = new Coord(castlePosition.Y, castlePosition.X - 1);
 
             // 2. Place waypoint
             PlaceDwelling(emptyMap, "Waypoint", DwellingType.Waypoint, 1, 1);
@@ -618,7 +745,7 @@ namespace Server.Data.Generators
                         break;
                     }
 
-                    Room randomRoom = this.GetRandomRoom(availibleRooms); //TODO: keep in mind that there might not be availible rooms and this can fail!
+                    var randomRoom = this.GetRandomRoom(availibleRooms); //TODO: keep in mind that there might not be availible rooms and this can fail!
                     this.ResetTempVariables(randomRoom);
 
                     var monsterType = CreatureType.Spider;
@@ -638,11 +765,10 @@ namespace Server.Data.Generators
             Hero neutralHero = new Hero()
             {
                 Type = HeroType.Placeholder,
-                X = position.Col,
-                Y = position.Row,
+                X = position.Y,
+                Y = position.X,
                 StartX = 1,
                 StartY = 5,
-                Name = name + DateTime.Now.Ticks.ToString(),
                 NPCData = new NPCData
                 {
                     OccupiedTilesString = this.StringifyCoordCollection(this.ApplyPointShift(position, SpaceRequirements.Monsters[type])),
@@ -701,7 +827,7 @@ namespace Server.Data.Generators
                     break;
                 }
 
-                Room randomRoom = this.GetRandomRoom(availibleRooms);
+                TempRoom randomRoom = this.GetRandomRoom(availibleRooms);
                 this.ResetTempVariables(randomRoom);
 
                 var spaceRequirement = SpaceRequirements.Dwellings[type];
@@ -716,9 +842,8 @@ namespace Server.Data.Generators
             Dwelling dwelling = new Dwelling()
             {
                 Type = type,
-                X = position.Col,
-                Y = position.Row,
-                Name = name + DateTime.Now.Ticks.ToString(),
+                X = position.X,
+                Y = position.Y,
                 //OwnerId = 1, //TODO: pass this as parameter in MapGeneration function.
                 OccupiedTilesString = this.StringifyCoordCollection(this.ApplyPointShift(position, SpaceRequirements.Dwellings[type])),
             };
@@ -726,19 +851,19 @@ namespace Server.Data.Generators
             emptyMap.Dwellings.Add(dwelling);
         }
 
-        private void MarkPositionAsOccupied(Coord safePosition, List<Coord> additionalRequiredSpace, Room room)
+        private void MarkPositionAsOccupied(Coord safePosition, List<Coord> additionalRequiredSpace, TempRoom room)
         {
             foreach (Coord offset in additionalRequiredSpace)
             {
-                Coord updatedCoord = new Coord(safePosition.Row + offset.Row, safePosition.Col + offset.Col);
-                this.PopulatedMatrix[updatedCoord.Row, updatedCoord.Col] = 3;
+                Coord updatedCoord = new Coord(safePosition.X + offset.X, safePosition.Y + offset.Y);
+                this.PopulatedMatrix[updatedCoord.X, updatedCoord.Y] = 3;
                 room.FreeCellsLeft--;
             }
-            this.PopulatedMatrix[safePosition.Row, safePosition.Col] = 2;
+            this.PopulatedMatrix[safePosition.X, safePosition.Y] = 2;
             room.FreeCellsLeft--;
         }
 
-        private Coord TryGetSafePosition(Room room, PlacementStrategy strategy, int edgeDistance, List<Coord> additionalRequiredSpace)
+        private Coord TryGetSafePosition(TempRoom room, PlacementStrategy strategy, int edgeDistance, List<Coord> additionalRequiredSpace)
         {
             Coord safePosition = null;
             int retriesCount = 0;
@@ -768,10 +893,10 @@ namespace Server.Data.Generators
             return safePosition;
         }
 
-        private void ResetTempVariables(Room room)
+        private void ResetTempVariables(TempRoom room)
         {
-            this.TempRoomTiles = new List<Coord>(room.Tiles);
-            this.TempEdgeRoomTiles = new List<Coord>(room.EdgeTiles);
+            this.TempRoomTiles = new List<Coord>(room.tiles);
+            this.TempEdgeRoomTiles = new List<Coord>(room.edgeTiles);
         }
 
         private List<Coord> ApplyPointShift(Coord position, List<Coord> list)
@@ -780,7 +905,7 @@ namespace Server.Data.Generators
 
             foreach (var item in list)
             {
-                updatedList.Add(new Coord(position.Col + item.Col, position.Row + item.Row));
+                updatedList.Add(new Coord(position.Y + item.Y, position.X + item.X));
             }
 
             return updatedList;
@@ -806,9 +931,9 @@ namespace Server.Data.Generators
         /// <param name="edgeDistance">Distance to the nearest edge or other object</param>
         /// <param name="additionalRequiredSpace">Used when object require more than once cell space to be placed</param>
         /// <returns>Cotanct point</returns>
-        private Coord GetRandomSafePosition(Room room, PlacementStrategy placementStrategy, int edgeDistance, List<Coord> additionalRequiredSpace)
+        private Coord GetRandomSafePosition(TempRoom room, PlacementStrategy placementStrategy, int edgeDistance, List<Coord> additionalRequiredSpace)
         {
-            Coord position = room.Tiles[rand.Next(room.Tiles.Count)];
+            Coord position = room.tiles[rand.Next(room.tiles.Count)];
             bool positionIsSafe = false;
 
             switch (placementStrategy)
@@ -833,7 +958,7 @@ namespace Server.Data.Generators
 
             if (positionIsSafe)
             {
-                this.TempRoomTiles.RemoveAll(t => t.Row == position.Row && t.Col == position.Col);
+                this.TempRoomTiles.RemoveAll(t => t.X == position.X && t.Y == position.Y);
                 return position;
             }
 
@@ -912,7 +1037,7 @@ namespace Server.Data.Generators
 
         private int GetDistanceFromEdge(Coord coord, CheckDirection direction)
         {
-            Coord shiftingCoord = new Coord(coord.Row, coord.Col);
+            Coord shiftingCoord = new Coord(coord.X, coord.Y);
 
             int XOffset = 0;
             int YOffset = 0;
@@ -946,8 +1071,8 @@ namespace Server.Data.Generators
                 }
                 else
                 {
-                    shiftingCoord.Row += XOffset;
-                    shiftingCoord.Col += YOffset;
+                    shiftingCoord.X += XOffset;
+                    shiftingCoord.Y += YOffset;
                     distance++;
                 }
             }
@@ -957,7 +1082,7 @@ namespace Server.Data.Generators
 
         private bool IsOnEdge(List<Coord> edges, Coord coord)
         {
-            return edges.Any(t => t.Row == coord.Row && t.Col == coord.Col);
+            return edges.Any(t => t.X == coord.X && t.Y == coord.Y);
         }
 
         //TODO: test if this is working!
@@ -965,15 +1090,15 @@ namespace Server.Data.Generators
         {
             bool colliding = false;
 
-            if (this.PopulatedMatrix[coord.Row, coord.Col] != 0)
+            if (this.PopulatedMatrix[coord.X, coord.Y] != 0)
             {
                 colliding = true;
             }
 
             foreach (Coord offset in additionalRequiredSpace)
             {
-                Coord updatedCoord = new Coord(coord.Row + offset.Row, coord.Col + offset.Col);
-                if (this.PopulatedMatrix[updatedCoord.Row, updatedCoord.Col] != 0)
+                Coord updatedCoord = new Coord(coord.X + offset.X, coord.Y + offset.Y);
+                if (this.PopulatedMatrix[updatedCoord.X, updatedCoord.Y] != 0)
                 {
                     colliding = true;
                 }
@@ -982,85 +1107,9 @@ namespace Server.Data.Generators
             return colliding;
         }
 
-        private Room GetRandomRoom(List<Room> rooms)
+        private TempRoom GetRandomRoom(List<TempRoom> rooms)
         {
             return rooms[rand.Next(rooms.Count)];
-        }
-
-        private class TempRoom : IComparable<TempRoom>
-        {
-            public List<Coord> tiles;
-            public List<Coord> edgeTiles;
-            public List<TempRoom> connectedRooms;
-            public int roomSize;
-            public bool isAccessibleFromMainRoom;
-            public bool isMainRoom;
-
-            public TempRoom()
-            {
-            }
-
-            public TempRoom(List<Coord> tiles, int[,] map)
-            {
-                this.tiles = tiles;
-                this.roomSize = tiles.Count;
-                connectedRooms = new List<TempRoom>();
-                edgeTiles = new List<Coord>();
-
-                foreach (Coord tile in tiles)
-                {
-                    for (int x = tile.Row - 1; x <= tile.Row + 1; x++)
-                    {
-                        for (int y = tile.Col - 1; y <= tile.Col + 1; y++)
-                        {
-                            if (x == tile.Row || y == tile.Col)
-                            {
-                                if (map[x, y] == 1)
-                                {
-                                    edgeTiles.Add(tile);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            public void SetAccessibleFromMainRoom()
-            {
-                if (!isAccessibleFromMainRoom)
-                {
-                    isAccessibleFromMainRoom = true;
-                    foreach (TempRoom connectedRoom in connectedRooms)
-                    {
-                        connectedRoom.SetAccessibleFromMainRoom();
-                    }
-                }
-            }
-
-            public static void ConnectRooms(TempRoom roomA, TempRoom roomB)
-            {
-                if (roomA.isAccessibleFromMainRoom)
-                {
-                    roomB.SetAccessibleFromMainRoom();
-                }
-                else if (roomB.isAccessibleFromMainRoom)
-                {
-                    roomA.SetAccessibleFromMainRoom();
-                }
-
-                roomA.connectedRooms.Add(roomB);
-                roomB.connectedRooms.Add(roomA);
-            }
-
-            public int CompareTo(TempRoom other)
-            {
-                return other.roomSize.CompareTo(this.roomSize);
-            }
-
-            public bool IsConnected(TempRoom otherRoom)
-            {
-                return connectedRooms.Contains(otherRoom);
-            }
         }
 
         private enum PlacementStrategy
@@ -1068,6 +1117,161 @@ namespace Server.Data.Generators
             Random = 0,
             NearEdge = 1,
             FarFromEdge = 2
+        }
+
+        private IDictionary<MapTemplate, MapConfig> LoadTemplates()
+        {
+            var path = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"Generators\Templates\");
+            var templateFiles = Directory.GetFiles(path);
+
+            var templates = new Dictionary<MapTemplate, MapConfig>();
+
+            foreach (var file in templateFiles)
+            {
+                var config = JsonConvert.DeserializeObject<MapConfig>(File.ReadAllText(file));
+                templates.Add(config.MapTemplate, config);
+            }
+
+            return templates;
+        }
+
+        private Map GenerateEmptyMap(int rowLen, int colLen)
+        {
+            var map = new Map();
+            map.Matrix = new int[rowLen, colLen];
+
+            for (int row = 0; row < rowLen; row++)
+            {
+                for (int col = 0; col < colLen; col++)
+                {
+                    map.Matrix[row, col] = 1;
+                }
+            }
+
+            return map;
+        }
+    }
+
+    public class TempRoom : IComparable<TempRoom>
+    {
+        public int ZoneIndex { get; set; }
+
+        public List<Coord> tiles;
+        public List<Coord> edgeTiles;
+        public List<TempRoom> connectedRooms;
+        public bool isAccessibleFromMainRoom;
+        public bool isMainRoom;
+
+        private int _roomSize;
+
+        public int roomSize
+        {
+            get
+            {
+                return this._roomSize;
+            }
+            set
+            {
+                this._roomSize = value;
+                this.FreeCellsLeft = value;
+                this._minimumFreeCellsRequirementDwellings = (this.roomSize * freePercentDwellings) / 100;
+                this._minimumFreeCellsRequirementMonstersAndTreasure = (this.roomSize * freePercentMonstersAndTreasure) / 100;
+            }
+        }
+
+        public int FreeCellsLeft { get; set; }
+
+        private readonly int freePercentDwellings = 95; // TODO: extract this in configuration
+
+        private readonly int freePercentMonstersAndTreasure = 91; // TODO: extract this in configuration
+
+
+        private int _minimumFreeCellsRequirementDwellings;
+
+
+        private int _minimumFreeCellsRequirementMonstersAndTreasure;
+
+
+        public bool AvailibleForDwellingPlacement
+        {
+            get
+            {
+                return this.FreeCellsLeft > this._minimumFreeCellsRequirementDwellings;
+            }
+        }
+
+        public bool AvailibleForMonsterOrTreasurePlacement
+        {
+            get
+            {
+                return this.FreeCellsLeft > this._minimumFreeCellsRequirementMonstersAndTreasure;
+            }
+        }
+
+        public TempRoom()
+        {
+        }
+
+        public TempRoom(List<Coord> tiles, int[,] map)
+        {
+            this.tiles = tiles;
+            this.roomSize = tiles.Count;
+            connectedRooms = new List<TempRoom>();
+            edgeTiles = new List<Coord>();
+
+            foreach (Coord tile in tiles)
+            {
+                for (int x = tile.X - 1; x <= tile.X + 1; x++)
+                {
+                    for (int y = tile.Y - 1; y <= tile.Y + 1; y++)
+                    {
+                        if (x == tile.X || y == tile.Y)
+                        {
+                            if (map[x, y] == 1)
+                            {
+                                edgeTiles.Add(tile);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        public void SetAccessibleFromMainRoom()
+        {
+            if (!isAccessibleFromMainRoom)
+            {
+                isAccessibleFromMainRoom = true;
+                foreach (TempRoom connectedRoom in connectedRooms)
+                {
+                    connectedRoom.SetAccessibleFromMainRoom();
+                }
+            }
+        }
+
+        public static void ConnectRooms(TempRoom roomA, TempRoom roomB)
+        {
+            if (roomA.isAccessibleFromMainRoom)
+            {
+                roomB.SetAccessibleFromMainRoom();
+            }
+            else if (roomB.isAccessibleFromMainRoom)
+            {
+                roomA.SetAccessibleFromMainRoom();
+            }
+
+            roomA.connectedRooms.Add(roomB);
+            roomB.connectedRooms.Add(roomA);
+        }
+
+        public int CompareTo(TempRoom other)
+        {
+            return other.roomSize.CompareTo(this.roomSize);
+        }
+
+        public bool IsConnected(TempRoom otherRoom)
+        {
+            return connectedRooms.Contains(otherRoom);
         }
     }
 }

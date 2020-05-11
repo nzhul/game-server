@@ -13,7 +13,7 @@ namespace Server.Models.Parsers
             for (int i = 0; i < tilesParts.Length; i++)
             {
                 string[] coords = tilesParts[i].Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
-                roomCoordinates.Add(new Coord() { Row = int.Parse(coords[0]), Col = int.Parse(coords[1]) });
+                roomCoordinates.Add(new Coord() { X = int.Parse(coords[0]), Y = int.Parse(coords[1]) });
             }
 
             return roomCoordinates;
