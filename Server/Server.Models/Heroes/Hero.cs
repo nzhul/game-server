@@ -1,13 +1,12 @@
-﻿using Server.Models.Heroes.Units;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel.DataAnnotations.Schema;
+using Server.Models.Heroes.Units;
 using Server.Models.Items;
 using Server.Models.MapEntities;
 using Server.Models.Realms;
 using Server.Models.Users;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Server.Models.Heroes
 {
@@ -50,28 +49,6 @@ namespace Server.Models.Heroes
 
         public HeroType Type { get; set; }
 
-        public DateTime LastActivity { get; set; }
-
-        [Obsolete("Property 'Duration' should be used instead.")]
-        [Browsable(false)]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public long TimePlayedTicks { get; set; }
-
-        [NotMapped]
-        public TimeSpan TimePlayed
-        {
-#pragma warning disable 618
-            get
-            {
-                return new TimeSpan(TimePlayedTicks);
-            }
-            set
-            {
-                TimePlayedTicks = value.Ticks;
-            }
-#pragma warning restore 618
-        }
-
         public NPCData NPCData { get; set; }
 
         public bool IsNPC { get; set; }
@@ -101,5 +78,8 @@ namespace Server.Models.Heroes
             this.Items = new Collection<Item>();
             this.Units = new Collection<Unit>();
         }
+
+        [NotMapped]
+        public Guid? Link { get; set; }
     }
 }

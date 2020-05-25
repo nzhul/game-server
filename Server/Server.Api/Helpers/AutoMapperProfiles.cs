@@ -68,8 +68,8 @@ namespace Server.Api.Helpers
             // DWELLINGS
             CreateMap<Dwelling, DwellingDetailedDto>();
             CreateMap<Dwelling, WaypointDto>()
-                .ForMember( x => x.RegionId, opt => opt.MapFrom(u => u.Region.Id))
-                .ForMember( x => x.RegionName, opt => opt.MapFrom(u => u.Region.Name));
+                .ForMember( x => x.RegionId, opt => opt.MapFrom(u => u.Game.Id))
+                .ForMember( x => x.RegionName, opt => opt.MapFrom(u => u.Game.Name));
 
             // AVATARS
             CreateMap<Hero, HeroDetailedDto>()

@@ -58,8 +58,6 @@ namespace Server.Data.Generators
 
         public string Seed { get; set; }
 
-        public Coord InitialHeroPosition { get; set; }
-
         public Map()
         {
             this.Dwellings = new List<Dwelling>();

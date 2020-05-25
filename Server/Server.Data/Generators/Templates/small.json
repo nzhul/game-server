@@ -9,14 +9,13 @@
             "Y": 0,
             "Width": 10,
             "Height": 10,
-            "Type": "HumanStart",
+            "Type": "StartingZone",
+            "Team": "Team1",
             "Fuzziness": 20,
             "Links": [
                 {
                     "ZoneId": 2,
-                    "Guardians": {
-                        "Strength": 15
-                    },
+                    "GuardianStrength": 15,
                     "Type": "Standard"
                 }
             ]
@@ -27,14 +26,13 @@
             "Y": 0,
             "Width": 10,
             "Height": 10,
-            "Type": "Treasure",
+            "Type": "NeutralZone",
+            "Team": "Team2",
             "Fuzziness": 20,
             "Links": [
                 {
                     "ZoneId": 1,
-                    "Guardians": {
-                        "Strength": 15
-                    },
+                    "GuardianStrength": 15,
                     "Type": "Standard"
                 }
             ]

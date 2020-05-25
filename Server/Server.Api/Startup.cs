@@ -67,6 +67,7 @@ namespace Server.Api
             .ConfigureWarnings(warnings => warnings.Ignore(CoreEventId.IncludeIgnoredWarning)));
             services.AddCors();
             services.AddAutoMapper(typeof(AutoMapperProfiles).GetTypeInfo().Assembly);
+            services.AddScoped<IGameService, GameService>();
             services.AddScoped<IUsersService, UsersService>();
             //services.AddScoped<IRealmsService, RealmsService>();
             services.AddScoped<IHeroesService, HeroesService>();

@@ -9,14 +9,13 @@
             "X": 0,
             "Width": 50,
             "Height": 50,
-            "Type": "HumanStart",
+            "Type": "StartingZone",
+            "Team": "Team1",
             "Fuzziness": 45,
             "Links": [
                 {
                     "ZoneId": 2,
-                    "Guardians": {
-                        "Strength": 15
-                    },
+                    "GuardianStrength": 15,
                     "Type": "Standard"
                 }
             ]
@@ -27,14 +26,13 @@
             "X": 51,
             "Width": 70,
             "Height": 70,
-            "Type": "Treasure",
+            "Type": "NeutralZone",
+            "Team": "Neutral",
             "Fuzziness": 45,
             "Links": [
                 {
                     "ZoneId": 1,
-                    "Guardians": {
-                        "Strength": 15
-                    },
+                    "GuardianStrength": 15,
                     "Type": "Standard"
                 },
                 {
@@ -52,14 +50,13 @@
             "X": 122,
             "Width": 50,
             "Height": 50,
-            "Type": "HumanStart",
+            "Type": "StartingZone",
+            "Team": "Team2",
             "Fuzziness": 45,
             "Links": [
                 {
                     "ZoneId": 2,
-                    "Guardians": {
-                        "Strength": 15
-                    },
+                    "GuardianStrength": 15,
                     "Type": "Standard"
                 }
             ]

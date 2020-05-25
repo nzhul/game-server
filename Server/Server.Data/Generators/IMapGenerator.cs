@@ -13,8 +13,6 @@ namespace Server.Data.Generators
             int minWallSize = 50,
             int randomFillPercent = 47);
 
-        Map PopulateZone(Map emptyMap, int monsterStrength, int objectDencity);
-
         Map TryGenerateZone(ZoneConfig config);
 
         Map TryGenerateMap(StartGameConfig gameConfig);

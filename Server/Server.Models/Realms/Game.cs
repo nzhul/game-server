@@ -62,21 +62,22 @@ namespace Server.Models.Realms
         private int[,] ParseMatrix(string matrixString)
         {
             string[] lines = matrixString.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
-            int[,] parsedMatrix = new int[lines[0].Length, lines.Length];
-            for (int row = 0; row < lines.Length; row++)
+
+            int height = lines.Length;
+            int width = lines[0].Length;
+
+            int[,] parsedMatrix = new int[height, width];
+            for (int y = 0; y < height; y++)
             {
-                string line = lines[row];
-                for (int col = 0; col < line.Length; col++)
+                string line = lines[y];
+                for (int x = 0; x < width; x++)
                 {
-                    parsedMatrix[col, row] = (int)char.GetNumericValue(line[col]);
+                    parsedMatrix[y, x] = (int)char.GetNumericValue(line[x]);
                 }
             }
 
             return parsedMatrix;
         }
-
-        [NotMapped]
-        public Coord InitialHeroPosition { get; set; }
 
         #endregion
     }

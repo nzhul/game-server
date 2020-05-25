@@ -10,8 +10,8 @@ using Server.Data;
 namespace Server.Data.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20191001192912_Init")]
-    partial class Init
+    [Migration("20200522171823_init")]
+    partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -147,17 +147,13 @@ namespace Server.Data.Migrations
 
                     b.Property<int?>("BlueprintId");
 
-                    b.Property<DateTime>("CreatedAt");
-
-                    b.Property<string>("CreatedBy");
-
                     b.Property<int>("Dodge");
+
+                    b.Property<int?>("GameId");
 
                     b.Property<int>("Hitpoints");
 
                     b.Property<bool>("IsNPC");
-
-                    b.Property<DateTime>("LastActivity");
 
                     b.Property<int>("Level");
 
@@ -167,21 +163,13 @@ namespace Server.Data.Migrations
 
                     b.Property<int>("MinDamage");
 
-                    b.Property<DateTime>("ModifiedAt");
-
-                    b.Property<string>("ModifiedBy");
-
                     b.Property<int>("MovementPoints");
-
-                    b.Property<string>("Name");
-
-                    b.Property<int?>("RegionId");
 
                     b.Property<int>("StartX");
 
                     b.Property<int>("StartY");
 
-                    b.Property<long>("TimePlayedTicks");
+                    b.Property<int>("Team");
 
                     b.Property<int>("Type");
 
@@ -195,7 +183,7 @@ namespace Server.Data.Migrations
 
                     b.HasIndex("BlueprintId");
 
-                    b.HasIndex("RegionId");
+                    b.HasIndex("GameId");
 
                     b.ToTable("Heroes");
                 });
@@ -216,10 +204,6 @@ namespace Server.Data.Migrations
 
                     b.Property<int>("Class");
 
-                    b.Property<DateTime>("CreatedAt");
-
-                    b.Property<string>("CreatedBy");
-
                     b.Property<string>("Description");
 
                     b.Property<int>("Dodge");
@@ -233,10 +217,6 @@ namespace Server.Data.Migrations
                     b.Property<int>("MaxDamage");
 
                     b.Property<int>("MinDamage");
-
-                    b.Property<DateTime>("ModifiedAt");
-
-                    b.Property<string>("ModifiedBy");
 
                     b.Property<int>("MovementPoints");
 
@@ -274,15 +254,7 @@ namespace Server.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<DateTime>("CreatedAt");
-
-                    b.Property<string>("CreatedBy");
-
                     b.Property<int?>("HeroId");
-
-                    b.Property<DateTime>("ModifiedAt");
-
-                    b.Property<string>("ModifiedBy");
 
                     b.Property<int>("Quantity");
 
@@ -404,15 +376,7 @@ namespace Server.Data.Migrations
 
                     b.Property<int?>("BlueprintId");
 
-                    b.Property<DateTime>("CreatedAt");
-
-                    b.Property<string>("CreatedBy");
-
                     b.Property<int?>("HeroId");
-
-                    b.Property<DateTime>("ModifiedAt");
-
-                    b.Property<string>("ModifiedBy");
 
                     b.HasKey("Id");
 
@@ -429,17 +393,9 @@ namespace Server.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<DateTime>("CreatedAt");
-
-                    b.Property<string>("CreatedBy");
-
                     b.Property<string>("Description");
 
                     b.Property<int>("ItemSlotType");
-
-                    b.Property<DateTime>("ModifiedAt");
-
-                    b.Property<string>("ModifiedBy");
 
                     b.Property<string>("Name");
 
@@ -454,21 +410,19 @@ namespace Server.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<DateTime>("CreatedAt");
+                    b.Property<int>("EndX");
 
-                    b.Property<string>("CreatedBy");
+                    b.Property<int>("EndY");
 
-                    b.Property<DateTime>("ModifiedAt");
+                    b.Property<int>("GameId");
 
-                    b.Property<string>("ModifiedBy");
-
-                    b.Property<string>("Name");
+                    b.Property<int?>("GuardianId");
 
                     b.Property<string>("OccupiedTilesString");
 
                     b.Property<int?>("OwnerId");
 
-                    b.Property<int>("RegionId");
+                    b.Property<int>("Team");
 
                     b.Property<int>("Type");
 
@@ -478,9 +432,11 @@ namespace Server.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("OwnerId");
+                    b.HasIndex("GameId");
 
-                    b.HasIndex("RegionId");
+                    b.HasIndex("GuardianId");
+
+                    b.HasIndex("OwnerId");
 
                     b.ToTable("Dwelling");
                 });
@@ -491,19 +447,11 @@ namespace Server.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<DateTime>("CreatedAt");
-
-                    b.Property<string>("CreatedBy");
-
-                    b.Property<DateTime>("ModifiedAt");
-
-                    b.Property<string>("ModifiedBy");
-
-                    b.Property<string>("Name");
+                    b.Property<int?>("GameId");
 
                     b.Property<int>("Quantity");
 
-                    b.Property<int?>("RegionId");
+                    b.Property<int>("Team");
 
                     b.Property<int>("Type");
 
@@ -513,67 +461,24 @@ namespace Server.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("RegionId");
+                    b.HasIndex("GameId");
 
                     b.ToTable("Treasure");
                 });
 
-            modelBuilder.Entity("Server.Models.Realms.Realm", b =>
+            modelBuilder.Entity("Server.Models.Realms.Game", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<DateTime>("CreatedAt");
-
-                    b.Property<string>("CreatedBy");
-
-                    b.Property<DateTime>("ModifiedAt");
-
-                    b.Property<string>("ModifiedBy");
-
-                    b.Property<string>("Name");
-
-                    b.Property<DateTime>("ResetDate");
-
-                    b.Property<int>("Type");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Name")
-                        .IsUnique()
-                        .HasFilter("[Name] IS NOT NULL");
-
-                    b.ToTable("Realms");
-                });
-
-            modelBuilder.Entity("Server.Models.Realms.Region", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<DateTime>("CreatedAt");
-
-                    b.Property<string>("CreatedBy");
-
-                    b.Property<int>("Level");
 
                     b.Property<string>("MatrixString");
 
-                    b.Property<DateTime>("ModifiedAt");
-
-                    b.Property<string>("ModifiedBy");
-
                     b.Property<string>("Name");
-
-                    b.Property<int?>("RealmId");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("RealmId");
-
-                    b.ToTable("Regions");
+                    b.ToTable("Games");
                 });
 
             modelBuilder.Entity("Server.Models.Realms.Room", b =>
@@ -582,21 +487,13 @@ namespace Server.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<DateTime>("CreatedAt");
-
-                    b.Property<string>("CreatedBy");
-
                     b.Property<string>("EdgeTilesString");
+
+                    b.Property<int?>("GameId");
 
                     b.Property<bool>("IsAccessibleFromMainRoom");
 
                     b.Property<bool>("IsMainRoom");
-
-                    b.Property<DateTime>("ModifiedAt");
-
-                    b.Property<string>("ModifiedBy");
-
-                    b.Property<int?>("RegionId");
 
                     b.Property<int>("RoomSize");
 
@@ -604,7 +501,7 @@ namespace Server.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("RegionId");
+                    b.HasIndex("GameId");
 
                     b.ToTable("Room");
                 });
@@ -615,21 +512,15 @@ namespace Server.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<DateTime>("CreatedAt");
-
-                    b.Property<string>("CreatedBy");
+                    b.Property<int?>("GameId");
 
                     b.Property<int>("Gems");
 
                     b.Property<int>("Gold");
 
-                    b.Property<DateTime>("ModifiedAt");
-
-                    b.Property<string>("ModifiedBy");
-
                     b.Property<int>("Ore");
 
-                    b.Property<int?>("RealmId");
+                    b.Property<int>("Team");
 
                     b.Property<int?>("UserId");
 
@@ -637,24 +528,11 @@ namespace Server.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("RealmId");
+                    b.HasIndex("GameId");
 
                     b.HasIndex("UserId");
 
                     b.ToTable("Avatars");
-                });
-
-            modelBuilder.Entity("Server.Models.Users.AvatarDwelling", b =>
-                {
-                    b.Property<int>("AvatarId");
-
-                    b.Property<int>("DwellingId");
-
-                    b.HasKey("AvatarId", "DwellingId");
-
-                    b.HasIndex("DwellingId");
-
-                    b.ToTable("AvatarDwelling");
                 });
 
             modelBuilder.Entity("Server.Models.Users.Friendship", b =>
@@ -684,19 +562,11 @@ namespace Server.Data.Migrations
 
                     b.Property<string>("Content");
 
-                    b.Property<DateTime>("CreatedAt");
-
-                    b.Property<string>("CreatedBy");
-
                     b.Property<DateTime?>("DateRead");
 
                     b.Property<bool>("IsRead");
 
                     b.Property<DateTime>("MessageSent");
-
-                    b.Property<DateTime>("ModifiedAt");
-
-                    b.Property<string>("ModifiedBy");
 
                     b.Property<bool>("RecipientDeleted");
 
@@ -721,19 +591,11 @@ namespace Server.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<DateTime>("CreatedAt");
-
-                    b.Property<string>("CreatedBy");
-
                     b.Property<DateTime>("DateAdded");
 
                     b.Property<string>("Description");
 
                     b.Property<bool>("IsMain");
-
-                    b.Property<DateTime>("ModifiedAt");
-
-                    b.Property<string>("ModifiedBy");
 
                     b.Property<string>("PublicId");
 
@@ -814,6 +676,8 @@ namespace Server.Data.Migrations
                     b.Property<bool>("LockoutEnabled");
 
                     b.Property<DateTimeOffset?>("LockoutEnd");
+
+                    b.Property<int>("MMR");
 
                     b.Property<DateTime>("ModifiedAt");
 
@@ -908,7 +772,7 @@ namespace Server.Data.Migrations
                         .WithMany()
                         .HasForeignKey("BlueprintId");
 
-                    b.HasOne("Server.Models.Realms.Region", "Region")
+                    b.HasOne("Server.Models.Realms.Game", "Region")
                         .WithMany("Castles")
                         .HasForeignKey("RegionId");
                 });
@@ -924,9 +788,9 @@ namespace Server.Data.Migrations
                         .WithMany()
                         .HasForeignKey("BlueprintId");
 
-                    b.HasOne("Server.Models.Realms.Region", "Region")
+                    b.HasOne("Server.Models.Realms.Game", "Game")
                         .WithMany("Heroes")
-                        .HasForeignKey("RegionId");
+                        .HasForeignKey("GameId");
 
                     b.OwnsOne("Server.Models.MapEntities.NPCData", "NPCData", b1 =>
                         {
@@ -1015,59 +879,43 @@ namespace Server.Data.Migrations
 
             modelBuilder.Entity("Server.Models.MapEntities.Dwelling", b =>
                 {
-                    b.HasOne("Server.Models.Users.Avatar", "Owner")
-                        .WithMany()
-                        .HasForeignKey("OwnerId");
-
-                    b.HasOne("Server.Models.Realms.Region", "Region")
+                    b.HasOne("Server.Models.Realms.Game", "Game")
                         .WithMany("Dwellings")
-                        .HasForeignKey("RegionId")
+                        .HasForeignKey("GameId")
                         .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Server.Models.Heroes.Hero", "Guardian")
+                        .WithMany()
+                        .HasForeignKey("GuardianId");
+
+                    b.HasOne("Server.Models.Users.Avatar", "Owner")
+                        .WithMany("Dwellings")
+                        .HasForeignKey("OwnerId");
                 });
 
             modelBuilder.Entity("Server.Models.MapEntities.Treasure", b =>
                 {
-                    b.HasOne("Server.Models.Realms.Region")
+                    b.HasOne("Server.Models.Realms.Game")
                         .WithMany("Treasures")
-                        .HasForeignKey("RegionId");
-                });
-
-            modelBuilder.Entity("Server.Models.Realms.Region", b =>
-                {
-                    b.HasOne("Server.Models.Realms.Realm", "Realm")
-                        .WithMany("Regions")
-                        .HasForeignKey("RealmId");
+                        .HasForeignKey("GameId");
                 });
 
             modelBuilder.Entity("Server.Models.Realms.Room", b =>
                 {
-                    b.HasOne("Server.Models.Realms.Region")
+                    b.HasOne("Server.Models.Realms.Game")
                         .WithMany("Rooms")
-                        .HasForeignKey("RegionId");
+                        .HasForeignKey("GameId");
                 });
 
             modelBuilder.Entity("Server.Models.Users.Avatar", b =>
                 {
-                    b.HasOne("Server.Models.Realms.Realm", "Realm")
+                    b.HasOne("Server.Models.Realms.Game", "Game")
                         .WithMany("Avatars")
-                        .HasForeignKey("RealmId");
+                        .HasForeignKey("GameId");
 
                     b.HasOne("Server.Models.Users.User", "User")
                         .WithMany("Avatars")
                         .HasForeignKey("UserId");
-                });
-
-            modelBuilder.Entity("Server.Models.Users.AvatarDwelling", b =>
-                {
-                    b.HasOne("Server.Models.Users.Avatar", "Avatar")
-                        .WithMany("AvatarDwellings")
-                        .HasForeignKey("AvatarId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("Server.Models.MapEntities.Dwelling", "Dwelling")
-                        .WithMany("AvatarDwellings")
-                        .HasForeignKey("DwellingId")
-                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Server.Models.Users.Friendship", b =>

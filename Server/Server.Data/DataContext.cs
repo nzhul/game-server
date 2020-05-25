@@ -1,17 +1,15 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Server.Models;
 using Server.Models.Castles;
 using Server.Models.Heroes;
 using Server.Models.Heroes.Units;
 using Server.Models.Items;
+using Server.Models.MapEntities;
 using Server.Models.Realms;
 using Server.Models.Users;
-using System;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Server.Data
 {
@@ -71,20 +69,20 @@ namespace Server.Data
                 .HasForeignKey(u => u.RecieverId);
 
             // Many to many
-            builder.Entity<AvatarDwelling>(avatarDwelling =>
-            {
-                avatarDwelling.HasKey(ad => new { ad.AvatarId, ad.DwellingId });
+            //builder.Entity<AvatarDwelling>(avatarDwelling =>
+            //{
+            //    avatarDwelling.HasKey(ad => new { ad.AvatarId, ad.DwellingId });
 
-                avatarDwelling.HasOne(ad => ad.Avatar)
-                .WithMany(a => a.AvatarDwellings)
-                .HasForeignKey(ad => ad.AvatarId)
-                .IsRequired();
+            //    avatarDwelling.HasOne(ad => ad.Avatar)
+            //    .WithMany(a => a.AvatarDwellings)
+            //    .HasForeignKey(ad => ad.AvatarId)
+            //    .IsRequired();
 
-                avatarDwelling.HasOne(ad => ad.Dwelling)
-                .WithMany(a => a.AvatarDwellings)
-                .HasForeignKey(ad => ad.DwellingId)
-                .IsRequired();
-            });
+            //    avatarDwelling.HasOne(ad => ad.Dwelling)
+            //    .WithMany(a => a.AvatarDwellings)
+            //    .HasForeignKey(ad => ad.DwellingId)
+            //    .IsRequired();
+            //});
 
             builder.Entity<UserRole>(userRole =>
             {
@@ -144,10 +142,10 @@ namespace Server.Data
                 .HasField("_edgeTilesString")
                 .UsePropertyAccessMode(PropertyAccessMode.Property);
 
-            builder.Entity<Room>()
-                .Property(r => r.RoomSize)
-                .HasField("_roomSize")
-                .UsePropertyAccessMode(PropertyAccessMode.Property);
+            //builder.Entity<Room>()
+            //    .Property(r => r.RoomSize)
+            //    .HasField("_roomSize")
+            //    .UsePropertyAccessMode(PropertyAccessMode.Property);
 
             builder.Entity<UnitConfiguration>()
                 .HasIndex(x => x.Type)
@@ -184,6 +182,9 @@ namespace Server.Data
                 .HasForeignKey(ad => ad.UpgradeId)
                 .IsRequired();
             });
+
+            builder.Entity<Dwelling>()
+                .HasOne(u => u.Guardian);
         }
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default(CancellationToken))

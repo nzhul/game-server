@@ -125,7 +125,7 @@ namespace Server.GeneratorTesting
                     Console.WriteLine();
                 }
 
-                //PaintRooms(map.Rooms);
+                PaintRooms(map.Rooms);
                 //PaintEdges(map.Rooms);
                 //PaintHero(map, r);
                 PaintPassages(map.Matrix);

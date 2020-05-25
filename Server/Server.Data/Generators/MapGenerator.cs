@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using Microsoft.EntityFrameworkCore.Internal;
 using Newtonsoft.Json;
 using Server.Data.Generators.Models;
 using Server.Models;
@@ -12,6 +13,7 @@ using Server.Models.Heroes.Units;
 using Server.Models.MapEntities;
 using Server.Models.Realms;
 using Server.Models.Realms.Input;
+using Server.Models.Users;
 
 namespace Server.Data.Generators
 {
@@ -58,6 +60,8 @@ namespace Server.Data.Generators
 
         public IDictionary<MapTemplate, MapConfig> Templates { get; set; }
 
+        public MapConfig Template { get; set; }
+
         public MapGenerator(string seed)
         {
             this.Seed = seed;
@@ -70,20 +74,20 @@ namespace Server.Data.Generators
 
         public Map TryGenerateMap(StartGameConfig gameConfig)
         {
-            var template = this.Templates[gameConfig.MapTemplate];
+            this.Template = this.Templates[gameConfig.MapTemplate];
             var zones = new List<Map>();
 
-            foreach (var zoneConfig in template.Zones)
+            foreach (var zoneConfig in this.Template.Zones)
             {
                 var zone = this.TryGenerateZone(zoneConfig);
                 zone.Position = new Coord(zoneConfig.X, zoneConfig.Y);
                 zones.Add(zone);
             }
 
-            var map = this.GenerateEmptyMap(template.Height, template.Width);
-            this.Width = template.Width;
-            this.Height = template.Height;
-            this.MergeZones(map, zones, template.Zones);
+            var map = this.GenerateEmptyMap(this.Template.Height, this.Template.Width);
+            this.Width = this.Template.Width;
+            this.Height = this.Template.Height;
+            this.MergeZones(map, zones, this.Template.Zones);
 
             // 1. load template config
             // 2. generate zones using template config, mapsize and mapdifficulty -> use default values for now.
@@ -118,12 +122,48 @@ namespace Server.Data.Generators
                     }
                 }
 
+                // Shift rooms
                 foreach (var room in zone.Rooms)
                 {
                     var newRoom = this.ShiftRoom(room, yShift, xShift, map.Matrix);
+                    newRoom.ZoneIndex = config.Id;
                     map.Rooms.Add(newRoom);
                 }
+
+                // Shift dwellings
+                foreach (var dwelling in zone.Dwellings)
+                {
+                    dwelling.X += xShift;
+                    dwelling.Y += yShift;
+                    dwelling.EndX = dwelling.EndX != 0 ? dwelling.EndX += xShift : 0;
+                    dwelling.EndY = dwelling.EndY != 0 ? dwelling.EndY += yShift : 0;
+                    if (dwelling.Guardian != null)
+                    {
+                        dwelling.Guardian.X += xShift;
+                        dwelling.Guardian.Y += yShift;
+                    }
+                    dwelling.OccupiedTilesString = StringifyCoordCollection(this.ApplyPointShift(new Coord(xShift, yShift),dwelling.OccupiedTiles));
+                    map.Dwellings.Add(dwelling);
+                }
+
+                // Shift heroes
+                foreach (var hero in zone.Heroes)
+                {
+                    hero.X += xShift;
+                    hero.Y += yShift;
+                    map.Heroes.Add(hero);
+                }
+
+                // Shift treasures
+                foreach (var treasure in zone.Treasures)
+                {
+                    treasure.X += xShift;
+                    treasure.Y += yShift;
+                    map.Treasures.Add(treasure);
+                }
             }
+
+
 
             map.Rooms.Sort();
             map.Rooms.ForEach(r => r.isMainRoom = false);
@@ -132,7 +172,7 @@ namespace Server.Data.Generators
             map.Rooms[0].isAccessibleFromMainRoom = true;
 
             this.Matrix = map.Matrix;
-            ConnectClosestRooms(map.Rooms);
+            ConnectClosestRooms(map, map.Rooms);
             map.Matrix = this.Matrix;
         }
 
@@ -159,7 +199,7 @@ namespace Server.Data.Generators
                 {
                     this.Seed = DateTime.UtcNow.Ticks.ToString();
                     generatedMap = this.GenerateZone(config.Width, config.Height, randomFillPercent: config.Fuzziness);
-                    generatedMap = this.PopulateZone(generatedMap, 50, 50);
+                    generatedMap = this.PopulateZone(generatedMap, config.Team, 50, 50);
                     generationIsFailing = false;
                 }
                 catch (Exception ex)
@@ -214,7 +254,7 @@ namespace Server.Data.Generators
                 SmoothMap();
             }
 
-            rooms = ProcessMap(minWallSize, minRoomSize);
+            rooms = ProcessMap(map, minWallSize, minRoomSize);
 
             int[,] borderedMap = new int[width + borderSize * 2, height + borderSize * 2];
 
@@ -251,8 +291,8 @@ namespace Server.Data.Generators
                     RoomSize = room.roomSize,
                     IsMainRoom = room.isMainRoom,
                     IsAccessibleFromMainRoom = room.isAccessibleFromMainRoom,
-                    TilesString = this.StringifyCoordCollection(room.tiles),
-                    EdgeTilesString = this.StringifyCoordCollection(room.edgeTiles)
+                    TilesString = StringifyCoordCollection(room.tiles),
+                    EdgeTilesString = StringifyCoordCollection(room.edgeTiles)
                 };
                 dbRooms.Add(newRoom);
             }
@@ -263,7 +303,7 @@ namespace Server.Data.Generators
         /// <summary>
         /// Returns a collection of survivingRooms for the map
         /// </summary>
-        private List<TempRoom> ProcessMap(int minWallSize, int minRoomSize)
+        private List<TempRoom> ProcessMap(Map map, int minWallSize, int minRoomSize)
         {
             List<List<Coord>> wallRegions = GetRegions(1);
 
@@ -302,12 +342,12 @@ namespace Server.Data.Generators
             survivingRooms[0].isMainRoom = true;
             survivingRooms[0].isAccessibleFromMainRoom = true;
 
-            ConnectClosestRooms(survivingRooms);
+            ConnectClosestRooms(map, survivingRooms);
 
             return survivingRooms;
         }
 
-        private void ConnectClosestRooms(List<TempRoom> allRooms, bool forceAccessibilityFromMainRoom = false)
+        private void ConnectClosestRooms(Map map, List<TempRoom> allRooms, bool forceAccessibilityFromMainRoom = false)
         {
             List<TempRoom> roomListA = new List<TempRoom>();
             List<TempRoom> roomListB = new List<TempRoom>();
@@ -380,19 +420,19 @@ namespace Server.Data.Generators
 
                 if (possibleConnectionFound && !forceAccessibilityFromMainRoom)
                 {
-                    CreatePassage(bestRoomA, bestRoomB, bestTileA, bestTileB);
+                    CreatePassage(map, bestRoomA, bestRoomB, bestTileA, bestTileB);
                 }
             }
 
             if (possibleConnectionFound && forceAccessibilityFromMainRoom)
             {
-                CreatePassage(bestRoomA, bestRoomB, bestTileA, bestTileB);
-                ConnectClosestRooms(allRooms, true);
+                CreatePassage(map, bestRoomA, bestRoomB, bestTileA, bestTileB);
+                ConnectClosestRooms(map, allRooms, true);
             }
 
             if (!forceAccessibilityFromMainRoom)
             {
-                ConnectClosestRooms(allRooms, true);
+                ConnectClosestRooms(map, allRooms, true);
             }
         }
 
@@ -403,22 +443,49 @@ namespace Server.Data.Generators
         /// <param name="roomB">Second room</param>
         /// <param name="tileA">Closest tile from room A</param>
         /// <param name="tileB">Closest tile from room B</param>
-        private void CreatePassage(TempRoom roomA, TempRoom roomB, Coord tileA, Coord tileB)
+        private void CreatePassage(Map map, TempRoom roomA, TempRoom roomB, Coord tileA, Coord tileB)
         {
             TempRoom.ConnectRooms(roomA, roomB);
             List<Coord> line = GetLine(tileA, tileB);
+            var bridgeTiles = new List<Coord>();
 
             foreach (Coord c in line)
             {
-                DrawCircle(c, this.PassageRadius);
+                var circleTiles = DrawCircle(c, this.PassageRadius);
+                bridgeTiles.AddRange(circleTiles);
             }
 
             // ocupiedTilesString = line + DrawCircle coordinates.
             // Invoke CreateDwelling(..., ocupiedTilesString);
+
+            var startCoord = line.First();
+            var endCoord = line.Last();
+
+            var zoneLink = this.FindLink(roomA, roomB);
+            CreateBridge(map, zoneLink, bridgeTiles, startCoord, endCoord);
         }
 
-        private void DrawCircle(Coord c, int r)
+        private ZoneLink FindLink(TempRoom roomA, TempRoom roomB)
         {
+            var zoneA = this.Template.Zones.FirstOrDefault(z => z.Id == roomA.ZoneIndex);
+            var zoneB = this.Template.Zones.FirstOrDefault(z => z.Id == roomB.ZoneIndex);
+
+            if (zoneA != null && zoneB != null)
+            {
+                var link = zoneA.Links.FirstOrDefault(l => l.ZoneId == zoneB.Id);
+                if (link != null)
+                {
+                    return link;
+                }
+            }
+
+            return null;
+        }
+
+        private List<Coord> DrawCircle(Coord c, int r)
+        {
+            var tiles = new List<Coord>();
+
             for (int x = -r; x <= r; x++)
             {
                 for (int y = -r; y <= r; y++)
@@ -430,11 +497,14 @@ namespace Server.Data.Generators
 
                         if (IsInMapRange(realY, realX))
                         {
+                            tiles.Add(new Coord(realX, realY));
                             this.Matrix[realX, realY] = 99;
                         }
                     }
                 }
             }
+
+            return tiles;
         }
 
         private List<Coord> GetLine(Coord from, Coord to)
@@ -641,7 +711,7 @@ namespace Server.Data.Generators
             }
         }
 
-        private string StringifyCoordCollection(List<Coord> coordinates)
+        public static string StringifyCoordCollection(List<Coord> coordinates)
         {
             StringBuilder sb = new StringBuilder();
 
@@ -660,7 +730,7 @@ namespace Server.Data.Generators
         /// <param name="monsterStrength">in percent %</param>
         /// <param name="objectDencity">in percent %</param>
         /// <returns></returns>
-        public Map PopulateZone(Map emptyMap, int monsterStrength, int objectDencity)
+        public Map PopulateZone(Map emptyMap, Team team, int monsterStrength, int objectDencity)
         {
             // reset flags
             this.MapIsFullForMonstersOrTreasure = false;
@@ -700,8 +770,9 @@ namespace Server.Data.Generators
 
             Coord castlePosition = this.TryGetSafePosition(mainRoom, PlacementStrategy.FarFromEdge, 4, SpaceRequirements.Dwellings[DwellingType.Castle]);
             this.MarkPositionAsOccupied(castlePosition, SpaceRequirements.Dwellings[DwellingType.Castle], mainRoom);
-            CreateDwelling("CastleName", emptyMap, castlePosition, DwellingType.Castle);
-            emptyMap.InitialHeroPosition = new Coord(castlePosition.Y, castlePosition.X - 1);
+            var link = Guid.NewGuid();
+            CreateDwelling("CastleName", emptyMap, castlePosition, DwellingType.Castle, team, link);
+            CreatePlayerHero(emptyMap, new Coord(castlePosition.Y, castlePosition.X - 1), team, link);
 
             // 2. Place waypoint
             PlaceDwelling(emptyMap, "Waypoint", DwellingType.Waypoint, 1, 1);
@@ -752,7 +823,7 @@ namespace Server.Data.Generators
                     var spaceRequired = SpaceRequirements.Monsters[monsterType];
                     Coord monsterPosition = this.TryGetSafePosition(randomRoom, PlacementStrategy.Random, 2, spaceRequired);
                     this.MarkPositionAsOccupied(monsterPosition, spaceRequired, randomRoom);
-                    CreateMonster("Monster", emptyMap, monsterPosition, monsterType);
+                    CreateNPCHero(emptyMap, monsterPosition, monsterType);
                 }
             }
 
@@ -760,18 +831,33 @@ namespace Server.Data.Generators
             return emptyMap;
         }
 
-        private void CreateMonster(string name, Map emptyMap, Coord position, CreatureType type)
+        private void CreatePlayerHero(Map emptyMap, Coord position, Team team, Guid? link)
+        {
+            Hero playerHero = new Hero()
+            {
+                Type = HeroType.Normal,
+                X = position.X,
+                Y = position.Y,
+                Team = team,
+                Link = link,
+                NPCData = new NPCData()
+            };
+
+            this.AddUnitsToHero(playerHero);
+
+            emptyMap.Heroes.Add(playerHero);
+        }
+
+        private void CreateNPCHero(Map emptyMap, Coord position, CreatureType type)
         {
             Hero neutralHero = new Hero()
             {
                 Type = HeroType.Placeholder,
-                X = position.Y,
-                Y = position.X,
-                StartX = 1,
-                StartY = 5,
+                X = position.X,
+                Y = position.Y,
                 NPCData = new NPCData
                 {
-                    OccupiedTilesString = this.StringifyCoordCollection(this.ApplyPointShift(position, SpaceRequirements.Monsters[type])),
+                    OccupiedTilesString = StringifyCoordCollection(this.ApplyPointShift(position, SpaceRequirements.Monsters[type])),
                     Disposition = Disposition.Savage,
                     // ItemReward = this.GetRandomLevel1Item(); - call cached version of database for ItemBluePrint with the required level,
                     RewardType = TreasureType.Gold,
@@ -783,6 +869,11 @@ namespace Server.Data.Generators
 
             emptyMap.Heroes.Add(neutralHero);
         }
+
+        //private Hero CreateHero()
+        //{
+
+        //}
 
         private void AddUnitsToHero(Hero neutralHero)
         {
@@ -837,7 +928,48 @@ namespace Server.Data.Generators
             }
         }
 
-        private void CreateDwelling(string name, Map emptyMap, Coord position, DwellingType type)
+        private void CreateBridge(Map map, ZoneLink zoneLink, List<Coord> tiles, Coord start, Coord end)
+        {
+            // TODO: if zoneLink is null - use default values
+
+            Hero newGuardian = null;
+
+            if (zoneLink != null)
+            {
+                newGuardian = new Hero()
+                {
+                    Level = zoneLink.GuardianStrength,
+                    Type = HeroType.Placeholder,
+                    X = start.X,
+                    Y = start.Y,
+                    NPCData = new NPCData
+                    {
+                        Disposition = Disposition.Savage,
+                        // ItemReward = this.GetRandomLevel1Item(); - call cached version of database for ItemBluePrint with the required level,
+                        RewardType = TreasureType.Gold,
+                    },
+                    IsNPC = true
+                };
+
+                this.AddUnitsToHero(newGuardian);
+            }
+
+            Dwelling newDwelling = new Dwelling()
+            {
+                Type = DwellingType.Bridge,
+                X = start.X,
+                Y = start.Y,
+                EndX = end.X,
+                EndY = end.Y,
+                Guardian = newGuardian,
+                //OwnerId = 1, //TODO: pass this as parameter in MapGeneration function.
+                OccupiedTilesString = StringifyCoordCollection(tiles),
+            };
+
+            map.Dwellings.Add(newDwelling);
+        }
+
+        private void CreateDwelling(string name, Map emptyMap, Coord position, DwellingType type, Team team = Team.Neutral, Guid? link = null)
         {
             Dwelling dwelling = new Dwelling()
             {
@@ -845,7 +977,9 @@ namespace Server.Data.Generators
                 X = position.X,
                 Y = position.Y,
                 //OwnerId = 1, //TODO: pass this as parameter in MapGeneration function.
-                OccupiedTilesString = this.StringifyCoordCollection(this.ApplyPointShift(position, SpaceRequirements.Dwellings[type])),
+                OccupiedTilesString = StringifyCoordCollection(this.ApplyPointShift(position, SpaceRequirements.Dwellings[type])),
+                Team = team,
+                Link = link
             };
 
             emptyMap.Dwellings.Add(dwelling);

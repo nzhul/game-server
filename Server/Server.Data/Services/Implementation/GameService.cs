@@ -6,6 +6,8 @@ using AutoMapper;
 using Server.Data.Generators;
 using Server.Data.Generators.Models;
 using Server.Data.Services.Abstraction;
+using Server.Models.Heroes;
+using Server.Models.MapEntities;
 using Server.Models.Realms;
 using Server.Models.Realms.Input;
 using Server.Models.Users;
@@ -18,18 +20,20 @@ namespace Server.Data.Services.Implementation
 
         private readonly IMapGenerator _mapGenerator;
 
-        public GameService(DataContext context, IMapper mapper)
+        public GameService(
+            DataContext context, 
+            IMapGenerator mapGenerator,
+            IMapper mapper)
             : base(context)
         {
+            _mapGenerator = mapGenerator;
             _mapper = mapper;
         }
 
-        public async Task<Game> StartGame(StartGameConfig gameData)
+        public async Task<Game> StartGameAsync(StartGameConfig gameData)
         {
             var avatars = this.InitAvatars(gameData);
-            (int height, int width) = this.GetDimentions(gameData.MapSize);
-            var zoneConfig = new ZoneConfig() { }; // TODO: Load from file.
-            Map generatedMap = _mapGenerator.TryGenerateZone(zoneConfig); // width and height are swapped on purpose.
+            Map generatedMap = _mapGenerator.TryGenerateMap(gameData);
 
             var newGame = new Game()
             {
@@ -38,9 +42,11 @@ namespace Server.Data.Services.Implementation
                 Rooms = this.ConvertToRooms(generatedMap.Rooms),
                 Dwellings = generatedMap.Dwellings,
                 Treasures = generatedMap.Treasures,
-                InitialHeroPosition = generatedMap.InitialHeroPosition,
+                Heroes = generatedMap.Heroes,
                 Avatars = avatars
             };
+
+            this.AssignAvatarsToEntities(avatars, newGame);
 
             await _context.Games.AddAsync(newGame);
             await _context.SaveChangesAsync();
@@ -48,9 +54,48 @@ namespace Server.Data.Services.Implementation
             return newGame;
         }
 
+        private void AssignAvatarsToEntities(ICollection<Avatar> avatars, Game newGame)
+        {
+            var teams = (Team[])Enum.GetValues(typeof(Team));
+
+            for (int i = 1; i < teams.Length; i++)
+            {
+                var team = teams[i];
+                var avatarsFromTeam = avatars.Where(x => x.Team == team);
+                var heroes = newGame.Heroes.Where(x => x.Team == team && x.Type == HeroType.Normal && x.Avatar == null);
+                var dwellings = newGame.Dwellings.Where(x => x.Team == team && x.Owner == null);
+
+                foreach (var avatar in avatarsFromTeam)
+                {
+                    var availibleHero = heroes.FirstOrDefault(x => x.Team == avatar.Team);
+                    var availibleCastle = dwellings.FirstOrDefault(x => x.Team == avatar.Team 
+                        && x.Type == DwellingType.Castle && x.Link == availibleHero.Link);
+
+                    availibleHero.Avatar = avatar;
+                    availibleCastle.Owner = avatar;
+                    //TODO: we are currently handling only heroes and castles. Handle other dwellings if needed.
+                }
+            }
+        }
+
         private ICollection<Room> ConvertToRooms(List<TempRoom> rooms)
         {
-            throw new NotImplementedException();
+            var dbRooms = new List<Room>();
+            foreach (var room in rooms)
+            {
+                var newRoom = new Room()
+                {
+                    TilesString = MapGenerator.StringifyCoordCollection(room.tiles),
+                    EdgeTilesString = MapGenerator.StringifyCoordCollection(room.edgeTiles),
+                    RoomSize = room.roomSize,
+                    IsMainRoom = room.isMainRoom,
+                    IsAccessibleFromMainRoom = room.isAccessibleFromMainRoom
+                };
+
+                dbRooms.Add(newRoom);
+            }
+
+            return dbRooms;
         }
 
         private ICollection<Avatar> InitAvatars(StartGameConfig gameData)

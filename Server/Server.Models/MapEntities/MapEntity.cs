@@ -1,4 +1,6 @@
-﻿namespace Server.Models.MapEntities
+﻿using Server.Models.Users;
+
+namespace Server.Models.MapEntities
 {
     /// <summary>
     /// Entity contact point is his X:Z
@@ -8,6 +10,8 @@
         public int X { get; set; }
 
         public int Y { get; set; }
+
+        public Team Team { get; set; }
 
         //public string Name { get; set; }
 

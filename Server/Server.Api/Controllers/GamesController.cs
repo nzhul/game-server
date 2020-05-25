@@ -1,7 +1,10 @@
-﻿using AutoMapper;
+﻿using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Server.Data.Services.Abstraction;
+using Server.Models.Realms.Input;
 
 namespace Server.Api.Controllers
 {
@@ -12,9 +15,24 @@ namespace Server.Api.Controllers
         private readonly IGameService _gamesService;
         private readonly IMapper _mapper;
 
-        public GamesController()
+        public GamesController(IMapper mapper, IGameService gameService)
         {
+            _mapper = mapper;
+            _gamesService = gameService;
+        }
 
+        [HttpPost]
+        public async Task<IActionResult> StartGame([FromBody] StartGameConfig input)
+        {
+            try
+            {
+                await _gamesService.StartGameAsync(input);
+                return Ok();
+            }
+            catch (System.Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex);
+            }
         }
     }
 }

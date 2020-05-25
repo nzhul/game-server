@@ -1,9 +1,10 @@
-﻿using Server.Models.Parsers;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
+using Server.Models.Heroes;
+using Server.Models.Parsers;
 using Server.Models.Realms;
 using Server.Models.Users;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Server.Models.MapEntities
 {
@@ -11,10 +12,10 @@ namespace Server.Models.MapEntities
     {
         public Dwelling()
         {
-            this.AvatarDwellings = new Collection<AvatarDwelling>();
+            //this.AvatarDwellings = new Collection<AvatarDwelling>();
         }
 
-        public virtual ICollection<AvatarDwelling> AvatarDwellings { get; set; }
+        //public virtual ICollection<AvatarDwelling> AvatarDwellings { get; set; }
 
         public DwellingType Type { get; set; }
 
@@ -22,9 +23,17 @@ namespace Server.Models.MapEntities
 
         public Avatar Owner { get; set; }
 
-        public int RegionId { get; set; }
+        public int GameId { get; set; }
 
-        public Game Region { get; set; }
+        public Game Game { get; set; }
+
+        public int? GuardianId { get; set; }
+
+        public Hero Guardian { get; set; }
+
+        public int EndX { get; set; }
+
+        public int EndY { get; set; }
 
         private string _occupiedTilesString;
 
@@ -46,5 +55,8 @@ namespace Server.Models.MapEntities
 
         [NotMapped]
         public List<Coord> OccupiedTiles { get; set; }
+
+        [NotMapped]
+        public Guid? Link { get; set; }
     }
 }

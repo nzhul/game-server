@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using Server.Models.Castles;
 using Server.Models.Heroes;
+using Server.Models.MapEntities;
 using Server.Models.Realms;
 
 namespace Server.Models.Users
@@ -24,7 +25,7 @@ namespace Server.Models.Users
 
         public virtual ICollection<Castle> Castles { get; set; }
 
-        public virtual ICollection<AvatarDwelling> AvatarDwellings { get; set; }
+        public virtual ICollection<Dwelling> Dwellings { get; set; }
 
         public int? GameId { get; set; }
 
@@ -41,17 +42,20 @@ namespace Server.Models.Users
             // TODO: Init wood, ore, gold, gems based on map difficulty.
             this.Heroes = new Collection<Hero>();
             this.Castles = new Collection<Castle>();
-            this.AvatarDwellings = new Collection<AvatarDwelling>();
+            this.Dwellings = new Collection<Dwelling>();
         }
     }
 
     public enum Team
     {
+        Neutral,
         Team1,
         Team2,
         Team3,
         Team4,
         Team5,
         Team6,
+        Team7,
+        Team8
     }
 }

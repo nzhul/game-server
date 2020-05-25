@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Server.Models.Users;
 
 namespace Server.Data.Generators.Models
 {
@@ -16,6 +17,8 @@ namespace Server.Data.Generators.Models
 
         public ZoneType Type { get; set; }
 
+        public Team Team { get; set; }
+
         public TerrainType TerrainType { get; set; }
 
         public int Fuzziness { get; set; }
@@ -31,14 +34,15 @@ namespace Server.Data.Generators.Models
     {
         public int ZoneId { get; set; }
 
-        public int GuardiansStrength { get; set; }
+        public int GuardianStrength { get; set; }
+
+
     }
 
     public enum ZoneType
     {
-        HumanStart,
-        ComputerStart,
-        Treasure
+        StartingZone,
+        NeutralZone
     }
 
     public enum TerrainType
