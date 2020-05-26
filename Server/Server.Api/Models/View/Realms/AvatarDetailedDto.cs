@@ -1,6 +1,4 @@
 ﻿using System.Collections.Generic;
-using Server.Api.Models.View.Avatars;
-using Server.Api.Models.View.Realms;
 
 namespace Server.Api.Controllers
 {
@@ -16,10 +14,8 @@ namespace Server.Api.Controllers
 
         public int Gems { get; set; }
 
-        public ICollection<HeroDetailedDto> Heroes { get; set; }
+        public ICollection<int> Heroes { get; set; }
 
-        public ICollection<DwellingDetailedDto> Dwellings { get; set; }
-
-        public ICollection<WaypointDto> Waypoints { get; set; }
+        public ICollection<int> Dwellings { get; set; }
     }
 }

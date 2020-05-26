@@ -1,9 +1,11 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using AutoMapper;
 using Server.Api.Controllers;
 using Server.Api.Models.Input;
 using Server.Api.Models.View;
 using Server.Api.Models.View.Avatars;
+using Server.Api.Models.View.Games;
 using Server.Api.Models.View.Realms;
 using Server.Api.Models.View.UnitConfigurations;
 using Server.Models.Heroes;
@@ -59,8 +61,11 @@ namespace Server.Api.Helpers
             //    .ForMember(x => x.RealmType, opt => opt.MapFrom(u => u.Type.ToString()))
             //    .ForMember(x => x.ResetDate, opt => opt.MapFrom(u => u.ResetDate.ToString("dd MMMM yyyy")));
 
+            // GAMES
+            CreateMap<Game, GameDetailedDto>();
+
             // REGIONS
-            CreateMap<Game, RegionDetailedDto>();
+            //CreateMap<Game, RegionDetailedDto>();
                 //.ForMember(x => x.Heroes, opt => opt.MapFrom(u => u.Heroes.Where(h => !h.IsNPC)))
                 //.ForMember(x => x.NpcHeroes, opt => opt.MapFrom(u => u.Heroes.Where(h => h.IsNPC)));
             CreateMap<Room, RoomDetailedDto>();
@@ -77,11 +82,12 @@ namespace Server.Api.Helpers
                 .ForMember(x => x.Faction, opt => opt.MapFrom(u => u.Blueprint.Faction))
                 .ForMember(x => x.OwnerId, opt => opt.MapFrom(u => u.AvatarId))
                 .ForMember(x => x.HeroType, opt => opt.MapFrom(u => u.Type));
+
             CreateMap<Avatar, AvatarDetailedDto>()
-                .ForMember(x => x.Heroes, opt =>
-                {
-                    opt.MapFrom(u => u.Heroes);
-                });
+                .ForMember(x => x.Heroes, opt => opt.Ignore())
+                .ForMember(x => x.Dwellings, opt => opt.Ignore())
+                .AfterMap((r, rm) => rm.Heroes = new List<int>(r.Heroes.Select(c => c.Id)))
+                .AfterMap((r, rm) => rm.Dwellings = new List<int>(r.Dwellings.Select(c => c.Id)));
 
             // UNITS
             CreateMap<Unit, UnitDetailedDto>()

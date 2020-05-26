@@ -25,12 +25,6 @@ namespace Server.Api.Models.View.Realms
 
         public HeroType HeroType { get; set; }
 
-        public string Name { get; set; }
-
-        public DateTime LastActivity { get; set; }
-
-        public TimeSpan TimePlayed { get; set; }
-
         public int Level { get; set; }
 
         public int MovementPoints { get; set; }
