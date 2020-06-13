@@ -30,10 +30,10 @@ namespace Server.Data.Services.Implementation
             _mapper = mapper;
         }
 
-        public async Task<Game> StartGameAsync(StartGameConfig gameData)
+        public async Task<Game> CreateGameAsync(GameParams gameParams)
         {
-            var avatars = this.InitAvatars(gameData);
-            Map generatedMap = _mapGenerator.TryGenerateMap(gameData);
+            var avatars = this.InitAvatars(gameParams);
+            Map generatedMap = _mapGenerator.TryGenerateMap(gameParams);
 
             var newGame = new Game()
             {
@@ -98,9 +98,9 @@ namespace Server.Data.Services.Implementation
             return dbRooms;
         }
 
-        private ICollection<Avatar> InitAvatars(StartGameConfig gameData)
+        private ICollection<Avatar> InitAvatars(GameParams gameParams)
         {
-            return gameData.Players
+            return gameParams.Players
                 .Select(x => new Avatar 
                 {
                     UserId = x.UserId,

@@ -78,10 +78,10 @@ namespace Server.Api.Helpers
 
             // AVATARS
             CreateMap<Hero, HeroDetailedDto>()
-                .ForMember(x => x.Class, opt => opt.MapFrom(u => u.Blueprint.Class))
-                .ForMember(x => x.Faction, opt => opt.MapFrom(u => u.Blueprint.Faction))
+                .ForMember(x => x.HeroClass, opt => opt.MapFrom(u => u.Blueprint.Class))
                 .ForMember(x => x.OwnerId, opt => opt.MapFrom(u => u.AvatarId))
-                .ForMember(x => x.HeroType, opt => opt.MapFrom(u => u.Type));
+                .ForMember(x => x.HeroType, opt => opt.MapFrom(u => u.Type))
+                .ForMember(x => x.NPCData, opt => opt.Condition(src => src.IsNPC));
 
             CreateMap<Avatar, AvatarDetailedDto>()
                 .ForMember(x => x.Heroes, opt => opt.Ignore())

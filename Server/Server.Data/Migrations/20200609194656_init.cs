@@ -568,6 +568,7 @@ namespace Server.Data.Migrations
                     Dodge = table.Column<int>(nullable: false),
                     AttackType = table.Column<int>(nullable: false),
                     ArmorType = table.Column<int>(nullable: false),
+                    HeroClass = table.Column<int>(nullable: false),
                     Type = table.Column<int>(nullable: false),
                     NPCData_MapRepresentation = table.Column<int>(nullable: false),
                     NPCData_Disposition = table.Column<int>(nullable: false),

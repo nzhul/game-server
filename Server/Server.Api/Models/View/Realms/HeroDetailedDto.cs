@@ -13,7 +13,7 @@ namespace Server.Api.Models.View.Realms
         /// <summary>
         /// Id of the owner avatar
         /// </summary>
-        public int OwnerId { get; set; }
+        public int? OwnerId { get; set; }
 
         public int X { get; set; }
 
@@ -22,8 +22,6 @@ namespace Server.Api.Models.View.Realms
         public int StartX { get; set; }
 
         public int StartY { get; set; }
-
-        public HeroType HeroType { get; set; }
 
         public int Level { get; set; }
 
@@ -43,15 +41,15 @@ namespace Server.Api.Models.View.Realms
 
         public int Dodge { get; set; }
 
+        public HeroType HeroType { get; set; }
+
         public AttackType AttackType { get; set; }
 
         public ArmorType ArmorType { get; set; }
 
-        public string Faction { get; set; }
+        public HeroClass HeroClass { get; set; }
 
-        public string Class { get; set; }
-
-        public string RegionId { get; set; }
+        public int? GameId { get; set; }
 
         public NPCData NPCData { get; set; }
 

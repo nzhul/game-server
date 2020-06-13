@@ -72,9 +72,9 @@ namespace Server.Data.Generators
             this.Templates = this.LoadTemplates(); // TODO: extract this in static singleton so we dont have to load them every time.
         }
 
-        public Map TryGenerateMap(StartGameConfig gameConfig)
+        public Map TryGenerateMap(GameParams gameParams)
         {
-            this.Template = this.Templates[gameConfig.MapTemplate];
+            this.Template = this.Templates[gameParams.MapTemplate];
             var zones = new List<Map>();
 
             foreach (var zoneConfig in this.Template.Zones)
@@ -1317,7 +1317,12 @@ namespace Server.Data.Generators
 
         private readonly int freePercentDwellings = 95; // TODO: extract this in configuration
 
-        private readonly int freePercentMonstersAndTreasure = 91; // TODO: extract this in configuration
+        // TODO: extract this in configuration => was 91
+        // TODO: REFACTOR THIS:
+        // I need to refactor monster placement logic.
+        // I should have something like that:
+        // Density: 10-20
+        private readonly int freePercentMonstersAndTreasure = 97;
 
 
         private int _minimumFreeCellsRequirementDwellings;

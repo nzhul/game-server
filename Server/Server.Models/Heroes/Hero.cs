@@ -47,6 +47,8 @@ namespace Server.Models.Heroes
         public ArmorType ArmorType { get; set; }
         #endregion
 
+        public HeroClass HeroClass { get; set; }
+
         public HeroType Type { get; set; }
 
         public NPCData NPCData { get; set; }

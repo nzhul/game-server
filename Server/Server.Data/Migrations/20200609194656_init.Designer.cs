@@ -10,7 +10,7 @@ using Server.Data;
 namespace Server.Data.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20200522171823_init")]
+    [Migration("20200609194656_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -150,6 +150,8 @@ namespace Server.Data.Migrations
                     b.Property<int>("Dodge");
 
                     b.Property<int?>("GameId");
+
+                    b.Property<int>("HeroClass");
 
                     b.Property<int>("Hitpoints");
 

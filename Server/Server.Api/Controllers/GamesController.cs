@@ -23,11 +23,11 @@ namespace Server.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> StartGame([FromBody] StartGameConfig input)
+        public async Task<IActionResult> CreateGame([FromBody] GameParams input)
         {
             try
             {
-                var game = await _gamesService.StartGameAsync(input);
+                var game = await _gamesService.CreateGameAsync(input);
                 var gameDto = _mapper.Map<GameDetailedDto>(game);
                 return Ok(gameDto);
             }

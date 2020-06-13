@@ -149,6 +149,8 @@ namespace Server.Data.Migrations
 
                     b.Property<int?>("GameId");
 
+                    b.Property<int>("HeroClass");
+
                     b.Property<int>("Hitpoints");
 
                     b.Property<bool>("IsNPC");

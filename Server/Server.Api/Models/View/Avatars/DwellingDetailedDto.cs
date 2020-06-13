@@ -20,5 +20,7 @@ namespace Server.Api.Models.View.Avatars
         public int GameId { get; set; }
 
         public int? GuardianId { get; set; }
+
+        public string OccupiedTilesString { get; set; }
     }
 }

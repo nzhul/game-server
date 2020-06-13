@@ -37,7 +37,7 @@ namespace Server.GeneratorTesting
                 IMapGenerator generator = new MapGenerator();
                 Map map = null;
 
-                var config = new StartGameConfig()
+                var config = new GameParams()
                 {
                     MapTemplate = MapTemplate.Default
                 };
@@ -125,7 +125,7 @@ namespace Server.GeneratorTesting
                     Console.WriteLine();
                 }
 
-                PaintRooms(map.Rooms);
+                //PaintRooms(map.Rooms);
                 //PaintEdges(map.Rooms);
                 //PaintHero(map, r);
                 PaintPassages(map.Matrix);

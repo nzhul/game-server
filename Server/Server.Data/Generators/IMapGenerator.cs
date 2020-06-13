@@ -15,6 +15,6 @@ namespace Server.Data.Generators
 
         Map TryGenerateZone(ZoneConfig config);
 
-        Map TryGenerateMap(StartGameConfig gameConfig);
+        Map TryGenerateMap(GameParams gameParams);
     }
 }

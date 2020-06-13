@@ -7,6 +7,8 @@ namespace Server.Api.Models.View
     {
         public int Id { get; set; }
 
+        public int MMR { get; set; }
+
         public string Username { get; set; }
 
         public string Gender { get; set; }

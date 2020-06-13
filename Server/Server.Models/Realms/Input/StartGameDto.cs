@@ -4,7 +4,7 @@ using Server.Models.Users;
 
 namespace Server.Models.Realms.Input
 {
-    public class StartGameConfig
+    public class GameParams
     {
         /// <summary>
         /// Defines the map template to be used in the game.
