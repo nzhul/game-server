@@ -36,5 +36,20 @@ namespace Server.Api.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex);
             }
         }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetGame(int id)
+        {
+            try
+            {
+                var game = await _gamesService.GetGameAsync(id);
+                var gameDto = _mapper.Map<GameDetailedDto>(game);
+                return Ok(gameDto);
+            }
+            catch (System.Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex);
+            }
+        }
     }
 }

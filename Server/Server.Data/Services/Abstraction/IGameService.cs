@@ -7,5 +7,7 @@ namespace Server.Data.Services.Abstraction
     public interface IGameService : IService
     {
         Task<Game> CreateGameAsync(GameParams gameParams);
+
+        Task<Game> GetGameAsync(int id);
     }
 }

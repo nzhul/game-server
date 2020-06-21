@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Server.Models.Users;
 
 namespace Server.Api.Controllers
 {
@@ -13,6 +14,10 @@ namespace Server.Api.Controllers
         public int Gold { get; set; }
 
         public int Gems { get; set; }
+
+        public int? UserId { get; set; }
+
+        public Team Team { get; set; }
 
         public ICollection<int> Heroes { get; set; }
 

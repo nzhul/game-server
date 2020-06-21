@@ -10,7 +10,7 @@ using Server.Data;
 namespace Server.Data.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20200609194656_init")]
+    [Migration("20200618201015_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -646,6 +646,8 @@ namespace Server.Data.Migrations
                     b.Property<int>("AccessFailedCount");
 
                     b.Property<int>("ActiveConnection");
+
+                    b.Property<int>("ActiveGameId");
 
                     b.Property<string>("City");
 

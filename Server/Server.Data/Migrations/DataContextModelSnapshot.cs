@@ -645,6 +645,8 @@ namespace Server.Data.Migrations
 
                     b.Property<int>("ActiveConnection");
 
+                    b.Property<int>("ActiveGameId");
+
                     b.Property<string>("City");
 
                     b.Property<string>("ConcurrencyStamp")

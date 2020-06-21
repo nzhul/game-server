@@ -49,6 +49,8 @@ namespace Server.Models.Users
 
         public int ActiveConnection { get; set; }
 
+        public int ActiveGameId { get; set; }
+
         public byte OnlineStatus { get; set; }
 
         public User()

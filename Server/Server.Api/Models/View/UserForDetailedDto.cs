@@ -33,6 +33,8 @@ namespace Server.Api.Models.View
 
         public string PhotoUrl { get; set; }
 
+        public int ActiveGame { get; set; }
+
         public ICollection<PhotosForDetailedDto> Photos { get; set; }
     }
 }

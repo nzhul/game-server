@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using Server.Data.Generators;
-using Server.Data.Generators.Models;
 using Server.Data.Services.Abstraction;
 using Server.Models.Heroes;
 using Server.Models.MapEntities;
@@ -21,13 +21,25 @@ namespace Server.Data.Services.Implementation
         private readonly IMapGenerator _mapGenerator;
 
         public GameService(
-            DataContext context, 
+            DataContext context,
             IMapGenerator mapGenerator,
             IMapper mapper)
             : base(context)
         {
             _mapGenerator = mapGenerator;
             _mapper = mapper;
+        }
+
+        public async Task<Game> GetGameAsync(int id)
+        {
+            //NOTE: AutoComplete for .ThenInclude is not working! Do not wonder why you cannot see nested entities :)
+
+            return await _context.Games
+                .Include(r => r.Heroes)
+                .Include(r => r.Rooms)
+                .Include(r => r.Dwellings)
+                .Include(r => r.Avatars).ThenInclude(c => c.Heroes)
+                .FirstOrDefaultAsync(r => r.Id == id);
         }
 
         public async Task<Game> CreateGameAsync(GameParams gameParams)
@@ -51,7 +63,16 @@ namespace Server.Data.Services.Implementation
             await _context.Games.AddAsync(newGame);
             await _context.SaveChangesAsync();
 
+            await this.AssignGameToUsers(newGame.Id, gameParams.Players.Select(x => x.UserId));
+
             return newGame;
+        }
+
+        private async Task AssignGameToUsers(int gameId, IEnumerable<int> userIds)
+        {
+            var users = _context.Users.Where(x => userIds.Contains(x.Id));
+            await users.ForEachAsync(x => { x.ActiveGameId = gameId; });
+            await _context.SaveChangesAsync();
         }
 
         private void AssignAvatarsToEntities(ICollection<Avatar> avatars, Game newGame)
@@ -68,7 +89,7 @@ namespace Server.Data.Services.Implementation
                 foreach (var avatar in avatarsFromTeam)
                 {
                     var availibleHero = heroes.FirstOrDefault(x => x.Team == avatar.Team);
-                    var availibleCastle = dwellings.FirstOrDefault(x => x.Team == avatar.Team 
+                    var availibleCastle = dwellings.FirstOrDefault(x => x.Team == avatar.Team
                         && x.Type == DwellingType.Castle && x.Link == availibleHero.Link);
 
                     availibleHero.Avatar = avatar;
@@ -101,7 +122,7 @@ namespace Server.Data.Services.Implementation
         private ICollection<Avatar> InitAvatars(GameParams gameParams)
         {
             return gameParams.Players
-                .Select(x => new Avatar 
+                .Select(x => new Avatar
                 {
                     UserId = x.UserId,
                     Team = x.Team

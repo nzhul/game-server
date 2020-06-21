@@ -74,6 +74,7 @@ namespace Server.Data.Migrations
                     ModifiedBy = table.Column<string>(nullable: true),
                     ModifiedAt = table.Column<DateTime>(nullable: false),
                     ActiveConnection = table.Column<int>(nullable: false),
+                    ActiveGameId = table.Column<int>(nullable: false),
                     OnlineStatus = table.Column<byte>(nullable: false)
                 },
                 constraints: table =>
