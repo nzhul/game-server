@@ -4,9 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 using Server.Data.Generators;
 using Server.Data.Services.Abstraction;
-using Server.Models.Heroes;
 using Server.Models.MapEntities;
 using Server.Models.Realms;
 using Server.Models.Realms.Input;
@@ -35,16 +35,16 @@ namespace Server.Data.Services.Implementation
             //NOTE: AutoComplete for .ThenInclude is not working! Do not wonder why you cannot see nested entities :)
 
             return await _context.Games
-                .Include(r => r.Heroes)
+                .Include(r => r.Armies).ThenInclude(c => c.Units)
                 .Include(r => r.Rooms)
                 .Include(r => r.Dwellings)
-                .Include(r => r.Avatars).ThenInclude(c => c.Heroes)
+                .Include(r => r.Users)
                 .FirstOrDefaultAsync(r => r.Id == id);
         }
 
         public async Task<Game> CreateGameAsync(GameParams gameParams)
         {
-            var avatars = this.InitAvatars(gameParams);
+            var users = this.InitUserAvatars(gameParams);
             Map generatedMap = _mapGenerator.TryGenerateMap(gameParams);
 
             var newGame = new Game()
@@ -54,11 +54,11 @@ namespace Server.Data.Services.Implementation
                 Rooms = this.ConvertToRooms(generatedMap.Rooms),
                 Dwellings = generatedMap.Dwellings,
                 Treasures = generatedMap.Treasures,
-                Heroes = generatedMap.Heroes,
-                Avatars = avatars
+                Armies = generatedMap.Armies,
+                Users = users
             };
 
-            this.AssignAvatarsToEntities(avatars, newGame);
+            this.AssignAvatarsToEntities(users, newGame);
 
             await _context.Games.AddAsync(newGame);
             await _context.SaveChangesAsync();
@@ -71,29 +71,29 @@ namespace Server.Data.Services.Implementation
         private async Task AssignGameToUsers(int gameId, IEnumerable<int> userIds)
         {
             var users = _context.Users.Where(x => userIds.Contains(x.Id));
-            await users.ForEachAsync(x => { x.ActiveGameId = gameId; });
+            await users.ForEachAsync(x => { x.GameId = gameId; });
             await _context.SaveChangesAsync();
         }
 
-        private void AssignAvatarsToEntities(ICollection<Avatar> avatars, Game newGame)
+        private void AssignAvatarsToEntities(ICollection<User> users, Game newGame)
         {
             var teams = (Team[])Enum.GetValues(typeof(Team));
 
             for (int i = 1; i < teams.Length; i++)
             {
                 var team = teams[i];
-                var avatarsFromTeam = avatars.Where(x => x.Team == team);
-                var heroes = newGame.Heroes.Where(x => x.Team == team && x.Type == HeroType.Normal && x.Avatar == null);
-                var dwellings = newGame.Dwellings.Where(x => x.Team == team && x.Owner == null);
+                var usersFromTeam = users.Where(x => x.Avatar.Team == team);
+                var armies = newGame.Armies.Where(x => x.Team == team && !x.IsNPC && x.User == null);
+                var dwellings = newGame.Dwellings.Where(x => x.Team == team && x.User == null);
 
-                foreach (var avatar in avatarsFromTeam)
+                foreach (var user in usersFromTeam)
                 {
-                    var availibleHero = heroes.FirstOrDefault(x => x.Team == avatar.Team);
-                    var availibleCastle = dwellings.FirstOrDefault(x => x.Team == avatar.Team
-                        && x.Type == DwellingType.Castle && x.Link == availibleHero.Link);
+                    var availibleArmy = armies.FirstOrDefault(x => x.Team == user.Avatar.Team);
+                    var availibleCastle = dwellings.FirstOrDefault(x => x.Team == user.Avatar.Team
+                        && x.Type == DwellingType.Castle && x.Link == availibleArmy.Link);
 
-                    availibleHero.Avatar = avatar;
-                    availibleCastle.Owner = avatar;
+                    availibleArmy.User = user;
+                    availibleCastle.User = user;
                     //TODO: we are currently handling only heroes and castles. Handle other dwellings if needed.
                 }
             }
@@ -119,15 +119,27 @@ namespace Server.Data.Services.Implementation
             return dbRooms;
         }
 
-        private ICollection<Avatar> InitAvatars(GameParams gameParams)
+        private ICollection<User> InitUserAvatars(GameParams gameParams)
         {
-            return gameParams.Players
-                .Select(x => new Avatar
+            // 1. Load the users from the database.
+            // 2. Assign to each of them - new instance of Avatar
+
+            var userIds = gameParams.Players.Select(x => x.UserId);
+            var users = _context.Users.Where(x => userIds.Contains(x.Id));
+            users.ForEachAsync(x =>
+            {
+                x.Avatar = new Avatar 
                 {
-                    UserId = x.UserId,
-                    Team = x.Team
-                })
-                .ToList();
+                    Wood = 20,
+                    Ore = 20,
+                    Gold = 100,
+                    Gems = 0,
+                    Team = gameParams.Players.FirstOrDefault(p => p.UserId == x.Id).Team,
+                    VisitedString = string.Empty
+                };
+            });
+
+            return users.ToList();
         }
 
         private (int height, int width) GetDimentions(int mapSize)

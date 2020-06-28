@@ -10,6 +10,6 @@ namespace Server.Models.Items
 
         public int? HeroId { get; set; }
 
-        public Hero Hero { get; set; }
+        public Unit Unit { get; set; }
     }
 }

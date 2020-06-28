@@ -2,8 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations.Schema;
-using Server.Models.Castles;
-using Server.Models.Heroes;
+using Server.Models.Armies;
 using Server.Models.MapEntities;
 using Server.Models.Users;
 
@@ -13,24 +12,21 @@ namespace Server.Models.Realms
     {
         public string Name { get; set; }
 
-        public ICollection<Hero> Heroes { get; set; }
+        public ICollection<Army> Armies { get; set; }
 
         public ICollection<Room> Rooms { get; set; }
-
-        public ICollection<Castle> Castles { get; set; }
 
         public ICollection<Treasure> Treasures { get; set; }
 
         public ICollection<Dwelling> Dwellings { get; set; }
 
-        public ICollection<Avatar> Avatars { get; set; }
+        public ICollection<User> Users { get; set; }
 
         public Game()
         {
-            this.Heroes = new Collection<Hero>();
-            this.Avatars = new Collection<Avatar>();
+            this.Armies = new Collection<Army>();
+            this.Users = new Collection<User>();
             this.Rooms = new Collection<Room>();
-            this.Castles = new Collection<Castle>();
             this.Treasures = new Collection<Treasure>();
             this.Dwellings = new Collection<Dwelling>();
         }

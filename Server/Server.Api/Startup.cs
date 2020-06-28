@@ -70,7 +70,7 @@ namespace Server.Api
             services.AddScoped<IGameService, GameService>();
             services.AddScoped<IUsersService, UsersService>();
             //services.AddScoped<IRealmsService, RealmsService>();
-            services.AddScoped<IHeroesService, HeroesService>();
+            services.AddScoped<IArmiesService, ArmiesService>();
             //services.AddScoped<IAvatarsService, AvatarsService>();
             services.AddScoped<IUnitConfigurationsService, UnitConfigurationsService>();
             services.AddScoped<IMapGenerator, MapGenerator>();

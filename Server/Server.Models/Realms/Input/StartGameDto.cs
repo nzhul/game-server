@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Server.Models.Heroes;
+using Server.Models.MapEntities;
 using Server.Models.Users;
 
 namespace Server.Models.Realms.Input
@@ -28,7 +28,7 @@ namespace Server.Models.Realms.Input
     {
         public int UserId { get; set; }
 
-        public HeroClass StartingClass { get; set; }
+        public CreatureType StartingClass { get; set; }
 
         public Team Team { get; set; }
     }

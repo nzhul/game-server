@@ -41,62 +41,6 @@ namespace Server.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "AspNetUsers",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    UserName = table.Column<string>(maxLength: 256, nullable: true),
-                    NormalizedUserName = table.Column<string>(maxLength: 256, nullable: true),
-                    Email = table.Column<string>(maxLength: 256, nullable: true),
-                    NormalizedEmail = table.Column<string>(maxLength: 256, nullable: true),
-                    EmailConfirmed = table.Column<bool>(nullable: false),
-                    PasswordHash = table.Column<string>(nullable: true),
-                    SecurityStamp = table.Column<string>(nullable: true),
-                    ConcurrencyStamp = table.Column<string>(nullable: true),
-                    PhoneNumber = table.Column<string>(nullable: true),
-                    PhoneNumberConfirmed = table.Column<bool>(nullable: false),
-                    TwoFactorEnabled = table.Column<bool>(nullable: false),
-                    LockoutEnd = table.Column<DateTimeOffset>(nullable: true),
-                    LockoutEnabled = table.Column<bool>(nullable: false),
-                    AccessFailedCount = table.Column<int>(nullable: false),
-                    MMR = table.Column<int>(nullable: false),
-                    Discriminator = table.Column<string>(nullable: true),
-                    Gender = table.Column<string>(nullable: true),
-                    DateOfBirth = table.Column<DateTime>(nullable: false),
-                    LastActive = table.Column<DateTime>(nullable: false),
-                    Interests = table.Column<string>(nullable: true),
-                    City = table.Column<string>(nullable: true),
-                    Country = table.Column<string>(nullable: true),
-                    CurrentRealmId = table.Column<int>(nullable: false),
-                    CreatedBy = table.Column<string>(nullable: true),
-                    CreatedAt = table.Column<DateTime>(nullable: false),
-                    ModifiedBy = table.Column<string>(nullable: true),
-                    ModifiedAt = table.Column<DateTime>(nullable: false),
-                    ActiveConnection = table.Column<int>(nullable: false),
-                    ActiveGameId = table.Column<int>(nullable: false),
-                    OnlineStatus = table.Column<byte>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AspNetUsers", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "CastleBlueprints",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Name = table.Column<string>(nullable: true),
-                    Description = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_CastleBlueprints", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Games",
                 columns: table => new
                 {
@@ -108,32 +52,6 @@ namespace Server.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Games", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "HeroBlueprints",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Description = table.Column<string>(nullable: true),
-                    PortraitImgUrl = table.Column<string>(nullable: true),
-                    Faction = table.Column<int>(nullable: false),
-                    Class = table.Column<int>(nullable: false),
-                    MovementPoints = table.Column<int>(nullable: false),
-                    ActionPoints = table.Column<int>(nullable: false),
-                    MinDamage = table.Column<int>(nullable: false),
-                    MaxDamage = table.Column<int>(nullable: false),
-                    Hitpoints = table.Column<int>(nullable: false),
-                    Mana = table.Column<int>(nullable: false),
-                    Armor = table.Column<int>(nullable: false),
-                    Dodge = table.Column<int>(nullable: false),
-                    AttackType = table.Column<int>(nullable: false),
-                    ArmorType = table.Column<int>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_HeroBlueprints", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -159,17 +77,21 @@ namespace Server.Data.Migrations
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Type = table.Column<int>(nullable: false),
                     Faction = table.Column<int>(nullable: false),
-                    MovementPoints = table.Column<int>(nullable: false),
-                    ActionPoints = table.Column<int>(nullable: false),
-                    MinDamage = table.Column<int>(nullable: false),
-                    MaxDamage = table.Column<int>(nullable: false),
-                    Hitpoints = table.Column<int>(nullable: false),
-                    Mana = table.Column<int>(nullable: false),
-                    Armor = table.Column<int>(nullable: false),
-                    Dodge = table.Column<int>(nullable: false),
+                    MovementPointsBase = table.Column<int>(nullable: false),
+                    ActionPointsBase = table.Column<int>(nullable: false),
+                    MinDamageBase = table.Column<int>(nullable: false),
+                    MinDamageIncrement = table.Column<int>(nullable: false),
+                    MaxDamageBase = table.Column<int>(nullable: false),
+                    MaxDamageIncrement = table.Column<int>(nullable: false),
+                    HitpointsBase = table.Column<int>(nullable: false),
+                    HitpointsIncrement = table.Column<int>(nullable: false),
+                    ManaBase = table.Column<int>(nullable: false),
+                    ManaIncrement = table.Column<int>(nullable: false),
+                    ArmorBase = table.Column<int>(nullable: false),
+                    ArmorIncrement = table.Column<int>(nullable: false),
+                    EvasionBase = table.Column<int>(nullable: false),
                     AttackType = table.Column<int>(nullable: false),
                     ArmorType = table.Column<int>(nullable: false),
-                    CreatureLevel = table.Column<int>(nullable: false),
                     BuildTime = table.Column<int>(nullable: false),
                     WoodCost = table.Column<int>(nullable: false),
                     OreCost = table.Column<int>(nullable: false),
@@ -217,6 +139,200 @@ namespace Server.Data.Migrations
                         principalTable: "AspNetRoles",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AspNetUsers",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    UserName = table.Column<string>(maxLength: 256, nullable: true),
+                    NormalizedUserName = table.Column<string>(maxLength: 256, nullable: true),
+                    Email = table.Column<string>(maxLength: 256, nullable: true),
+                    NormalizedEmail = table.Column<string>(maxLength: 256, nullable: true),
+                    EmailConfirmed = table.Column<bool>(nullable: false),
+                    PasswordHash = table.Column<string>(nullable: true),
+                    SecurityStamp = table.Column<string>(nullable: true),
+                    ConcurrencyStamp = table.Column<string>(nullable: true),
+                    PhoneNumber = table.Column<string>(nullable: true),
+                    PhoneNumberConfirmed = table.Column<bool>(nullable: false),
+                    TwoFactorEnabled = table.Column<bool>(nullable: false),
+                    LockoutEnd = table.Column<DateTimeOffset>(nullable: true),
+                    LockoutEnabled = table.Column<bool>(nullable: false),
+                    AccessFailedCount = table.Column<int>(nullable: false),
+                    MMR = table.Column<int>(nullable: false),
+                    Discriminator = table.Column<string>(nullable: true),
+                    Gender = table.Column<string>(nullable: true),
+                    DateOfBirth = table.Column<DateTime>(nullable: false),
+                    LastActive = table.Column<DateTime>(nullable: false),
+                    Interests = table.Column<string>(nullable: true),
+                    City = table.Column<string>(nullable: true),
+                    Country = table.Column<string>(nullable: true),
+                    CurrentRealmId = table.Column<int>(nullable: false),
+                    CreatedBy = table.Column<string>(nullable: true),
+                    CreatedAt = table.Column<DateTime>(nullable: false),
+                    ModifiedBy = table.Column<string>(nullable: true),
+                    ModifiedAt = table.Column<DateTime>(nullable: false),
+                    ActiveConnection = table.Column<int>(nullable: false),
+                    GameId = table.Column<int>(nullable: true),
+                    Avatar_Wood = table.Column<int>(nullable: false),
+                    Avatar_Ore = table.Column<int>(nullable: false),
+                    Avatar_Gold = table.Column<int>(nullable: false),
+                    Avatar_Gems = table.Column<int>(nullable: false),
+                    Avatar_Team = table.Column<int>(nullable: false),
+                    Avatar_VisitedString = table.Column<string>(nullable: true),
+                    OnlineStatus = table.Column<byte>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AspNetUsers_Games_GameId",
+                        column: x => x.GameId,
+                        principalTable: "Games",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Room",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    TilesString = table.Column<string>(nullable: true),
+                    EdgeTilesString = table.Column<string>(nullable: true),
+                    RoomSize = table.Column<int>(nullable: false),
+                    IsMainRoom = table.Column<bool>(nullable: false),
+                    IsAccessibleFromMainRoom = table.Column<bool>(nullable: false),
+                    GameId = table.Column<int>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Room", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Room_Games_GameId",
+                        column: x => x.GameId,
+                        principalTable: "Games",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Treasure",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    X = table.Column<int>(nullable: false),
+                    Y = table.Column<int>(nullable: false),
+                    Team = table.Column<int>(nullable: false),
+                    Type = table.Column<int>(nullable: false),
+                    Quantity = table.Column<int>(nullable: false),
+                    GameId = table.Column<int>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Treasure", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Treasure_Games_GameId",
+                        column: x => x.GameId,
+                        principalTable: "Games",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UnitConfigurationAbility",
+                columns: table => new
+                {
+                    UnitConfigurationId = table.Column<int>(nullable: false),
+                    AbilityId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UnitConfigurationAbility", x => new { x.UnitConfigurationId, x.AbilityId });
+                    table.ForeignKey(
+                        name: "FK_UnitConfigurationAbility_Abilities_AbilityId",
+                        column: x => x.AbilityId,
+                        principalTable: "Abilities",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_UnitConfigurationAbility_UnitConfigurations_UnitConfigurationId",
+                        column: x => x.UnitConfigurationId,
+                        principalTable: "UnitConfigurations",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UnitConfigurationUpgrade",
+                columns: table => new
+                {
+                    UnitConfigurationId = table.Column<int>(nullable: false),
+                    UpgradeId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UnitConfigurationUpgrade", x => new { x.UnitConfigurationId, x.UpgradeId });
+                    table.ForeignKey(
+                        name: "FK_UnitConfigurationUpgrade_UnitConfigurations_UnitConfigurationId",
+                        column: x => x.UnitConfigurationId,
+                        principalTable: "UnitConfigurations",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_UnitConfigurationUpgrade_Upgrades_UpgradeId",
+                        column: x => x.UpgradeId,
+                        principalTable: "Upgrades",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Armies",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    X = table.Column<int>(nullable: false),
+                    Y = table.Column<int>(nullable: false),
+                    Team = table.Column<int>(nullable: false),
+                    GameId = table.Column<int>(nullable: true),
+                    UserId = table.Column<int>(nullable: true),
+                    NPCData_MapRepresentation = table.Column<int>(nullable: false),
+                    NPCData_Disposition = table.Column<int>(nullable: false),
+                    NPCData_RewardType = table.Column<int>(nullable: false),
+                    NPCData_RewardQuantity = table.Column<int>(nullable: false),
+                    NPCData_ItemRewardId = table.Column<int>(nullable: true),
+                    NPCData_TroopsRewardType = table.Column<int>(nullable: false),
+                    NPCData_TroopsRewardQuantity = table.Column<int>(nullable: false),
+                    NPCData_OccupiedTilesString = table.Column<string>(nullable: true),
+                    IsNPC = table.Column<bool>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Armies", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Armies_Games_GameId",
+                        column: x => x.GameId,
+                        principalTable: "Games",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Armies_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Armies_ItemBlueprints_NPCData_ItemRewardId",
+                        column: x => x.NPCData_ItemRewardId,
+                        principalTable: "ItemBlueprints",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -388,232 +504,6 @@ namespace Server.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Avatars",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Wood = table.Column<int>(nullable: false),
-                    Ore = table.Column<int>(nullable: false),
-                    Gold = table.Column<int>(nullable: false),
-                    Gems = table.Column<int>(nullable: false),
-                    GameId = table.Column<int>(nullable: true),
-                    UserId = table.Column<int>(nullable: true),
-                    Team = table.Column<int>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Avatars", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Avatars_Games_GameId",
-                        column: x => x.GameId,
-                        principalTable: "Games",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Avatars_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Room",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    TilesString = table.Column<string>(nullable: true),
-                    EdgeTilesString = table.Column<string>(nullable: true),
-                    RoomSize = table.Column<int>(nullable: false),
-                    IsMainRoom = table.Column<bool>(nullable: false),
-                    IsAccessibleFromMainRoom = table.Column<bool>(nullable: false),
-                    GameId = table.Column<int>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Room", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Room_Games_GameId",
-                        column: x => x.GameId,
-                        principalTable: "Games",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Treasure",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    X = table.Column<int>(nullable: false),
-                    Y = table.Column<int>(nullable: false),
-                    Team = table.Column<int>(nullable: false),
-                    Type = table.Column<int>(nullable: false),
-                    Quantity = table.Column<int>(nullable: false),
-                    GameId = table.Column<int>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Treasure", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Treasure_Games_GameId",
-                        column: x => x.GameId,
-                        principalTable: "Games",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "UnitConfigurationAbility",
-                columns: table => new
-                {
-                    UnitConfigurationId = table.Column<int>(nullable: false),
-                    AbilityId = table.Column<int>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_UnitConfigurationAbility", x => new { x.UnitConfigurationId, x.AbilityId });
-                    table.ForeignKey(
-                        name: "FK_UnitConfigurationAbility_Abilities_AbilityId",
-                        column: x => x.AbilityId,
-                        principalTable: "Abilities",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_UnitConfigurationAbility_UnitConfigurations_UnitConfigurationId",
-                        column: x => x.UnitConfigurationId,
-                        principalTable: "UnitConfigurations",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "UnitConfigurationUpgrade",
-                columns: table => new
-                {
-                    UnitConfigurationId = table.Column<int>(nullable: false),
-                    UpgradeId = table.Column<int>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_UnitConfigurationUpgrade", x => new { x.UnitConfigurationId, x.UpgradeId });
-                    table.ForeignKey(
-                        name: "FK_UnitConfigurationUpgrade_UnitConfigurations_UnitConfigurationId",
-                        column: x => x.UnitConfigurationId,
-                        principalTable: "UnitConfigurations",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_UnitConfigurationUpgrade_Upgrades_UpgradeId",
-                        column: x => x.UpgradeId,
-                        principalTable: "Upgrades",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Castles",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    BlueprintId = table.Column<int>(nullable: true),
-                    RegionId = table.Column<int>(nullable: true),
-                    AvatarId = table.Column<int>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Castles", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Castles_Avatars_AvatarId",
-                        column: x => x.AvatarId,
-                        principalTable: "Avatars",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Castles_CastleBlueprints_BlueprintId",
-                        column: x => x.BlueprintId,
-                        principalTable: "CastleBlueprints",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Castles_Games_RegionId",
-                        column: x => x.RegionId,
-                        principalTable: "Games",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Heroes",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    X = table.Column<int>(nullable: false),
-                    Y = table.Column<int>(nullable: false),
-                    Team = table.Column<int>(nullable: false),
-                    StartX = table.Column<int>(nullable: false),
-                    StartY = table.Column<int>(nullable: false),
-                    Level = table.Column<int>(nullable: false),
-                    MovementPoints = table.Column<int>(nullable: false),
-                    ActionPoints = table.Column<int>(nullable: false),
-                    MinDamage = table.Column<int>(nullable: false),
-                    MaxDamage = table.Column<int>(nullable: false),
-                    Hitpoints = table.Column<int>(nullable: false),
-                    Mana = table.Column<int>(nullable: false),
-                    Armor = table.Column<int>(nullable: false),
-                    Dodge = table.Column<int>(nullable: false),
-                    AttackType = table.Column<int>(nullable: false),
-                    ArmorType = table.Column<int>(nullable: false),
-                    HeroClass = table.Column<int>(nullable: false),
-                    Type = table.Column<int>(nullable: false),
-                    NPCData_MapRepresentation = table.Column<int>(nullable: false),
-                    NPCData_Disposition = table.Column<int>(nullable: false),
-                    NPCData_RewardType = table.Column<int>(nullable: false),
-                    NPCData_RewardQuantity = table.Column<int>(nullable: false),
-                    NPCData_ItemRewardId = table.Column<int>(nullable: true),
-                    NPCData_TroopsRewardType = table.Column<int>(nullable: false),
-                    NPCData_TroopsRewardQuantity = table.Column<int>(nullable: false),
-                    NPCData_OccupiedTilesString = table.Column<string>(nullable: true),
-                    IsNPC = table.Column<bool>(nullable: false),
-                    BlueprintId = table.Column<int>(nullable: true),
-                    GameId = table.Column<int>(nullable: true),
-                    AvatarId = table.Column<int>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Heroes", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Heroes_Avatars_AvatarId",
-                        column: x => x.AvatarId,
-                        principalTable: "Avatars",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Heroes_HeroBlueprints_BlueprintId",
-                        column: x => x.BlueprintId,
-                        principalTable: "HeroBlueprints",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Heroes_Games_GameId",
-                        column: x => x.GameId,
-                        principalTable: "Games",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Heroes_ItemBlueprints_NPCData_ItemRewardId",
-                        column: x => x.NPCData_ItemRewardId,
-                        principalTable: "ItemBlueprints",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Dwelling",
                 columns: table => new
                 {
@@ -623,12 +513,13 @@ namespace Server.Data.Migrations
                     Y = table.Column<int>(nullable: false),
                     Team = table.Column<int>(nullable: false),
                     Type = table.Column<int>(nullable: false),
-                    OwnerId = table.Column<int>(nullable: true),
+                    UserId = table.Column<int>(nullable: true),
                     GameId = table.Column<int>(nullable: false),
                     GuardianId = table.Column<int>(nullable: true),
                     EndX = table.Column<int>(nullable: false),
                     EndY = table.Column<int>(nullable: false),
-                    OccupiedTilesString = table.Column<string>(nullable: true)
+                    OccupiedTilesString = table.Column<string>(nullable: true),
+                    VisitorsString = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -640,17 +531,41 @@ namespace Server.Data.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Dwelling_Heroes_GuardianId",
+                        name: "FK_Dwelling_Armies_GuardianId",
                         column: x => x.GuardianId,
-                        principalTable: "Heroes",
+                        principalTable: "Armies",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Dwelling_Avatars_OwnerId",
-                        column: x => x.OwnerId,
-                        principalTable: "Avatars",
+                        name: "FK_Dwelling_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Units",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    StartX = table.Column<int>(nullable: false),
+                    StartY = table.Column<int>(nullable: false),
+                    Level = table.Column<int>(nullable: false),
+                    Quantity = table.Column<int>(nullable: false),
+                    Type = table.Column<int>(nullable: false),
+                    ArmyId = table.Column<int>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Units", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Units_Armies_ArmyId",
+                        column: x => x.ArmyId,
+                        principalTable: "Armies",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -660,7 +575,8 @@ namespace Server.Data.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     BlueprintId = table.Column<int>(nullable: true),
-                    HeroId = table.Column<int>(nullable: true)
+                    HeroId = table.Column<int>(nullable: true),
+                    UnitId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -672,35 +588,27 @@ namespace Server.Data.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Items_Heroes_HeroId",
-                        column: x => x.HeroId,
-                        principalTable: "Heroes",
+                        name: "FK_Items_Units_UnitId",
+                        column: x => x.UnitId,
+                        principalTable: "Units",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.CreateTable(
-                name: "Unit",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    StartX = table.Column<int>(nullable: false),
-                    StartY = table.Column<int>(nullable: false),
-                    Type = table.Column<int>(nullable: false),
-                    Quantity = table.Column<int>(nullable: false),
-                    HeroId = table.Column<int>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Unit", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Unit_Heroes_HeroId",
-                        column: x => x.HeroId,
-                        principalTable: "Heroes",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
+            migrationBuilder.CreateIndex(
+                name: "IX_Armies_GameId",
+                table: "Armies",
+                column: "GameId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Armies_UserId",
+                table: "Armies",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Armies_NPCData_ItemRewardId",
+                table: "Armies",
+                column: "NPCData_ItemRewardId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -730,6 +638,11 @@ namespace Server.Data.Migrations
                 column: "RoleId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_AspNetUsers_GameId",
+                table: "AspNetUsers",
+                column: "GameId");
+
+            migrationBuilder.CreateIndex(
                 name: "EmailIndex",
                 table: "AspNetUsers",
                 column: "NormalizedEmail");
@@ -742,31 +655,6 @@ namespace Server.Data.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Avatars_GameId",
-                table: "Avatars",
-                column: "GameId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Avatars_UserId",
-                table: "Avatars",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Castles_AvatarId",
-                table: "Castles",
-                column: "AvatarId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Castles_BlueprintId",
-                table: "Castles",
-                column: "BlueprintId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Castles_RegionId",
-                table: "Castles",
-                column: "RegionId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Dwelling_GameId",
                 table: "Dwelling",
                 column: "GameId");
@@ -777,9 +665,9 @@ namespace Server.Data.Migrations
                 column: "GuardianId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Dwelling_OwnerId",
+                name: "IX_Dwelling_UserId",
                 table: "Dwelling",
-                column: "OwnerId");
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Friendships_RecieverId",
@@ -787,34 +675,14 @@ namespace Server.Data.Migrations
                 column: "RecieverId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Heroes_AvatarId",
-                table: "Heroes",
-                column: "AvatarId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Heroes_BlueprintId",
-                table: "Heroes",
-                column: "BlueprintId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Heroes_GameId",
-                table: "Heroes",
-                column: "GameId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Heroes_NPCData_ItemRewardId",
-                table: "Heroes",
-                column: "NPCData_ItemRewardId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Items_BlueprintId",
                 table: "Items",
                 column: "BlueprintId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Items_HeroId",
+                name: "IX_Items_UnitId",
                 table: "Items",
-                column: "HeroId");
+                column: "UnitId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Messages_RecipientId",
@@ -842,11 +710,6 @@ namespace Server.Data.Migrations
                 column: "GameId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Unit_HeroId",
-                table: "Unit",
-                column: "HeroId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_UnitConfigurationAbility_AbilityId",
                 table: "UnitConfigurationAbility",
                 column: "AbilityId");
@@ -861,6 +724,11 @@ namespace Server.Data.Migrations
                 name: "IX_UnitConfigurationUpgrade_UpgradeId",
                 table: "UnitConfigurationUpgrade",
                 column: "UpgradeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Units_ArmyId",
+                table: "Units",
+                column: "ArmyId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -879,9 +747,6 @@ namespace Server.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUserTokens");
-
-            migrationBuilder.DropTable(
-                name: "Castles");
 
             migrationBuilder.DropTable(
                 name: "Dwelling");
@@ -905,9 +770,6 @@ namespace Server.Data.Migrations
                 name: "Treasure");
 
             migrationBuilder.DropTable(
-                name: "Unit");
-
-            migrationBuilder.DropTable(
                 name: "UnitConfigurationAbility");
 
             migrationBuilder.DropTable(
@@ -917,10 +779,7 @@ namespace Server.Data.Migrations
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "CastleBlueprints");
-
-            migrationBuilder.DropTable(
-                name: "Heroes");
+                name: "Units");
 
             migrationBuilder.DropTable(
                 name: "Abilities");
@@ -932,19 +791,16 @@ namespace Server.Data.Migrations
                 name: "Upgrades");
 
             migrationBuilder.DropTable(
-                name: "Avatars");
+                name: "Armies");
 
             migrationBuilder.DropTable(
-                name: "HeroBlueprints");
+                name: "AspNetUsers");
 
             migrationBuilder.DropTable(
                 name: "ItemBlueprints");
 
             migrationBuilder.DropTable(
                 name: "Games");
-
-            migrationBuilder.DropTable(
-                name: "AspNetUsers");
         }
     }
 }

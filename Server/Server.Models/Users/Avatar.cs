@@ -1,17 +1,13 @@
 ﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using Server.Models.Castles;
-using Server.Models.Heroes;
-using Server.Models.MapEntities;
-using Server.Models.Realms;
+using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
+using Server.Models.Parsers;
 
 namespace Server.Models.Users
 {
-    /// <summary>
-    /// Avatar is the user representation in the current world.
-    /// The user can have multiple avatars, but only one avatar per realm
-    /// </summary>
-    public class Avatar : Entity
+
+    [Owned]
+    public class Avatar
     {
         public int Wood { get; set; }
 
@@ -21,28 +17,40 @@ namespace Server.Models.Users
 
         public int Gems { get; set; }
 
-        public virtual ICollection<Hero> Heroes { get; set; }
-
-        public virtual ICollection<Castle> Castles { get; set; }
-
-        public virtual ICollection<Dwelling> Dwellings { get; set; }
-
-        public int? GameId { get; set; }
-
-        public virtual Game Game { get; set; }
-
-        public int? UserId { get; set; }
-
-        public virtual User User { get; set; }
-
         public Team Team { get; set; }
 
-        public Avatar()
+        private string _visitedString;
+
+        public string VisitedString
         {
-            // TODO: Init wood, ore, gold, gems based on map difficulty.
-            this.Heroes = new Collection<Hero>();
-            this.Castles = new Collection<Castle>();
-            this.Dwellings = new Collection<Dwelling>();
+            get
+            {
+                return this._visitedString;
+            }
+            set
+            {
+                if (value != null)
+                {
+                    this._visitedString = value;
+                    this.Visited = CommonParser.ParseCsvIds(this._visitedString);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Adding visitor directly to this list won't be recorded in the database.
+        /// Please use AddVisitor method.
+        /// </summary>
+        [NotMapped]
+        public List<int> Visited { get; private set; }
+
+        public void AddVisited(int visitorId)
+        {
+            if (!this.Visited.Contains(visitorId))
+            {
+                this.Visited.Add(visitorId);
+                this._visitedString = string.Join(',', this.Visited);
+            }
         }
     }
 

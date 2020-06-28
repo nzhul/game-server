@@ -1,11 +1,10 @@
-﻿using System.Collections.Generic;
-using Server.Models.Users;
+﻿using Server.Models.Users;
 
 namespace Server.Api.Controllers
 {
     public class AvatarDetailedDto
     {
-        public int Id { get; set; }
+        public int UserId { get; set; }
 
         public int Wood { get; set; }
 
@@ -15,12 +14,8 @@ namespace Server.Api.Controllers
 
         public int Gems { get; set; }
 
-        public int? UserId { get; set; }
-
         public Team Team { get; set; }
 
-        public ICollection<int> Heroes { get; set; }
-
-        public ICollection<int> Dwellings { get; set; }
+        public string VisitedString { get; set; }
     }
 }

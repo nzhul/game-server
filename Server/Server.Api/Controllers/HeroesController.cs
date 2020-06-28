@@ -1,11 +1,11 @@
-﻿using AutoMapper;
+﻿using System.Security.Claims;
+using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Server.Api.Models.View.Realms;
 using Server.Data.Services.Abstraction;
-using Server.Models.Heroes;
-using System.Security.Claims;
-using System.Threading.Tasks;
+using Server.Models.Armies;
 
 namespace Server.Api.Controllers
 {
@@ -13,10 +13,10 @@ namespace Server.Api.Controllers
     [Route("api/realms")]
     public class HeroesController : ControllerBase
     {
-        private readonly IHeroesService _heroesService;
+        private readonly IArmiesService _heroesService;
         private readonly IMapper _mapper;
 
-        public HeroesController(IHeroesService heroesService, IMapper mapper)
+        public HeroesController(IArmiesService heroesService, IMapper mapper)
         {
             _heroesService = heroesService;
             _mapper = mapper;
@@ -44,14 +44,14 @@ namespace Server.Api.Controllers
 
         // TODO: change this route to somehting that use UpdateParams class
         [HttpPut("heroes/{regionId}/{heroId}/{x}/{y}")]
-        public async Task<IActionResult> UpdateHeroPosition(int regionId, int heroId, int x, int y)
+        public async Task<IActionResult> UpdateArmyPosition(int gameId, int armyId, int x, int y)
         {
             //TODO: update the region also!
-            Hero dbHero = await _heroesService.GetHero(heroId);
+            Army dbArmy = await _heroesService.GetArmy(armyId);
 
-            if (dbHero != null)
+            if (dbArmy != null)
             {
-                await _heroesService.UpdateHeroPosition(dbHero, x, y, regionId);
+                await _heroesService.UpdateArmyPosition(dbArmy, x, y, gameId);
                 return Ok();
             }
             else
@@ -61,15 +61,15 @@ namespace Server.Api.Controllers
         }
 
         [HttpGet("heroes/{heroId}")]
-        [ProducesResponseType(200, Type = typeof(HeroDetailedDto))]
-        public async Task<IActionResult> GetHero(int heroId)
+        [ProducesResponseType(200, Type = typeof(ArmyDetailedDto))]
+        public async Task<IActionResult> GetArmy(int armyId)
         {
-            Hero dbHero = await _heroesService.GetHero(heroId);
+            var dbArmy = await _heroesService.GetArmy(armyId);
 
-            if (dbHero != null)
+            if (dbArmy != null)
             {
-                var heroToReturn = _mapper.Map<HeroDetailedDto>(dbHero);
-                return Ok(heroToReturn);
+                var armyToReturn = _mapper.Map<ArmyDetailedDto>(dbArmy);
+                return Ok(armyToReturn);
             }
             else
             {

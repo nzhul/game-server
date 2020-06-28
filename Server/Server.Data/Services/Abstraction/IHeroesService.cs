@@ -1,14 +1,14 @@
 ﻿using System.Threading.Tasks;
-using Server.Models.Heroes;
+using Server.Models.Armies;
 
 namespace Server.Data.Services.Abstraction
 {
-    public interface IHeroesService : IService
+    public interface IArmiesService : IService
     {
-        Task<Hero> GetHero(int heroId);
+        Task<Army> GetArmy(int heroId);
 
         Task<bool> DeleteHero(int heroId);
 
-        Task<Hero> UpdateHeroPosition(Hero hero, int x, int y, int regionId);
+        Task<Army> UpdateArmyPosition(Army army, int x, int y, int gameId);
     }
 }

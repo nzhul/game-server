@@ -8,8 +8,8 @@ using Microsoft.EntityFrameworkCore.Internal;
 using Newtonsoft.Json;
 using Server.Data.Generators.Models;
 using Server.Models;
+using Server.Models.Armies;
 using Server.Models.Heroes;
-using Server.Models.Heroes.Units;
 using Server.Models.MapEntities;
 using Server.Models.Realms;
 using Server.Models.Realms.Input;
@@ -142,16 +142,16 @@ namespace Server.Data.Generators
                         dwelling.Guardian.X += xShift;
                         dwelling.Guardian.Y += yShift;
                     }
-                    dwelling.OccupiedTilesString = StringifyCoordCollection(this.ApplyPointShift(new Coord(xShift, yShift),dwelling.OccupiedTiles));
+                    dwelling.OccupiedTilesString = StringifyCoordCollection(this.ApplyPointShift(new Coord(xShift, yShift), dwelling.OccupiedTiles));
                     map.Dwellings.Add(dwelling);
                 }
 
                 // Shift heroes
-                foreach (var hero in zone.Heroes)
+                foreach (var hero in zone.Armies)
                 {
                     hero.X += xShift;
                     hero.Y += yShift;
-                    map.Heroes.Add(hero);
+                    map.Armies.Add(hero);
                 }
 
                 // Shift treasures
@@ -772,7 +772,7 @@ namespace Server.Data.Generators
             this.MarkPositionAsOccupied(castlePosition, SpaceRequirements.Dwellings[DwellingType.Castle], mainRoom);
             var link = Guid.NewGuid();
             CreateDwelling("CastleName", emptyMap, castlePosition, DwellingType.Castle, team, link);
-            CreatePlayerHero(emptyMap, new Coord(castlePosition.Y, castlePosition.X - 1), team, link);
+            CreatePlayerArmy(emptyMap, new Coord(castlePosition.Y, castlePosition.X - 1), team, link);
 
             // 2. Place waypoint
             PlaceDwelling(emptyMap, "Waypoint", DwellingType.Waypoint, 1, 1);
@@ -823,7 +823,7 @@ namespace Server.Data.Generators
                     var spaceRequired = SpaceRequirements.Monsters[monsterType];
                     Coord monsterPosition = this.TryGetSafePosition(randomRoom, PlacementStrategy.Random, 2, spaceRequired);
                     this.MarkPositionAsOccupied(monsterPosition, spaceRequired, randomRoom);
-                    CreateNPCHero(emptyMap, monsterPosition, monsterType);
+                    CreateNPCArmy(emptyMap, monsterPosition, monsterType);
                 }
             }
 
@@ -831,11 +831,10 @@ namespace Server.Data.Generators
             return emptyMap;
         }
 
-        private void CreatePlayerHero(Map emptyMap, Coord position, Team team, Guid? link)
+        private void CreatePlayerArmy(Map emptyMap, Coord position, Team team, Guid? link)
         {
-            Hero playerHero = new Hero()
+            var playerArmy = new Army()
             {
-                Type = HeroType.Normal,
                 X = position.X,
                 Y = position.Y,
                 Team = team,
@@ -843,16 +842,15 @@ namespace Server.Data.Generators
                 NPCData = new NPCData()
             };
 
-            this.AddUnitsToHero(playerHero);
+            this.AddUnitsToHero(playerArmy);
 
-            emptyMap.Heroes.Add(playerHero);
+            emptyMap.Armies.Add(playerArmy);
         }
 
-        private void CreateNPCHero(Map emptyMap, Coord position, CreatureType type)
+        private void CreateNPCArmy(Map emptyMap, Coord position, CreatureType type)
         {
-            Hero neutralHero = new Hero()
+            var neutralArmy = new Army()
             {
-                Type = HeroType.Placeholder,
                 X = position.X,
                 Y = position.Y,
                 NPCData = new NPCData
@@ -865,9 +863,9 @@ namespace Server.Data.Generators
                 IsNPC = true
             };
 
-            this.AddUnitsToHero(neutralHero);
+            this.AddUnitsToHero(neutralArmy);
 
-            emptyMap.Heroes.Add(neutralHero);
+            emptyMap.Armies.Add(neutralArmy);
         }
 
         //private Hero CreateHero()
@@ -875,8 +873,17 @@ namespace Server.Data.Generators
 
         //}
 
-        private void AddUnitsToHero(Hero neutralHero)
+        private void AddUnitsToHero(Army neutralArmy)
         {
+            var heroUnit = new Unit
+            {
+                Type = CreatureType.Knight,
+                Level = 1,
+                Quantity = 1,
+                StartX = 0,
+                StartY = 0
+            };
+
             var unit1 = new Unit
             {
                 Quantity = 1,
@@ -901,9 +908,10 @@ namespace Server.Data.Generators
                 StartY = 8
             };
 
-            neutralHero.Units.Add(unit1);
-            neutralHero.Units.Add(unit2);
-            neutralHero.Units.Add(unit3);
+            neutralArmy.Units.Add(heroUnit);
+            neutralArmy.Units.Add(unit1);
+            neutralArmy.Units.Add(unit2);
+            neutralArmy.Units.Add(unit3);
         }
 
         private void PlaceDwelling(Map emptyMap, string name, DwellingType type, int minCount, int maxCount)
@@ -932,14 +940,13 @@ namespace Server.Data.Generators
         {
             // TODO: if zoneLink is null - use default values
 
-            Hero newGuardian = null;
+            Army newGuardian = null;
 
             if (zoneLink != null)
             {
-                newGuardian = new Hero()
+                newGuardian = new Army()
                 {
-                    Level = zoneLink.GuardianStrength,
-                    Type = HeroType.Placeholder,
+                    //Level = zoneLink.GuardianStrength, // TODO: use the GuardianStrenght
                     X = start.X,
                     Y = start.Y,
                     NPCData = new NPCData

@@ -8,6 +8,7 @@ using Server.Api.Models.View.Avatars;
 using Server.Api.Models.View.Games;
 using Server.Api.Models.View.Realms;
 using Server.Api.Models.View.UnitConfigurations;
+using Server.Models.Armies;
 using Server.Models.Heroes;
 using Server.Models.Heroes.Units;
 using Server.Models.MapEntities;
@@ -62,7 +63,8 @@ namespace Server.Api.Helpers
             //    .ForMember(x => x.ResetDate, opt => opt.MapFrom(u => u.ResetDate.ToString("dd MMMM yyyy")));
 
             // GAMES
-            CreateMap<Game, GameDetailedDto>();
+            CreateMap<Game, GameDetailedDto>()
+                .ForMember(x => x.Avatars, opt => opt.MapFrom(u => u.Users));
 
             // REGIONS
             //CreateMap<Game, RegionDetailedDto>();
@@ -71,36 +73,37 @@ namespace Server.Api.Helpers
             CreateMap<Room, RoomDetailedDto>();
 
             // DWELLINGS
-            CreateMap<Dwelling, DwellingDetailedDto>();
-            CreateMap<Dwelling, WaypointDto>()
-                .ForMember( x => x.RegionId, opt => opt.MapFrom(u => u.Game.Id))
-                .ForMember( x => x.RegionName, opt => opt.MapFrom(u => u.Game.Name));
+            CreateMap<Dwelling, DwellingDetailedDto>()
+                .ForMember(x => x.VisitorsString, opt => opt.Condition(src => src.Team == Team.Neutral));
+            //CreateMap<Dwelling, WaypointDto>()
+            //    .ForMember( x => x.RegionId, opt => opt.MapFrom(u => u.Game.Id))
+            //    .ForMember( x => x.RegionName, opt => opt.MapFrom(u => u.Game.Name));
 
             // AVATARS
-            CreateMap<Hero, HeroDetailedDto>()
-                .ForMember(x => x.HeroClass, opt => opt.MapFrom(u => u.Blueprint.Class))
-                .ForMember(x => x.OwnerId, opt => opt.MapFrom(u => u.AvatarId))
-                .ForMember(x => x.HeroType, opt => opt.MapFrom(u => u.Type))
-                .ForMember(x => x.NPCData, opt => opt.Condition(src => src.IsNPC));
+            CreateMap<Unit, UnitDetailedDto>();
 
-            CreateMap<Avatar, AvatarDetailedDto>()
-                .ForMember(x => x.Heroes, opt => opt.Ignore())
-                .ForMember(x => x.Dwellings, opt => opt.Ignore())
-                .AfterMap((r, rm) => rm.Heroes = new List<int>(r.Heroes.Select(c => c.Id)))
-                .AfterMap((r, rm) => rm.Dwellings = new List<int>(r.Dwellings.Select(c => c.Id)));
+            //CreateMap<Avatar, AvatarDetailedDto>()
+            //    .ForMember(x => x.Heroes, opt => opt.Ignore())
+            //    .ForMember(x => x.Dwellings, opt => opt.Ignore())
+            //    .AfterMap((r, rm) => rm.Heroes = new List<int>(r.Heroes.Select(c => c.Id)))
+            //    .AfterMap((r, rm) => rm.Dwellings = new List<int>(r.Dwellings.Select(c => c.Id)));
 
-            // UNITS
-            CreateMap<Unit, UnitDetailedDto>()
-                .ForMember(x => x.OwnerId, opt => opt.MapFrom(u => u.Hero.AvatarId))
-                .ForMember(x => x.CreatureType, opt => opt.MapFrom(u => u.Type))
-                .ForMember(x => x.RegionId, opt => opt.MapFrom(u => u.Hero.GameId));
-
-            // BLUEPRINTS
-            CreateMap<HeroBlueprint, Hero>()
-                .ForMember(x => x.Id, opt => opt.Ignore());
+            CreateMap<User, AvatarDetailedDto>() // TODO: refactor this to use ConvertUsing
+                .ForMember(x => x.UserId, opt => opt.MapFrom(u => u.Id))
+                .ForMember(x => x.Wood, opt => opt.MapFrom(u => u.Avatar.Wood))
+                .ForMember(x => x.Ore, opt => opt.MapFrom(u => u.Avatar.Ore))
+                .ForMember(x => x.Gold, opt => opt.MapFrom(u => u.Avatar.Gold))
+                .ForMember(x => x.Gems, opt => opt.MapFrom(u => u.Avatar.Gems))
+                .ForMember(x => x.Team, opt => opt.MapFrom(u => u.Avatar.Team))
+                .ForMember(x => x.VisitedString, opt => opt.MapFrom(u => u.Avatar.VisitedString));
 
             // UNIT CONFIGURATIONS
             CreateMap<UnitConfiguration, UnitConfigurationView>();
+
+
+            // Army
+            CreateMap<Army, ArmyDetailedDto>()
+                .ForMember(x => x.NPCData, opt => opt.Condition(src => src.IsNPC));
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Server.Models.Parsers
 {
@@ -17,6 +18,17 @@ namespace Server.Models.Parsers
             }
 
             return roomCoordinates;
+        }
+
+        public static List<int> ParseCsvIds(string visitorsString)
+        {
+            if (string.IsNullOrEmpty(visitorsString))
+            {
+                return new List<int>();
+            }
+
+            var tokens = visitorsString.Split(new char[] { ',' });
+            return tokens.Select(x => int.Parse(x)).ToList();
         }
     }
 }

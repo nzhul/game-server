@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Microsoft.AspNetCore.Identity;
+using Server.Models.Realms;
 
 namespace Server.Models.Users
 {
@@ -29,8 +30,6 @@ namespace Server.Models.Users
 
         public virtual ICollection<Message> MessagesRecieved { get; set; }
 
-        public virtual ICollection<Avatar> Avatars { get; set; }
-
         public ICollection<UserRole> UserRoles { get; set; }
 
         public virtual ICollection<Friendship> SendFriendRequests { get; set; }
@@ -49,16 +48,28 @@ namespace Server.Models.Users
 
         public int ActiveConnection { get; set; }
 
-        public int ActiveGameId { get; set; }
+        public int? GameId { get; set; }
+
+        public virtual Game Game { get; set; }
+
+        public Avatar Avatar { get; set; }
+
+        //public ICollection<Army> Armies { get; set; }
+
+        //public ICollection<Dwelling> Dwellings { get; set; }
 
         public byte OnlineStatus { get; set; }
+
+        // TODO: After the game is complete we should do the following :
+        // Create new HistoricalGame entity and store game statistics there.
+        // Delete all game data from game tables.
+        // public ICollection<HistoricalGame> HistoricalGames { get ; set;}
 
         public User()
         {
             Photos = new Collection<Photo>();
             MessagesSent = new Collection<Message>();
             MessagesRecieved = new Collection<Message>();
-            Avatars = new Collection<Avatar>();
             SendFriendRequests = new Collection<Friendship>();
             RecievedFriendRequests = new Collection<Friendship>();
         }

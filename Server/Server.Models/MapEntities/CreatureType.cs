@@ -19,5 +19,15 @@
         Mage,
         Knight,
         Ancestor,
+
+        // Sanctuary Heroes
+        Crusader,
+        Mercenary,
+        Sorcerer,
+
+        // Underworld Heroes
+        Warlord,
+        Witch,
+        Warg
     }
 }

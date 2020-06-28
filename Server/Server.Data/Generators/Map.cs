@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Text;
 using Server.Models;
-using Server.Models.Heroes;
+using Server.Models.Armies;
 using Server.Models.MapEntities;
-using Server.Models.Realms;
 
 namespace Server.Data.Generators
 {
@@ -24,7 +23,7 @@ namespace Server.Data.Generators
             }
         }
 
-        public void Stringify() 
+        public void Stringify()
         {
             this.MatrixString = this.StringifyMatrix(this.Matrix);
         }
@@ -50,7 +49,7 @@ namespace Server.Data.Generators
 
         public List<TempRoom> Rooms { get; set; }
 
-        public List<Hero> Heroes { get; set; }
+        public List<Army> Armies { get; set; }
 
         public List<Treasure> Treasures { get; set; }
 
@@ -62,7 +61,7 @@ namespace Server.Data.Generators
         {
             this.Dwellings = new List<Dwelling>();
             this.Rooms = new List<TempRoom>();
-            this.Heroes = new List<Hero>();
+            this.Armies = new List<Army>();
             this.Treasures = new List<Treasure>();
         }
     }

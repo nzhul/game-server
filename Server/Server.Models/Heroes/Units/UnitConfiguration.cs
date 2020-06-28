@@ -11,27 +11,35 @@ namespace Server.Models.Heroes.Units
 
         public Faction Faction { get; set; }
 
-        public int MovementPoints { get; set; }
+        public int MovementPointsBase { get; set; }
 
-        public int ActionPoints { get; set; }
+        public int ActionPointsBase { get; set; }
 
-        public int MinDamage { get; set; }
+        public int MinDamageBase { get; set; }
 
-        public int MaxDamage { get; set; }
+        public int MinDamageIncrement { get; set; }
 
-        public int Hitpoints { get; set; }
+        public int MaxDamageBase { get; set; }
 
-        public int Mana { get; set; }
+        public int MaxDamageIncrement { get; set; }
 
-        public int Armor { get; set; }
+        public int HitpointsBase { get; set; }
 
-        public int Dodge { get; set; }
+        public int HitpointsIncrement { get; set; }
+
+        public int ManaBase { get; set; }
+
+        public int ManaIncrement { get; set; }
+
+        public int ArmorBase { get; set; }
+
+        public int ArmorIncrement { get; set; }
+
+        public int EvasionBase { get; set; }
 
         public AttackType AttackType { get; set; }
 
         public ArmorType ArmorType { get; set; }
-
-        public int CreatureLevel { get; set; }
 
         public int BuildTime { get; set; }
 

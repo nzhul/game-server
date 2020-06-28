@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Server.Models.Castles;
+using Server.Models.Armies;
 using Server.Models.Heroes;
 using Server.Models.Heroes.Units;
 using Server.Models.Items;
@@ -21,25 +21,19 @@ namespace Server.Data
         {
         }
 
-        public DbSet<Avatar> Avatars { get; set; }
-
         public DbSet<Photo> Photos { get; set; }
 
         public DbSet<Message> Messages { get; set; }
 
-        public DbSet<Hero> Heroes { get; set; }
+        public DbSet<Army> Armies { get; set; }
 
-        public DbSet<HeroBlueprint> HeroBlueprints { get; set; }
+        public DbSet<Unit> Units { get; set; }
 
         public DbSet<ItemBlueprint> ItemBlueprints { get; set; }
 
         public DbSet<Item> Items { get; set; }
 
         public DbSet<Game> Games { get; set; }
-
-        public DbSet<Castle> Castles { get; set; }
-
-        public DbSet<CastleBlueprint> CastleBlueprints { get; set; }
 
         public DbSet<Friendship> Friendships { get; set; }
 
@@ -109,21 +103,25 @@ namespace Server.Data
                 .WithMany(u => u.MessagesRecieved)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            builder.Entity<Hero>()
-                .HasOne(u => u.Avatar)
-                .WithMany(u => u.Heroes)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            builder.Entity<Hero>()
+            builder.Entity<Army>()
                 .OwnsOne(x => x.NPCData);
 
+            builder.Entity<Army>()
+                .HasOne(x => x.User);
+
+            builder.Entity<Dwelling>()
+                .HasOne(x => x.User);
+
+            builder.Entity<User>()
+                .OwnsOne(x => x.Avatar);
+
             builder.Entity<Unit>()
-                .HasOne(u => u.Hero)
+                .HasOne(u => u.Army)
                 .WithMany(u => u.Units)
                 .OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<Item>()
-                .HasOne(u => u.Hero)
+                .HasOne(u => u.Unit)
                 .WithMany(u => u.Items)
                 .OnDelete(DeleteBehavior.Cascade);
 

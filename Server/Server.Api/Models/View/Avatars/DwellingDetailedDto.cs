@@ -15,12 +15,14 @@ namespace Server.Api.Models.View.Avatars
 
         public DwellingType Type { get; set; }
 
-        public int? OwnerId { get; set; }
+        public int? UserId { get; set; }
 
-        public int GameId { get; set; }
+        public int? GameId { get; set; }
 
         public int? GuardianId { get; set; }
 
         public string OccupiedTilesString { get; set; }
+
+        public string VisitorsString { get; set; }
     }
 }
