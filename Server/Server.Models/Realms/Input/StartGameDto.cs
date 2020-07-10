@@ -37,6 +37,7 @@ namespace Server.Models.Realms.Input
     {
         Default,
         Cross,
-        Small
+        Small,
+        Tiny
     }
 }

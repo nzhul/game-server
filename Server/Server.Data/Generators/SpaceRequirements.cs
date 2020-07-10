@@ -19,7 +19,7 @@ namespace Server.Data.Generators
                 new Coord { X = 2, Y = -1 },
                 new Coord { X = 2, Y = 0 },
                 new Coord { X = 2, Y = 1 },
-
+                                
                 new Coord { X = 1, Y = -2 },
                 new Coord { X = 1, Y = -1 },
                 new Coord { X = 1, Y = 0 },

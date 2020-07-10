@@ -64,7 +64,7 @@ namespace Server.Api
 
             var key = Encoding.ASCII.GetBytes(Configuration.GetSection("AppSettings:Token").Value);
             services.AddDbContext<DataContext>(x => x.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"))
-            .ConfigureWarnings(warnings => warnings.Ignore(CoreEventId.IncludeIgnoredWarning)));
+            .ConfigureWarnings(warnings => warnings.Ignore(CoreEventId.IncludeIgnoredWarning)), ServiceLifetime.Transient);
             services.AddCors();
             services.AddAutoMapper(typeof(AutoMapperProfiles).GetTypeInfo().Assembly);
             services.AddScoped<IGameService, GameService>();

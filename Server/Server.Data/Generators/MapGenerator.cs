@@ -498,7 +498,7 @@ namespace Server.Data.Generators
                         if (IsInMapRange(realY, realX))
                         {
                             tiles.Add(new Coord(realX, realY));
-                            this.Matrix[realX, realY] = 99;
+                            this.Matrix[realX, realY] = 9;
                         }
                     }
                 }
@@ -772,7 +772,7 @@ namespace Server.Data.Generators
             this.MarkPositionAsOccupied(castlePosition, SpaceRequirements.Dwellings[DwellingType.Castle], mainRoom);
             var link = Guid.NewGuid();
             CreateDwelling("CastleName", emptyMap, castlePosition, DwellingType.Castle, team, link);
-            CreatePlayerArmy(emptyMap, new Coord(castlePosition.Y, castlePosition.X - 1), team, link);
+            CreatePlayerArmy(emptyMap, new Coord(castlePosition.X - 1 , castlePosition.Y), team, link);
 
             // 2. Place waypoint
             PlaceDwelling(emptyMap, "Waypoint", DwellingType.Waypoint, 1, 1);
@@ -835,8 +835,8 @@ namespace Server.Data.Generators
         {
             var playerArmy = new Army()
             {
-                X = position.X,
-                Y = position.Y,
+                X = position.Y, // X and Y are switcher because here X is Row. In Unity X is Col
+                Y = position.X, // X and Y are switcher because here Y is Col. In Unity Y is Row
                 Team = team,
                 Link = link,
                 NPCData = new NPCData()
@@ -851,8 +851,8 @@ namespace Server.Data.Generators
         {
             var neutralArmy = new Army()
             {
-                X = position.X,
-                Y = position.Y,
+                X = position.Y, // X and Y are switcher because here X is Row. In Unity X is Col
+                Y = position.X ,
                 NPCData = new NPCData
                 {
                     OccupiedTilesString = StringifyCoordCollection(this.ApplyPointShift(position, SpaceRequirements.Monsters[type])),
@@ -964,10 +964,10 @@ namespace Server.Data.Generators
             Dwelling newDwelling = new Dwelling()
             {
                 Type = DwellingType.Bridge,
-                X = start.X,
-                Y = start.Y,
-                EndX = end.X,
-                EndY = end.Y,
+                X = start.Y, // X and Y are switcher because here X is Row. In Unity X is Col
+                Y = start.X,
+                EndX = end.Y, // X and Y are switcher because here X is Row. In Unity X is Col
+                EndY = end.X,
                 Guardian = newGuardian,
                 //OwnerId = 1, //TODO: pass this as parameter in MapGeneration function.
                 OccupiedTilesString = StringifyCoordCollection(tiles),
@@ -981,8 +981,8 @@ namespace Server.Data.Generators
             Dwelling dwelling = new Dwelling()
             {
                 Type = type,
-                X = position.X,
-                Y = position.Y,
+                X = position.Y, // X and Y are switcher because here X is Row. In Unity X is Col
+                Y = position.X, 
                 //OwnerId = 1, //TODO: pass this as parameter in MapGeneration function.
                 OccupiedTilesString = StringifyCoordCollection(this.ApplyPointShift(position, SpaceRequirements.Dwellings[type])),
                 Team = team,
@@ -1329,7 +1329,7 @@ namespace Server.Data.Generators
         // I need to refactor monster placement logic.
         // I should have something like that:
         // Density: 10-20
-        private readonly int freePercentMonstersAndTreasure = 97;
+        private readonly int freePercentMonstersAndTreasure = 94;
 
 
         private int _minimumFreeCellsRequirementDwellings;

@@ -27,6 +27,8 @@ namespace Server.Api.Controllers
         {
             try
             {
+                input.MapTemplate = MapTemplate.Small; // TODO: remove this! For testing only!
+
                 var game = await _gamesService.CreateGameAsync(input);
                 var gameDto = _mapper.Map<GameDetailedDto>(game);
                 return Ok(gameDto);

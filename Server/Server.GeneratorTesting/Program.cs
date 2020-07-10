@@ -39,7 +39,7 @@ namespace Server.GeneratorTesting
 
                 var config = new GameParams()
                 {
-                    MapTemplate = MapTemplate.Default
+                    MapTemplate = MapTemplate.Small
                 };
 
                 //var sw = new Stopwatch();
@@ -152,7 +152,7 @@ namespace Server.GeneratorTesting
             {
                 for (int col = 0; col < matrix.GetLength(1); col++)
                 {
-                    if (matrix[row, col] == 99)
+                    if (matrix[row, col] == 9)
                     {
                         Console.SetCursorPosition(col, row);
                         Console.Write("$");
