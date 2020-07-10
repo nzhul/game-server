@@ -34,14 +34,20 @@ namespace Server.Data.Services.Implementation
             return await _context.Armies.FirstOrDefaultAsync(h => h.Id == heroId);
         }
 
-        public async Task<Army> UpdateArmyPosition(Army army, int x, int y, int gameId)
+        public async Task<bool> UpdateArmyPosition(int armyId, int x, int y)
         {
-            army.X = x;
-            army.Y = y;
+            var dbArmy = await _context.Armies.FirstOrDefaultAsync(a => a.Id == armyId);
 
-            await base.SaveAll();
+            if (dbArmy != null)
+            {
+                dbArmy.X = x;
+                dbArmy.Y = y;
 
-            return army;
+                await base.SaveAll();
+                return true;
+            }
+
+            return false;
         }
     }
 }

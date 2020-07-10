@@ -1,29 +1,42 @@
 [
-  {
-    "Type": "Shaman",
-    "Faction": "Underworld",
-    "MovementPoints": 4,
-    "ActionPoints": 2,
-    "MinDamage": 6,
-    "MaxDamage": 12,
-    "Hitpoints": 40,
-    "Mana": 20,
-    "Armor": 0,
-    "AttackType": "Magic",
-    "ArmorType": "Unarmored",
-    "CreatureLevel": 5
-  },
-  {
-    "Type": "Troll",
-    "MovementPoints": 5,
-    "ActionPoints": 1,
-    "MinDamage": 15,
-    "MaxDamage": 20,
-    "Hitpoints": 80,
-    "Mana": 0,
-    "Armor": 2,
-    "AttackType": "Normal",
-    "ArmorType": "Heavy",
-    "CreatureLevel": 4
-  }
+    {
+        "Type": "Paladin",
+        "Faction": "Sanctuary",
+        "MovementPoints": 4,
+        "ActionPoints": 2,
+        "MinDamage": 25,
+        "MaxDamage": 50,
+        "Hitpoints": 100,
+        "Mana": 50,
+        "Armor": 3,
+        "AttackType": "Hero",
+        "ArmorType": "Hero"
+    },
+    {
+        "Type": "Shaman",
+        "Faction": "Underworld",
+        "MovementPoints": 4,
+        "ActionPoints": 2,
+        "MinDamage": 6,
+        "MaxDamage": 12,
+        "Hitpoints": 40,
+        "Mana": 20,
+        "Armor": 0,
+        "AttackType": "Magic",
+        "ArmorType": "Unarmored",
+        "CreatureLevel": 5
+    },
+    {
+        "Type": "Troll",
+        "MovementPoints": 5,
+        "ActionPoints": 1,
+        "MinDamage": 15,
+        "MaxDamage": 20,
+        "Hitpoints": 80,
+        "Mana": 0,
+        "Armor": 2,
+        "AttackType": "Normal",
+        "ArmorType": "Heavy",
+        "CreatureLevel": 4
+    }
 ]

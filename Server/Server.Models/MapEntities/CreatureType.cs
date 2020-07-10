@@ -21,7 +21,7 @@
         Ancestor,
 
         // Sanctuary Heroes
-        Crusader,
+        Paladin,
         Mercenary,
         Sorcerer,
 

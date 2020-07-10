@@ -877,7 +877,7 @@ namespace Server.Data.Generators
         {
             var heroUnit = new Unit
             {
-                Type = CreatureType.Knight,
+                Type = CreatureType.Paladin,
                 Level = 1,
                 Quantity = 1,
                 StartX = 0,

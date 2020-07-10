@@ -9,6 +9,6 @@ namespace Server.Data.Services.Abstraction
 
         Task<bool> DeleteHero(int heroId);
 
-        Task<Army> UpdateArmyPosition(Army army, int x, int y, int gameId);
+        Task<bool> UpdateArmyPosition(int armyId, int x, int y);
     }
 }
