@@ -77,6 +77,8 @@ namespace Server.Data.Services.Implementation
 
         private void AssignAvatarsToEntities(ICollection<User> users, Game newGame)
         {
+            // TODO: Populate Units TEAMs
+
             var teams = (Team[])Enum.GetValues(typeof(Team));
 
             for (int i = 1; i < teams.Length; i++)

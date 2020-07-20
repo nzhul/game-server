@@ -175,6 +175,7 @@ namespace Server.Data.Migrations
                     ModifiedBy = table.Column<string>(nullable: true),
                     ModifiedAt = table.Column<DateTime>(nullable: false),
                     ActiveConnection = table.Column<int>(nullable: false),
+                    BattleId = table.Column<Guid>(nullable: true),
                     GameId = table.Column<int>(nullable: true),
                     Avatar_Wood = table.Column<int>(nullable: false),
                     Avatar_Ore = table.Column<int>(nullable: false),
@@ -550,6 +551,9 @@ namespace Server.Data.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    X = table.Column<int>(nullable: false),
+                    Y = table.Column<int>(nullable: false),
+                    Team = table.Column<int>(nullable: false),
                     StartX = table.Column<int>(nullable: false),
                     StartY = table.Column<int>(nullable: false),
                     Level = table.Column<int>(nullable: false),

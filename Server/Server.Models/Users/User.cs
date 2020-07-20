@@ -48,6 +48,8 @@ namespace Server.Models.Users
 
         public int ActiveConnection { get; set; }
 
+        public Guid? BattleId { get; set; }
+
         public int? GameId { get; set; }
 
         public virtual Game Game { get; set; }

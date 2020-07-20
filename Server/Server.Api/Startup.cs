@@ -71,6 +71,7 @@ namespace Server.Api
             services.AddScoped<IUsersService, UsersService>();
             //services.AddScoped<IRealmsService, RealmsService>();
             services.AddScoped<IArmiesService, ArmiesService>();
+            services.AddScoped<IBattleService, BattleService>();
             //services.AddScoped<IAvatarsService, AvatarsService>();
             services.AddScoped<IUnitConfigurationsService, UnitConfigurationsService>();
             services.AddScoped<IMapGenerator, MapGenerator>();

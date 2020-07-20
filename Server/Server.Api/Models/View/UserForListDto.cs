@@ -31,5 +31,7 @@ namespace Server.Api.Models.View
         public string PhotoUrl { get; set; }
 
         public int GameId { get; set; }
+
+        public Guid? BattleId { get; set; }
     }
 }

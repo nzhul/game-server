@@ -3,8 +3,6 @@ using System.Collections.ObjectModel;
 using Server.Models.Armies;
 using Server.Models.Items;
 using Server.Models.MapEntities;
-using Server.Models.Realms;
-using Server.Models.Users;
 
 namespace Server.Models.Heroes
 {
@@ -18,7 +16,7 @@ namespace Server.Models.Heroes
     /// The difference between hero and unit is that the hero have the ability to gain levels and aquire new abilities and upgrades.
     /// Units can do the same but in rare occasions.
     /// </summary>
-    public class Unit : Entity // TODO: Rename to UNIT
+    public class Unit : MapEntity // TODO: Rename to UNIT
     {
         /// <summary>
         /// The UNIT/HERO entity won't contain any specific data about his Hitpoints/ManaPoints etc.

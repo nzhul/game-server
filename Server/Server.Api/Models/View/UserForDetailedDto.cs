@@ -35,6 +35,8 @@ namespace Server.Api.Models.View
 
         public int GameId { get; set; }
 
+        public Guid? BattleId { get; set; }
+
         public ICollection<PhotosForDetailedDto> Photos { get; set; }
     }
 }

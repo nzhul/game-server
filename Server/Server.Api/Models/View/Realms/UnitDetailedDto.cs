@@ -6,6 +6,10 @@ namespace Server.Api.Models.View.Realms
     {
         public int Id { get; set; }
 
+        public int X { get; set; }
+
+        public int Y { get; set; }
+
         public int StartX { get; set; }
 
         public int StartY { get; set; }

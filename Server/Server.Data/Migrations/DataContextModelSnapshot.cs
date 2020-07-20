@@ -132,7 +132,13 @@ namespace Server.Data.Migrations
 
                     b.Property<int>("StartY");
 
+                    b.Property<int>("Team");
+
                     b.Property<int>("Type");
+
+                    b.Property<int>("X");
+
+                    b.Property<int>("Y");
 
                     b.HasKey("Id");
 
@@ -518,6 +524,8 @@ namespace Server.Data.Migrations
                     b.Property<int>("AccessFailedCount");
 
                     b.Property<int>("ActiveConnection");
+
+                    b.Property<Guid?>("BattleId");
 
                     b.Property<string>("City");
 

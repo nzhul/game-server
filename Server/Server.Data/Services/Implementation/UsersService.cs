@@ -84,6 +84,7 @@ namespace Server.Data.Services.Implementation
 
         public async Task<User> GetUser(int id)
         {
+            // TODO: i should not use this on all places because includes the photos.
             return await _context.Users.Include(p => p.Photos).FirstOrDefaultAsync(u => u.Id == id);
         }
 
@@ -206,6 +207,27 @@ namespace Server.Data.Services.Implementation
             await _context.SaveChangesAsync();
 
             return null;
+        }
+
+        public async Task ClearBattle(int userId)
+        {
+            var dbUser = await _context.Users.FirstOrDefaultAsync(x => x.Id == userId);
+            if (dbUser != null)
+            {
+                dbUser.BattleId = null;
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        public async Task ClearAllBattles()
+        {
+            var users = _context.Users.Where(x => x.BattleId != null);
+            foreach (var user in users)
+            {
+                user.BattleId = null;
+            }
+
+            await _context.SaveChangesAsync();
         }
     }
 }

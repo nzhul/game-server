@@ -10,7 +10,7 @@ using Server.Data;
 namespace Server.Data.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20200703165122_init")]
+    [Migration("20200719220337_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -134,7 +134,13 @@ namespace Server.Data.Migrations
 
                     b.Property<int>("StartY");
 
+                    b.Property<int>("Team");
+
                     b.Property<int>("Type");
+
+                    b.Property<int>("X");
+
+                    b.Property<int>("Y");
 
                     b.HasKey("Id");
 
@@ -520,6 +526,8 @@ namespace Server.Data.Migrations
                     b.Property<int>("AccessFailedCount");
 
                     b.Property<int>("ActiveConnection");
+
+                    b.Property<Guid?>("BattleId");
 
                     b.Property<string>("City");
 

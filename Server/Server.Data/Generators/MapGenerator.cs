@@ -875,13 +875,16 @@ namespace Server.Data.Generators
 
         private void AddUnitsToHero(Army neutralArmy)
         {
+            // TODO: Populate Unit TEAM
             var heroUnit = new Unit
             {
                 Type = CreatureType.Paladin,
                 Level = 1,
                 Quantity = 1,
                 StartX = 0,
-                StartY = 0
+                StartY = 0,
+                X = 0,
+                Y = 0
             };
 
             var unit1 = new Unit
@@ -889,7 +892,9 @@ namespace Server.Data.Generators
                 Quantity = 1,
                 Type = CreatureType.Troll,
                 StartX = 0,
-                StartY = 2
+                StartY = 2,
+                X = 0,
+                Y = 2
             };
 
             var unit2 = new Unit
@@ -897,7 +902,9 @@ namespace Server.Data.Generators
                 Quantity = 2,
                 Type = CreatureType.Troll,
                 StartX = 0,
-                StartY = 4
+                StartY = 4,
+                X = 0,
+                Y = 4
             };
 
             var unit3 = new Unit
@@ -905,7 +912,9 @@ namespace Server.Data.Generators
                 Quantity = 2,
                 Type = CreatureType.Shaman,
                 StartX = 0,
-                StartY = 8
+                StartY = 8,
+                X = 0,
+                Y = 8
             };
 
             neutralArmy.Units.Add(heroUnit);
