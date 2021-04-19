@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Linq;
 using System.Threading;
+using Assets.Scripts.Network.Services;
+using GameServer.Games;
 using GameServer.Shared;
 using LiteNetLib;
 
@@ -8,12 +10,13 @@ namespace GameServer
 {
     class Program
     {
-        static Server _server;
-
         static void Main(string[] args)
         {
-            _server = new Server();
-            _server.Start();
+            PacketRegistry.Initialize();
+            RequestManagerHttp.Instance.Initialize();
+            GameManager.Instance.Initialize();
+            // TODO: Invoke RequestManagerHttp.Instance.UpdateHeaders(headers); after admin login
+            Server.Instance.Start();
 
             while (true)
             {
@@ -23,7 +26,7 @@ namespace GameServer
                     HandleConsoleCommand(key.Key);
                 }
 
-                _server.PollEvents();
+                Server.Instance.PollEvents();
                 Thread.Sleep(15);
             }
         }
@@ -32,19 +35,19 @@ namespace GameServer
         {
             switch (key)
             {
-                case ConsoleKey.D2:
+                case ConsoleKey.D1:
                     SendEndBattleEvent();
                     break;
                 case ConsoleKey.S:
-                    Console.WriteLine($"Active connections: {_server.ConnectionsCount}");
+                    Console.WriteLine($"Active connections: {Server.Instance.ConnectionsCount}");
                     break;
             }
         }
 
         private static void SendEndBattleEvent()
         {
-            var randomPeer = _server.Clients.FirstOrDefault();
-            _server.Send(randomPeer, new EndBattleEvent { BattleId = 99 }, DeliveryMethod.ReliableOrdered);
+            var randomPeer = Server.Instance.Connections.FirstOrDefault();
+            Server.Instance.Send(randomPeer.Value.Peer, new EndBattleEvent { BattleId = 99 }, DeliveryMethod.ReliableOrdered);
         }
     }
 }

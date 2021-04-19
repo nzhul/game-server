@@ -1,4 +1,5 @@
-﻿using GameServer.Shared;
+﻿using System;
+using GameServer.Shared;
 
 namespace GameServer.PacketHandlers
 {

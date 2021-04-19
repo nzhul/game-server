@@ -11,6 +11,7 @@ namespace GameClient
 
         static void Main(string[] args)
         {
+            PacketRegistry.Initialize();
             client = new Client();
             client.Connect();
 

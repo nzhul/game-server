@@ -1,15 +1,45 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace GameServer.Shared
 {
     public static class PacketRegistry
     {
-        public static readonly Dictionary<PacketType, Type> PacketTypes =
-            new Dictionary<PacketType, Type>
+        private static Dictionary<PacketType, Type> _packetTypes = new Dictionary<PacketType, Type>();
+
+        public static Dictionary<PacketType, Type> PacketTypes
+        {
+            get
             {
-                { PacketType.StartBattle, typeof(StartBattleRequest) },
-                { PacketType.EndBattle, typeof(EndBattleEvent) }
-            };
-    }
+                if (_packetTypes.Count > 0)
+                {
+                    return _packetTypes;
+                }
+                else
+                {
+                    throw new Exception("PacketRegistry is not initialized! Please invoke PacketRegistry.Initialize() on StartUp");
+                }
+            }
+        }
+
+        public static void Initialize()
+        {
+            if (_packetTypes.Count > 0)
+            {
+                return;
+            }
+
+            var packetType = typeof(INetPacket);
+            var packets = AppDomain.CurrentDomain.GetAssemblies()
+                .SelectMany(s => s.GetTypes())
+                .Where(p => packetType.IsAssignableFrom(p) && !p.IsInterface);
+
+            foreach (var packet in packets)
+            {
+                var instance = (INetPacket)Activator.CreateInstance(packet);
+                _packetTypes.Add(instance.Type, packet);
+            }
+        }
+    };
 }

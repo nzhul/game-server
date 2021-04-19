@@ -11,18 +11,35 @@ namespace GameServer
 {
     public class Server : INetEventListener
     {
+        private static Server _instance;
+
+        public static Server Instance
+        {
+            get
+            {
+                if (_instance == null)
+                {
+                    _instance = new Server();
+                }
+
+                return _instance;
+            }
+        }
+
+        // private constructor prevents all instantiations of this class other than the Singleton.
+        private Server() { }
 
         private NetManager _netManager;
-        private IList<NetPeer> _clients;
+        private Dictionary<int, ServerConnection> _connections;
         private readonly NetDataWriter _cachedWriter = new NetDataWriter();
 
-        public int ConnectionsCount { get { return _clients.Count; } }
+        public int ConnectionsCount { get { return _connections.Count; } }
 
-        public IList<NetPeer> Clients { get => _clients; }
+        public Dictionary<int, ServerConnection> Connections { get => _connections; }
 
         public void Start()
         {
-            _clients = new List<NetPeer>();
+            _connections = new Dictionary<int, ServerConnection>();
             _netManager = new NetManager(this);
             _netManager.DisconnectTimeout = 100000; // TODO: use config for this. Default is 5000
 
@@ -52,7 +69,7 @@ namespace GameServer
         public void OnPeerConnected(NetPeer peer)
         {
             Console.WriteLine($"Client connected to server: {peer.EndPoint}");
-            Clients.Add(peer);
+            Connections.Add(peer.Id, new ServerConnection { ConnectionId = peer.Id, Peer = peer });
         }
 
         public void OnPeerDisconnected(NetPeer peer, DisconnectInfo disconnectInfo)
