@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading;
 using Assets.Scripts.Network.Services;
 using GameServer.Games;
+using GameServer.PacketHandlers;
 using GameServer.Shared;
 using GameServer.Shared.Models;
 using GameServer.Shared.Packets.Battle;
@@ -14,11 +15,20 @@ namespace GameServer
     {
         static void Main(string[] args)
         {
+            Console.WriteLine("--Available commands --");
+            Console.WriteLine("1: [EndBattleEvent]");
+            Console.WriteLine("2: [SwitchTurnEvent]");
+            Console.WriteLine("S: [Active connections]");
+            Console.WriteLine("----");
+
+            HandlerRegistry.Initialize();
             PacketRegistry.Initialize();
             RequestManagerHttp.Instance.Initialize();
             GameManager.Instance.Initialize();
             // TODO: Invoke RequestManagerHttp.Instance.UpdateHeaders(headers); after admin login
             Server.Instance.Start();
+
+
 
             while (true)
             {

@@ -1,17 +1,15 @@
 ﻿using System;
+using GameServer.Shared;
+using LiteNetLib.Utils;
 
 namespace Assets.Scripts.Network.Shared.NetMessages.Users
 {
     // TODO: AuthRequest should not pass all this information.
     // Server should do another request to the server to fetch user details like:
     // MMR, GameId, BattleId etc.
-    [Serializable]
-    public class Net_AuthRequest : NetMessage
+    public struct Net_AuthRequest : INetPacket
     {
-        public Net_AuthRequest()
-        {
-            OperationCode = NetOperationCode.AuthRequest;
-        }
+        public PacketType Type => PacketType.AuthRequest;
 
         public int UserId { get; set; }
 
@@ -25,26 +23,33 @@ namespace Assets.Scripts.Network.Shared.NetMessages.Users
 
         public Guid? BattleId { get; set; }
 
-        public bool IsValid()
+        public void Deserialize(NetDataReader reader)
         {
-            bool result = true;
+            UserId = reader.GetInt();
+            Username = reader.GetString();
+            MMR = reader.GetInt();
+            Token = reader.GetString();
+            GameId = reader.GetInt();
 
-            if (this.UserId == 0)
+            if (reader.TryGetString(out string battleIdString))
             {
-                result = false;
+                BattleId = Guid.Parse(battleIdString);
+            };
+        }
+
+        public void Serialize(NetDataWriter writer)
+        {
+            writer.Put((byte)Type);
+            writer.Put(UserId);
+            writer.Put(Username);
+            writer.Put(MMR);
+            writer.Put(Token);
+            writer.Put(GameId);
+            if (BattleId.HasValue)
+            {
+                writer.Put(BattleId.Value.ToString());
             }
 
-            if (string.IsNullOrEmpty(this.Username))
-            {
-                result = false;
-            }
-
-            if (string.IsNullOrEmpty(this.Token))
-            {
-                result = false;
-            }
-
-            return result;
         }
     }
 }

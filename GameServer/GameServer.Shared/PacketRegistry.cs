@@ -16,10 +16,8 @@ namespace GameServer.Shared
                 {
                     return _packetTypes;
                 }
-                else
-                {
-                    throw new Exception("PacketRegistry is not initialized! Please invoke PacketRegistry.Initialize() on StartUp");
-                }
+
+                throw new Exception("PacketRegistry is not initialized! Please invoke PacketRegistry.Initialize() on StartUp");
             }
         }
 

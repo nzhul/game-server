@@ -1,9 +1,11 @@
 ﻿using System;
 using GameServer.Shared;
+using GameServer.Shared.Attributes;
 using GameServer.Shared.Packets.Battle;
 
 namespace GameServer.PacketHandlers
 {
+    [HandlerRegister(PacketType.EndTurnRequest)]
     public class EndTurnRequestHandler : IPacketHandler
     {
         public void Handle(INetPacket packet)

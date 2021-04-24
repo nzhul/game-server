@@ -1,13 +1,19 @@
-﻿using System;
+﻿using LiteNetLib.Utils;
 
 namespace GameServer.Shared.Packets.Users
 {
-    [Serializable]
-    public class Net_LogoutRequest : NetMessage
+    public struct Net_LogoutRequest : INetPacket
     {
-        public Net_LogoutRequest()
+        public PacketType Type => PacketType.LogoutRequest;
+
+        public void Deserialize(NetDataReader reader)
         {
-            OperationCode = NetOperationCode.LogoutRequest;
+            // nothing to do here
+        }
+
+        public void Serialize(NetDataWriter writer)
+        {
+            writer.Put((byte)Type);
         }
     }
 }
