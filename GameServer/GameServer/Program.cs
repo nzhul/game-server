@@ -4,6 +4,8 @@ using System.Threading;
 using Assets.Scripts.Network.Services;
 using GameServer.Games;
 using GameServer.Shared;
+using GameServer.Shared.Models;
+using GameServer.Shared.Packets.Battle;
 using LiteNetLib;
 
 namespace GameServer
@@ -38,10 +40,26 @@ namespace GameServer
                 case ConsoleKey.D1:
                     SendEndBattleEvent();
                     break;
+                case ConsoleKey.D2:
+                    SendSwitchTurnEvent();
+                    break;
                 case ConsoleKey.S:
                     Console.WriteLine($"Active connections: {Server.Instance.ConnectionsCount}");
                     break;
             }
+        }
+
+        private static void SendSwitchTurnEvent()
+        {
+            var randomPeer = Server.Instance.Connections.FirstOrDefault();
+            Server.Instance.Send(randomPeer.Value.Peer,
+                new Net_SwitchTurnEvent
+                {
+                    BattleId = Guid.NewGuid(),
+                    CurrentUnitId = 66,
+                    Turn = Turn.Attacker
+                },
+                DeliveryMethod.ReliableOrdered);
         }
 
         private static void SendEndBattleEvent()

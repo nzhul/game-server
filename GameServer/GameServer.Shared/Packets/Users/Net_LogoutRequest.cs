@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace GameServer.Shared.NetMessages.Users
+namespace GameServer.Shared.Packets.Users
 {
     [Serializable]
     public class Net_LogoutRequest : NetMessage

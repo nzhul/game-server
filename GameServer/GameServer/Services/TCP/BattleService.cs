@@ -2,7 +2,7 @@
 using Assets.Scripts.Network.Services.TCP.Interfaces;
 using GameServer.Games;
 using GameServer.Shared.Models;
-using GameServer.Shared.NetMessages.Battle;
+using GameServer.Shared.Packets.Battle;
 using GameServer.Utilities;
 
 namespace Assets.Scripts.Network.Services.TCP

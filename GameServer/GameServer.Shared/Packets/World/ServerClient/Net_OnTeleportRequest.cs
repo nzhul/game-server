@@ -1,7 +1,7 @@
 ﻿using System;
 using GameServer.Shared.Models;
 
-namespace GameServer.Shared.NetMessages.World.ServerClient
+namespace GameServer.Shared.Packets.World.ServerClient
 {
     [Serializable]
     public class Net_OnTeleport : NetMessage

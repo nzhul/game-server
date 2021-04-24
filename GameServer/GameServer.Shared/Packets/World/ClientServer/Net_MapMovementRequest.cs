@@ -1,7 +1,7 @@
 ﻿using System;
 using GameServer.Shared.Models;
 
-namespace GameServer.Shared.NetMessages.World.ClientServer
+namespace GameServer.Shared.Packets.World.ClientServer
 {
     [Serializable]
     public class Net_MapMovementRequest : NetMessage

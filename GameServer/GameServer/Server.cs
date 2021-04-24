@@ -51,7 +51,7 @@ namespace GameServer
         {
             var packetType = (PacketType)reader.GetByte();
             var packet = NetworkUtils.ResolvePacket(packetType, reader);
-            HandlerRegistry.Handlers[packetType].Handle(packet);
+            HandlerRegistry.Handlers[packet.Type].Handle(packet);
             reader.Recycle();
         }
 

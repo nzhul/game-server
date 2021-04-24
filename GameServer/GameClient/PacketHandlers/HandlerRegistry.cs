@@ -8,7 +8,8 @@ namespace GameClient.PacketHandlers
         public static readonly Dictionary<PacketType, IPacketHandler> Handlers =
             new Dictionary<PacketType, IPacketHandler>
             {
-                { PacketType.EndBattle, new OnEndBattleEventHandler() },
+                { PacketType.OnEndBattle, new OnEndBattleEventHandler() },
+                { PacketType.OnSwitchTurn, new OnSwitchTurnEventHandler() },
             };
     }
 }
