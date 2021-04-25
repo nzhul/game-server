@@ -51,13 +51,30 @@ namespace Assets.Scripts.Network.Services
                 ArmiesService = new ArmiesService();
                 BattleService = new BattleService();
             }
+
+            // Login the API Admin
+            try
+            {
+                var adminData = UsersService.LoginAdmin();
+                UpdateHeaders(adminData.tokenString);
+                Console.WriteLine("Admin authenticated!");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("[FATAL] Admin user was not authenticated!" + ex.ToString());
+                throw;
+            }
+
         }
 
-        // TODO: Invoke on server start, after admin login
-        // var headers = new Dictionary<string, string>();
-        // headers.Add("Authorization", "Bearer " + NetworkServer.Instance.Admin.tokenString);
-        public void UpdateHeaders(IDictionary<string, string> headers)
+
+        // TODO: Refactor this
+        // send headers per request. See: https://stackoverflow.com/a/43780538/3937407
+        public void UpdateHeaders(string token)
         {
+            var headers = new Dictionary<string, string>();
+            headers.Add("Authorization", "Bearer " + token);
+
             Client.DefaultRequestHeaders.Clear();
             foreach (var header in headers)
             {

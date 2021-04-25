@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
-using GameServer.PacketHandlers;
 using GameServer.Shared;
 using LiteNetLib;
 using LiteNetLib.Utils;
@@ -51,7 +50,7 @@ namespace GameServer
         {
             var packetType = (PacketType)reader.GetByte();
             var packet = NetworkUtils.ResolvePacket(packetType, reader);
-            HandlerRegistry.Handlers[packet.Type].Handle(packet);
+            HandlerRegistry.Handlers[packet.Type].Handle(packet, peer.Id);
             reader.Recycle();
         }
 
@@ -68,14 +67,28 @@ namespace GameServer
 
         public void OnPeerConnected(NetPeer peer)
         {
-            Console.WriteLine($"Client connected to server: {peer.EndPoint}");
+            Console.WriteLine($"Client connected to server: {peer.EndPoint}. Id: {peer.Id}");
             Connections.Add(peer.Id, new ServerConnection { ConnectionId = peer.Id, Peer = peer });
         }
 
+        // This method is automatically invoked when there is no response from the user for X amount of time.
         public void OnPeerDisconnected(NetPeer peer, DisconnectInfo disconnectInfo)
         {
             Console.WriteLine($"Peer disconnected: {peer.EndPoint}");
             // todo remove from the clients list
+        }
+
+        // This method is manually invoked when user press logout button.
+        public void DisconnectUser(NetPeer peer)
+        {
+            _connections.Remove(peer.Id);
+            _netManager.DisconnectPeer(peer);
+        }
+
+        public void Send(int peerId, INetPacket packet, DeliveryMethod method = DeliveryMethod.ReliableOrdered)
+        {
+            var peer = Connections[peerId].Peer;
+            this.Send(peer, packet, method);
         }
 
         public void Send(NetPeer peer, INetPacket packet, DeliveryMethod method)

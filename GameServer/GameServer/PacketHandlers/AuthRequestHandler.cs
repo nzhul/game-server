@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Threading.Tasks;
+using Assets.Scripts.Network.Services;
 using Assets.Scripts.Network.Shared.NetMessages.Users;
 using GameServer.Shared;
 using GameServer.Shared.Attributes;
@@ -8,46 +10,58 @@ namespace GameServer.PacketHandlers
     [HandlerRegister(PacketType.AuthRequest)]
     public class AuthRequestHandler : IPacketHandler
     {
-        public void Handle(INetPacket packet)
+        public static event Action<ServerConnection> OnAuth;
+
+        public void Handle(INetPacket packet, int connectionId)
         {
             var msg = (Net_AuthRequest)packet;
             Console.WriteLine($"[{nameof(Net_AuthRequest)}] received!");
 
-            //Net_OnAuthRequest rmsg = new Net_OnAuthRequest();
+            Net_OnAuthRequest rmsg = new Net_OnAuthRequest();
 
-            //if (msg.IsValid())
-            //{
-            //    rmsg.Success = 1;
-            //    rmsg.ConnectionId = connectionId;
+            if (msg.IsValid())
+            {
+                rmsg.Success = 1;
+                rmsg.ConnectionId = connectionId;
 
-            //    ServerConnection connection = new ServerConnection
-            //    {
-            //        ConnectionId = connectionId,
-            //        UserId = msg.UserId,
-            //        Token = msg.Token,
-            //        Username = msg.Username,
-            //        MMR = msg.MMR,
-            //        GameId = msg.GameId,
-            //        BattleId = msg.BattleId
-            //    };
+                if (!Server.Instance.Connections.TryGetValue(connectionId, out ServerConnection connection))
+                {
+                    Console.WriteLine($"[WARN] Cannot find connection with id `{connectionId}`. Stop processing!");
+                    return;
+                };
 
-            //    NetworkServer.Instance.Connections.Add(connectionId, connection);
+                // Update connection entity with user data.
+                connection.UserId = msg.UserId;
+                connection.Token = msg.Token;
+                connection.Username = msg.Username;
+                connection.MMR = msg.MMR;
+                connection.GameId = msg.GameId;
+                connection.BattleId = msg.BattleId;
 
-            //    string endpoint = "users/{0}/setonline/{1}";
-            //    string[] @params = new string[] { msg.UserId.ToString(), connectionId.ToString() };
+                // TODO: Extract into FireAndForget() utility method.
+                Task.Run(() =>
+                {
+                    try
+                    {
+                        RequestManagerHttp.UsersService.SetOnline(msg.UserId, connectionId);
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Error setting user online. UserId: {connection.UserId}. Ex: {ex}");
+                    }
+                });
 
-            //    RequestManager.Instance.Put(endpoint, @params, msg.Token, OnSetOnline);
+                Console.WriteLine($"{msg.Username} logged into the server!");
+                OnAuth?.Invoke(connection);
+            }
+            else
+            {
+                rmsg.Success = 0;
+                rmsg.ErrorMessage = "Invalid connection request!";
+            }
 
-            //    Debug.Log(string.Format("{0} logged in to the server!", msg.Username));
-            //    OnAuth?.Invoke(connection);
-            //}
-            //else
-            //{
-            //    rmsg.Success = 0;
-            //    rmsg.ErrorMessage = "Invalid connection request!";
-            //}
-
-            //NetworkServer.Instance.SendClient(recievingHostId, connectionId, rmsg);
+            // NetworkServer.Instance.SendClient(recievingHostId, connectionId, rmsg);
+            Server.Instance.Send(connectionId, rmsg);
         }
     }
 }

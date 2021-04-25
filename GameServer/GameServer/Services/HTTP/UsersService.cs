@@ -1,5 +1,6 @@
 ﻿using System;
 using Assets.Scripts.Network.Services.HTTP.Interfaces;
+using GameServer.Configuration;
 using GameServer.Shared.Users;
 
 namespace Assets.Scripts.Network.Services.HTTP
@@ -20,6 +21,27 @@ namespace Assets.Scripts.Network.Services.HTTP
         {
             Console.WriteLine("User Battles Cleared!");
             base.Put($"users/clearallbattles");
+        }
+
+        public void SetOnline(int userId, int connectionId)
+        {
+            base.Put($"users/{userId}/setonline/{connectionId}");
+        }
+
+        public void SetOffline(int userId)
+        {
+            base.Put($"users/{userId}/setoffline");
+        }
+
+        public LoginResponse LoginAdmin()
+        {
+            var loginInput = new
+            {
+                username = ConfigProvider.Instance.ServerConfigraution.AdminName,
+                password = ConfigProvider.Instance.ServerConfigraution.AdminPassword
+            };
+
+            return base.Post<LoginResponse>("auth/login", loginInput);
         }
     }
 }

@@ -181,7 +181,7 @@ namespace Server.Data.Services.Implementation
                 return $"Cannot find user with Id: {userId}";
             }
 
-            dbUser.ActiveConnection = 0;
+            dbUser.ActiveConnection = -1;
             dbUser.OnlineStatus = 0;
             await _context.SaveChangesAsync();
 
@@ -195,11 +195,6 @@ namespace Server.Data.Services.Implementation
             if (dbUser == null)
             {
                 return $"Cannot find user with Id: {userId}";
-            }
-
-            if (connectionId == 0)
-            {
-                return $"connection id cannot be 0";
             }
 
             dbUser.ActiveConnection = connectionId;

@@ -72,11 +72,11 @@ namespace GameClient
             // TODO: Test with null battle id
             var p = new Net_AuthRequest
             {
-                UserId = 66,
+                UserId = 3,
                 Username = "nzhul",
-                MMR = 1155,
+                MMR = 0,
                 Token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c",
-                GameId = 867
+                GameId = 1
             };
 
             client.SendPacketSerializable(p, DeliveryMethod.ReliableOrdered);

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Net;
 using System.Net.Sockets;
-using GameClient.PacketHandlers;
 using GameServer.Shared;
 using LiteNetLib;
 using LiteNetLib.Utils;
@@ -53,7 +52,7 @@ namespace GameClient
         {
             var packetType = (PacketType)reader.GetByte();
             var packet = NetworkUtils.ResolvePacket(packetType, reader);
-            HandlerRegistry.Handlers[packetType].Handle(packet);
+            HandlerRegistry.Handlers[packetType].Handle(packet, peer.Id);
             reader.Recycle();
         }
 

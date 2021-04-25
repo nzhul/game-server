@@ -9,5 +9,11 @@ namespace Assets.Scripts.Network.Services.HTTP.Interfaces
         void ClearBattle(int userId);
 
         void ClearAllBattles();
+
+        void SetOnline(int userId, int connectionId);
+
+        void SetOffline(int userId);
+
+        LoginResponse LoginAdmin();
     }
 }
