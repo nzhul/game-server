@@ -49,7 +49,28 @@ namespace Assets.Scripts.Network.Shared.NetMessages.Users
             {
                 writer.Put(BattleId.Value.ToString());
             }
+        }
 
+        public bool IsValid()
+        {
+            bool result = true;
+
+            if (this.UserId == 0)
+            {
+                result = false;
+            }
+
+            if (string.IsNullOrEmpty(this.Username))
+            {
+                result = false;
+            }
+
+            if (string.IsNullOrEmpty(this.Token))
+            {
+                result = false;
+            }
+
+            return result;
         }
     }
 }

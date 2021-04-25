@@ -2,8 +2,8 @@
 using System.Linq;
 using System.Threading;
 using Assets.Scripts.Network.Services;
+using Assets.Scripts.Network.Shared.NetMessages.Users;
 using GameServer.Games;
-using GameServer.PacketHandlers;
 using GameServer.Shared;
 using GameServer.Shared.Models;
 using GameServer.Shared.Packets.Battle;
@@ -53,10 +53,25 @@ namespace GameServer
                 case ConsoleKey.D2:
                     SendSwitchTurnEvent();
                     break;
+                case ConsoleKey.D3:
+                    SendOnAuthRequest();
+                    break;
                 case ConsoleKey.S:
                     Console.WriteLine($"Active connections: {Server.Instance.ConnectionsCount}");
                     break;
             }
+        }
+
+        private static void SendOnAuthRequest()
+        {
+            var randomPeer = Server.Instance.Connections.FirstOrDefault();
+            Server.Instance.Send(randomPeer.Value.Peer,
+                new Net_OnAuthRequest
+                {
+                    ConnectionId = 66,
+                    ErrorMessage = "no error",
+                    Success = 1
+                }, DeliveryMethod.ReliableOrdered);
         }
 
         private static void SendSwitchTurnEvent()
