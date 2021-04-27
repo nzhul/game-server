@@ -1,4 +1,4 @@
-﻿using GameServer.Shared.Models;
+﻿using GameServer.Models.Battle;
 
 namespace Assets.Scripts.Network.Services.TCP.Interfaces
 {

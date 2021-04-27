@@ -1,0 +1,6 @@
+[submodule "GameServer/GameServer/NetworkShared"]
+	path = GameServer/GameServer/NetworkShared
+	url = https://github.com/nzhul/NetworkShared.git
+[submodule "GameServer/GameClient/NetworkShared"]
+	path = GameServer/GameClient/NetworkShared
+	url = https://github.com/nzhul/NetworkShared.git

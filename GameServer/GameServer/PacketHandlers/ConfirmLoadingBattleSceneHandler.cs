@@ -1,7 +1,7 @@
 ﻿using System;
-using GameServer.Shared;
-using GameServer.Shared.Attributes;
-using GameServer.Shared.Packets.Battle;
+using NetworkingShared;
+using NetworkingShared.Attributes;
+using NetworkingShared.Packets.Battle;
 
 namespace GameServer.PacketHandlers
 {

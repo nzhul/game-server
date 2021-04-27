@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Threading;
 using Assets.Scripts.Network.Shared.NetMessages.Users;
-using GameServer.Shared;
-using GameServer.Shared.Packets.Battle;
-using GameServer.Shared.Packets.Users;
+using NetworkingShared;
+using NetworkingShared.Packets.Battle;
+using NetworkingShared.Packets.Users;
 using LiteNetLib;
 
 namespace GameClient

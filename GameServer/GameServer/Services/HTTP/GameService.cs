@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Assets.Scripts.Network.Services.HTTP.Interfaces;
-using GameServer.Shared.Models;
+using GameServer.Models;
+using NetworkingShared.Enums;
 
 namespace Assets.Scripts.Network.Services.HTTP
 {

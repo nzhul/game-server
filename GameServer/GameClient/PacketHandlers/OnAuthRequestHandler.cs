@@ -1,7 +1,7 @@
 ﻿using System;
 using Assets.Scripts.Network.Shared.NetMessages.Users;
-using GameServer.Shared;
-using GameServer.Shared.Attributes;
+using NetworkingShared;
+using NetworkingShared.Attributes;
 
 namespace GameClient.PacketHandlers
 {

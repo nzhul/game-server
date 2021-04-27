@@ -1,6 +1,6 @@
 ﻿using System;
-using GameServer.Shared;
-using GameServer.Shared.Attributes;
+using NetworkingShared;
+using NetworkingShared.Attributes;
 
 namespace GameServer.PacketHandlers
 {

@@ -1,5 +1,5 @@
 ﻿using Assets.Scripts.Network.Services.TCP.Interfaces;
-using GameServer.Shared.Packets.World.ServerClient;
+using NetworkingShared.Packets.World.ServerClient;
 
 namespace Assets.Scripts.Network.Services.TCP
 {

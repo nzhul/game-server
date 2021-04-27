@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using GameServer.Shared.Models;
-using GameServer.Shared.Models.Units;
+using GameServer.Models;
+using GameServer.Models.Units;
 using GameServer.Utilities;
 
 namespace GameServer.Games

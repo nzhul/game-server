@@ -11,10 +11,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\GameServer.Shared\GameServer.Shared.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Update="Configuration\server-config.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

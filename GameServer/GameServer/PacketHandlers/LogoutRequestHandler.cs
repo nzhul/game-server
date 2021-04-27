@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Assets.Scripts.Network.Services;
-using GameServer.Shared;
-using GameServer.Shared.Attributes;
-using GameServer.Shared.Packets.Users;
+using NetworkingShared;
+using NetworkingShared.Attributes;
+using NetworkingShared.Packets.Users;
 
 namespace GameServer.PacketHandlers
 {

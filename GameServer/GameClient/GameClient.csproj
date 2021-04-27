@@ -9,8 +9,4 @@
     <PackageReference Include="LiteNetLib" Version="0.9.4" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\GameServer\GameServer.Shared\GameServer.Shared.csproj" />
-  </ItemGroup>
-
 </Project>

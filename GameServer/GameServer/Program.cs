@@ -4,10 +4,10 @@ using System.Threading;
 using Assets.Scripts.Network.Services;
 using Assets.Scripts.Network.Shared.NetMessages.Users;
 using GameServer.Games;
-using GameServer.Shared;
-using GameServer.Shared.Models;
-using GameServer.Shared.Packets.Battle;
 using LiteNetLib;
+using NetworkingShared;
+using NetworkingShared.Packets.Battle;
+using NetworkShared.Enums;
 
 namespace GameServer
 {
