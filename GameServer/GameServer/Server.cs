@@ -10,6 +10,8 @@ namespace GameServer
 {
     public class Server : INetEventListener
     {
+        private const int MAX_USERS_COUNT = 100;
+
         private static Server _instance;
 
         public static Server Instance
@@ -62,7 +64,15 @@ namespace GameServer
         public void OnConnectionRequest(ConnectionRequest request)
         {
             Console.WriteLine($"Incomming connection from {request.RemoteEndPoint}");
-            request.Accept();
+
+            if (_connections.Count < MAX_USERS_COUNT)
+            {
+                request.Accept();
+                return;
+            }
+
+            Console.WriteLine("Connection rejected! Server is FULL!");
+            request.Reject();
         }
 
         public void OnPeerConnected(NetPeer peer)
