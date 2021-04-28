@@ -64,7 +64,7 @@ namespace GameClient
         private static void SendLogoutRequest()
         {
             var p = new Net_LogoutRequest();
-            client.SendPacketSerializable(p, DeliveryMethod.ReliableOrdered);
+            client.SendServer(p, DeliveryMethod.ReliableOrdered);
         }
 
         private static void SendAuthRequest()
@@ -79,7 +79,7 @@ namespace GameClient
                 GameId = 1
             };
 
-            client.SendPacketSerializable(p, DeliveryMethod.ReliableOrdered);
+            client.SendServer(p, DeliveryMethod.ReliableOrdered);
         }
 
         private static void SendEndTurnRequest()
@@ -92,7 +92,7 @@ namespace GameClient
                 RequesterUnitId = 66,
             };
 
-            client.SendPacketSerializable(p, DeliveryMethod.ReliableOrdered);
+            client.SendServer(p, DeliveryMethod.ReliableOrdered);
         }
 
         private static void SendConfirmLoadingBattleSceneRequest()
@@ -104,13 +104,13 @@ namespace GameClient
                 BattleId = Guid.NewGuid(),
             };
 
-            client.SendPacketSerializable(p, DeliveryMethod.ReliableOrdered);
+            client.SendServer(p, DeliveryMethod.ReliableOrdered);
         }
 
         private static void SendStartBattleRequest()
         {
             var p = new StartBattleRequest { AttackerArmyId = 22, DefenderArmyId = 33 };
-            client.SendPacketSerializable(p, DeliveryMethod.ReliableOrdered);
+            client.SendServer(p, DeliveryMethod.ReliableOrdered);
         }
     }
 }

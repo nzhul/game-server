@@ -33,16 +33,6 @@ namespace GameClient
             _client.PollEvents();
         }
 
-        public void OnConnectionRequest(ConnectionRequest request)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void OnNetworkError(IPEndPoint endPoint, SocketError socketError)
-        {
-            throw new NotImplementedException();
-        }
-
         public void OnNetworkLatencyUpdate(NetPeer peer, int latency)
         {
             // TODO: implement if needed
@@ -56,11 +46,6 @@ namespace GameClient
             reader.Recycle();
         }
 
-        public void OnNetworkReceiveUnconnected(IPEndPoint remoteEndPoint, NetPacketReader reader, UnconnectedMessageType messageType)
-        {
-            throw new NotImplementedException();
-        }
-
         public void OnPeerConnected(NetPeer peer)
         {
             Console.WriteLine("Connected to server");
@@ -72,7 +57,7 @@ namespace GameClient
             Console.WriteLine("Disconnected from server!");
         }
 
-        public void SendPacketSerializable<T>(T packet, DeliveryMethod deliveryMethod) where T : INetSerializable
+        public void SendServer<T>(T packet, DeliveryMethod deliveryMethod) where T : INetSerializable
         {
             if (_server == null)
                 return;
@@ -80,6 +65,21 @@ namespace GameClient
             //_writer.Put((byte)type);
             packet.Serialize(_writer);
             _server.Send(_writer, deliveryMethod);
+        }
+
+        public void OnNetworkReceiveUnconnected(IPEndPoint remoteEndPoint, NetPacketReader reader, UnconnectedMessageType messageType)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void OnConnectionRequest(ConnectionRequest request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void OnNetworkError(IPEndPoint endPoint, SocketError socketError)
+        {
+            throw new NotImplementedException();
         }
     }
 }
