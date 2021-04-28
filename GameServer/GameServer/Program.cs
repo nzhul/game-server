@@ -18,6 +18,7 @@ namespace GameServer
             Console.WriteLine("--Available commands --");
             Console.WriteLine("1: [EndBattleEvent]");
             Console.WriteLine("2: [SwitchTurnEvent]");
+            Console.WriteLine("3: [OnAuthRequest]");
             Console.WriteLine("S: [Active connections]");
             Console.WriteLine("----");
 
