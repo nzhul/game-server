@@ -56,7 +56,7 @@ namespace Assets.Scripts.Network.Services
             try
             {
                 var adminData = UsersService.LoginAdmin();
-                UpdateHeaders(adminData.tokenString);
+                UpdateHeaders(adminData.TokenString);
                 Console.WriteLine("Admin authenticated!");
             }
             catch (Exception ex)

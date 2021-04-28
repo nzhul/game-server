@@ -1,4 +1,4 @@
-﻿using NetworkingShared.Users;
+﻿using GameServer.Models.Users;
 
 namespace Assets.Scripts.Network.Services.HTTP.Interfaces
 {
