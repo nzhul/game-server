@@ -22,8 +22,8 @@ namespace GameServer
             Console.WriteLine("S: [Active connections]");
             Console.WriteLine("----");
 
-            HandlerRegistry.Initialize();
-            PacketRegistry.Initialize();
+            HandlerRegistry.Initialize((int count) => { Console.WriteLine($"{count} handlers registered!"); });
+            PacketRegistry.Initialize((int count) => { Console.WriteLine($"{count} packets registered!"); });
             RequestManagerHttp.Instance.Initialize();
             GameManager.Instance.Initialize();
             // TODO: Invoke RequestManagerHttp.Instance.UpdateHeaders(headers); after admin login

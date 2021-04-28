@@ -21,8 +21,8 @@ namespace GameClient
             Console.WriteLine("4: [AuthRequest]");
             Console.WriteLine("5: [LogoutRequest]");
             Console.WriteLine("----");
-            HandlerRegistry.Initialize();
-            PacketRegistry.Initialize();
+            HandlerRegistry.Initialize((int count) => { Console.WriteLine($"{count} handlers registered!"); });
+            PacketRegistry.Initialize((int count) => { Console.WriteLine($"{count} packets registered!"); });
             client = new Client();
             client.Connect();
 
