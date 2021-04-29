@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
-using NetworkingShared;
 using LiteNetLib;
 using LiteNetLib.Utils;
+using NetworkingShared;
 
 namespace GameServer
 {
@@ -84,8 +84,8 @@ namespace GameServer
         // This method is automatically invoked when there is no response from the user for X amount of time.
         public void OnPeerDisconnected(NetPeer peer, DisconnectInfo disconnectInfo)
         {
+            Connections.Remove(peer.Id);
             Console.WriteLine($"Peer disconnected: {peer.EndPoint}");
-            // todo remove from the clients list
         }
 
         // This method is manually invoked when user press logout button.
