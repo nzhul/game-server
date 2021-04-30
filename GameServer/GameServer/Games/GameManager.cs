@@ -76,13 +76,13 @@ namespace GameServer.Games
 
         public int GetGameIdByConnectionId(int connectionId)
         {
-            return Server.Instance.Connections[connectionId].GameId;
+            return NetworkServer.Instance.Connections[connectionId].GameId;
         }
 
         public int GetConnectionIdByArmyId(int gameId, int armyId)
         {
             var army = this.Games[gameId].Armies.FirstOrDefault(x => x.Id == armyId);
-            var connection = Server.Instance.Connections.FirstOrDefault(x => x.Value.UserId == army.UserId);
+            var connection = NetworkServer.Instance.Connections.FirstOrDefault(x => x.Value.UserId == army.UserId);
             return connection.Value != null ? connection.Value.ConnectionId : 0;
         }
 

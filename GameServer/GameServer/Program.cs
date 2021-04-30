@@ -27,7 +27,7 @@ namespace GameServer
             RequestManagerHttp.Instance.Initialize();
             GameManager.Instance.Initialize();
             // TODO: Invoke RequestManagerHttp.Instance.UpdateHeaders(headers); after admin login
-            Server.Instance.Start();
+            NetworkServer.Instance.Start();
 
 
 
@@ -39,7 +39,7 @@ namespace GameServer
                     HandleConsoleCommand(key.Key);
                 }
 
-                Server.Instance.PollEvents();
+                NetworkServer.Instance.PollEvents();
                 Thread.Sleep(15);
             }
         }
@@ -58,15 +58,15 @@ namespace GameServer
                     SendOnAuthRequest();
                     break;
                 case ConsoleKey.S:
-                    Console.WriteLine($"Active connections: {Server.Instance.ConnectionsCount}");
+                    Console.WriteLine($"Active connections: {NetworkServer.Instance.ConnectionsCount}");
                     break;
             }
         }
 
         private static void SendOnAuthRequest()
         {
-            var randomPeer = Server.Instance.Connections.FirstOrDefault();
-            Server.Instance.Send(randomPeer.Value.Peer,
+            var randomPeer = NetworkServer.Instance.Connections.FirstOrDefault();
+            NetworkServer.Instance.Send(randomPeer.Value.Peer,
                 new Net_OnAuthRequest
                 {
                     ConnectionId = 66,
@@ -77,8 +77,8 @@ namespace GameServer
 
         private static void SendSwitchTurnEvent()
         {
-            var randomPeer = Server.Instance.Connections.FirstOrDefault();
-            Server.Instance.Send(randomPeer.Value.Peer,
+            var randomPeer = NetworkServer.Instance.Connections.FirstOrDefault();
+            NetworkServer.Instance.Send(randomPeer.Value.Peer,
                 new Net_SwitchTurnEvent
                 {
                     BattleId = Guid.NewGuid(),
@@ -90,8 +90,8 @@ namespace GameServer
 
         private static void SendEndBattleEvent()
         {
-            var randomPeer = Server.Instance.Connections.FirstOrDefault();
-            Server.Instance.Send(randomPeer.Value.Peer, new EndBattleEvent { BattleId = 99 }, DeliveryMethod.ReliableOrdered);
+            var randomPeer = NetworkServer.Instance.Connections.FirstOrDefault();
+            NetworkServer.Instance.Send(randomPeer.Value.Peer, new EndBattleEvent { BattleId = 99 }, DeliveryMethod.ReliableOrdered);
         }
     }
 }

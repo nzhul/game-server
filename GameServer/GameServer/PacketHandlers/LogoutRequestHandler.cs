@@ -15,13 +15,13 @@ namespace GameServer.PacketHandlers
             var request = (Net_LogoutRequest)packet;
             Console.WriteLine($"[{nameof(Net_LogoutRequest)}] received!");
 
-            if (!Server.Instance.Connections.TryGetValue(connectionId, out ServerConnection connection))
+            if (!NetworkServer.Instance.Connections.TryGetValue(connectionId, out ServerConnection connection))
             {
                 Console.WriteLine($"[WARN] Cannot find connection with id `{connectionId}`. Stop processing {nameof(Net_LogoutRequest)} message!");
                 return;
             };
 
-            Server.Instance.DisconnectUser(connection.Peer);
+            NetworkServer.Instance.DisconnectUser(connection.Peer);
             Console.WriteLine($"{connection.Username} logged out from the server!");
 
             // TODO: Extract into FireAndForget() utility method.

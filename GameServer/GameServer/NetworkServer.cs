@@ -8,19 +8,19 @@ using NetworkingShared;
 
 namespace GameServer
 {
-    public class Server : INetEventListener
+    public class NetworkServer : INetEventListener
     {
         private const int MAX_USERS_COUNT = 100;
 
-        private static Server _instance;
+        private static NetworkServer _instance;
 
-        public static Server Instance
+        public static NetworkServer Instance
         {
             get
             {
                 if (_instance == null)
                 {
-                    _instance = new Server();
+                    _instance = new NetworkServer();
                 }
 
                 return _instance;
@@ -28,7 +28,7 @@ namespace GameServer
         }
 
         // private constructor prevents all instantiations of this class other than the Singleton.
-        private Server() { }
+        private NetworkServer() { }
 
         private NetManager _netManager;
         private Dictionary<int, ServerConnection> _connections;

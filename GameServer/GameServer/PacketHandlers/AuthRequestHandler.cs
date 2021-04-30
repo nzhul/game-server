@@ -24,7 +24,7 @@ namespace GameServer.PacketHandlers
                 rmsg.Success = 1;
                 rmsg.ConnectionId = connectionId;
 
-                if (!Server.Instance.Connections.TryGetValue(connectionId, out ServerConnection connection))
+                if (!NetworkServer.Instance.Connections.TryGetValue(connectionId, out ServerConnection connection))
                 {
                     Console.WriteLine($"[WARN] Cannot find connection with id `{connectionId}`. Stop processing!");
                     return;
@@ -61,7 +61,7 @@ namespace GameServer.PacketHandlers
             }
 
             // NetworkServer.Instance.SendClient(recievingHostId, connectionId, rmsg);
-            Server.Instance.Send(connectionId, rmsg);
+            NetworkServer.Instance.Send(connectionId, rmsg);
         }
     }
 }
