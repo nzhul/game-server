@@ -3,7 +3,7 @@ using System.Linq;
 using System.Threading;
 using Assets.Scripts.Network.Services;
 using Assets.Scripts.Network.Shared.NetMessages.Users;
-using GameServer.Games;
+using GameServer.Managers;
 using LiteNetLib;
 using NetworkingShared;
 using NetworkingShared.Packets.Battle;
@@ -16,9 +16,8 @@ namespace GameServer
         static void Main(string[] args)
         {
             Console.WriteLine("--Available commands --");
-            Console.WriteLine("1: [EndBattleEvent]");
-            Console.WriteLine("2: [SwitchTurnEvent]");
-            Console.WriteLine("3: [OnAuthRequest]");
+            Console.WriteLine("1: [SwitchTurnEvent]");
+            Console.WriteLine("2: [OnAuthRequest]");
             Console.WriteLine("S: [Active connections]");
             Console.WriteLine("----");
 
@@ -26,10 +25,8 @@ namespace GameServer
             PacketRegistry.Initialize((int count) => { Console.WriteLine($"{count} packets registered!"); });
             RequestManagerHttp.Instance.Initialize();
             GameManager.Instance.Initialize();
-            // TODO: Invoke RequestManagerHttp.Instance.UpdateHeaders(headers); after admin login
+            GameplayConfigurationManager.Instance.Initialize();
             NetworkServer.Instance.Start();
-
-
 
             while (true)
             {
@@ -49,12 +46,9 @@ namespace GameServer
             switch (key)
             {
                 case ConsoleKey.D1:
-                    SendEndBattleEvent();
-                    break;
-                case ConsoleKey.D2:
                     SendSwitchTurnEvent();
                     break;
-                case ConsoleKey.D3:
+                case ConsoleKey.D2:
                     SendOnAuthRequest();
                     break;
                 case ConsoleKey.S:
@@ -86,12 +80,6 @@ namespace GameServer
                     Turn = Turn.Attacker
                 },
                 DeliveryMethod.ReliableOrdered);
-        }
-
-        private static void SendEndBattleEvent()
-        {
-            var randomPeer = NetworkServer.Instance.Connections.FirstOrDefault();
-            NetworkServer.Instance.Send(randomPeer.Value.Peer, new EndBattleEvent { BattleId = 99 }, DeliveryMethod.ReliableOrdered);
         }
     }
 }

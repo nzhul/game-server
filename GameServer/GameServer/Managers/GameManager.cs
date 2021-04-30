@@ -5,7 +5,7 @@ using GameServer.Models;
 using GameServer.Models.Units;
 using GameServer.Utilities;
 
-namespace GameServer.Games
+namespace GameServer.Managers
 {
     public class GameManager
     {

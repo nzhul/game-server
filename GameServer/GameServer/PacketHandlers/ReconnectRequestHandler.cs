@@ -1,6 +1,6 @@
 ﻿using System;
 using Assets.Scripts.Network.Services;
-using GameServer.Games;
+using GameServer.Managers;
 using NetworkingShared;
 using NetworkingShared.Attributes;
 using NetworkingShared.Packets.World.ClientServer;

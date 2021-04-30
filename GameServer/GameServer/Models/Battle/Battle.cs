@@ -57,7 +57,7 @@ namespace GameServer.Models.Battle
 
         public DateTime? End { get; set; }
 
-        public float LastTurnStartTime { get; set; }
+        public DateTime LastTurnStartTime { get; set; }
 
         public Turn Turn { get; set; }
 

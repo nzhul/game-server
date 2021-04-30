@@ -1,8 +1,7 @@
 ﻿using System;
 using Assets.Scripts.Network.Services.TCP.Interfaces;
-using GameServer.Games;
+using GameServer.Managers;
 using GameServer.Models.Battle;
-using GameServer.Utilities;
 using NetworkingShared.Packets.Battle;
 using NetworkShared.Enums;
 
@@ -69,7 +68,7 @@ namespace Assets.Scripts.Network.Services.TCP
             }
 
             //battle.LastTurnStartTime = Time.time;
-            battle.LastTurnStartTime = Timer.GetElapsedTime(); // TODO: Not tested
+            battle.LastTurnStartTime = DateTime.UtcNow; // TODO: Not tested
             Console.WriteLine("Switching turns! New Player is: " + battle.Turn);
             battle.Log.Add("Switching turns! New Player is: " + battle.Turn);
             this.SendSwitchTurnEvent(battle);

@@ -43,9 +43,9 @@ namespace GameClient
         {
             switch (key)
             {
-                case ConsoleKey.D1:
-                    SendStartBattleRequest();
-                    break;
+                //case ConsoleKey.D1:
+                //    SendStartBattleRequest();
+                //    break;
                 case ConsoleKey.D2:
                     SendConfirmLoadingBattleSceneRequest();
                     break;
@@ -107,10 +107,10 @@ namespace GameClient
             client.SendServer(p, DeliveryMethod.ReliableOrdered);
         }
 
-        private static void SendStartBattleRequest()
-        {
-            var p = new StartBattleRequest { AttackerArmyId = 22, DefenderArmyId = 33 };
-            client.SendServer(p, DeliveryMethod.ReliableOrdered);
-        }
+        //private static void SendStartBattleRequest()
+        //{
+        //    var p = new StartBattleRequest { AttackerArmyId = 22, DefenderArmyId = 33 };
+        //    client.SendServer(p, DeliveryMethod.ReliableOrdered);
+        //}
     }
 }
