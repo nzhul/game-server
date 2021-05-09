@@ -22,16 +22,26 @@ namespace GameServer.Managers
             }
         }
 
-        private List<Battle> ActiveBattles = new List<Battle>();
+        private List<Battle> _activeBattles = new List<Battle>();
 
         public void RegisterBattle(Battle battle)
         {
-            this.ActiveBattles.Add(battle);
+            this._activeBattles.Add(battle);
         }
 
         public Battle GetBattleById(Guid battleId)
         {
-            return this.ActiveBattles.FirstOrDefault(x => x.Id == battleId);
+            return this._activeBattles.FirstOrDefault(x => x.Id == battleId);
+        }
+
+        public List<Battle> GetBattles()
+        {
+            return _activeBattles;
+        }
+
+        public void EndBattle(Battle battle, int winnerId)
+        {
+            _activeBattles.Remove(battle);
         }
     }
 }

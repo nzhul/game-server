@@ -39,7 +39,7 @@ namespace Server.GeneratorTesting
 
                 var config = new GameParams()
                 {
-                    MapTemplate = MapTemplate.Small
+                    MapTemplate = MapTemplate.Default
                 };
 
                 //var sw = new Stopwatch();

@@ -1,5 +1,6 @@
 ﻿using System;
 using Assets.Scripts.Network.Services.TCP.Interfaces;
+using GameServer;
 using GameServer.Managers;
 using GameServer.Models.Battle;
 using NetworkingShared.Packets.Battle;
@@ -88,12 +89,14 @@ namespace Assets.Scripts.Network.Services.TCP
             {
                 //TODO: Invoke server.
                 //NetworkServer.Instance.SendClient(0, battle.AttackerConnectionId, msg);
+                NetworkServer.Instance.Send(battle.AttackerConnectionId, msg);
             }
 
             if (shouldNotifyDefender)
             {
                 //TODO: Invoke server.
                 //NetworkServer.Instance.SendClient(0, battle.DefenderConnectionId, msg);
+                NetworkServer.Instance.Send(battle.DefenderConnectionId, msg);
             }
         }
     }

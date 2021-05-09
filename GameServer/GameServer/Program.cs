@@ -4,6 +4,7 @@ using System.Threading;
 using Assets.Scripts.Network.Services;
 using Assets.Scripts.Network.Shared.NetMessages.Users;
 using GameServer.Managers;
+using GameServer.Scheduling;
 using LiteNetLib;
 using NetworkingShared;
 using NetworkingShared.Packets.Battle;
@@ -24,9 +25,12 @@ namespace GameServer
             HandlerRegistry.Initialize((int count) => { Console.WriteLine($"{count} handlers registered!"); });
             PacketRegistry.Initialize((int count) => { Console.WriteLine($"{count} packets registered!"); });
             RequestManagerHttp.Instance.Initialize();
+            RequestManagerTcp.Instance.Initialize();
             GameManager.Instance.Initialize();
             GameplayConfigurationManager.Instance.Initialize();
+            Scheduler.Instance.Initialize();
             NetworkServer.Instance.Start();
+
 
             while (true)
             {
@@ -37,6 +41,7 @@ namespace GameServer
                 }
 
                 NetworkServer.Instance.PollEvents();
+                Scheduler.Instance.Tick();
                 Thread.Sleep(15);
             }
         }
