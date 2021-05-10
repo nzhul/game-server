@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
+using System.Threading.Tasks;
+using Assets.Scripts.Network.Services;
+using GameServer.Managers;
 using LiteNetLib;
 using LiteNetLib.Utils;
 using NetworkingShared;
@@ -84,15 +87,32 @@ namespace GameServer
         // This method is automatically invoked when there is no response from the user for X amount of time.
         public void OnPeerDisconnected(NetPeer peer, DisconnectInfo disconnectInfo)
         {
-            Connections.Remove(peer.Id);
-            Console.WriteLine($"Peer disconnected: {peer.EndPoint}");
+            this.DisconnectUser(peer);
         }
 
         // This method is manually invoked when user press logout button.
         public void DisconnectUser(NetPeer peer)
         {
-            _connections.Remove(peer.Id);
+            BattleManager.Instance.DisconnectFromBattle(peer.Id);
             _netManager.DisconnectPeer(peer);
+            Console.WriteLine($"Peer disconnected: {peer.EndPoint}");
+
+            var userId = _connections[peer.Id].UserId;
+
+            // TODO: Extract into FireAndForget() utility method.
+            Task.Run(() =>
+            {
+                try
+                {
+                    RequestManagerHttp.UsersService.SetOffline(userId);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error setting user offline. UserId: {userId}. Ex: {ex}");
+                }
+            });
+
+            _connections.Remove(peer.Id);
         }
 
         public void Send(int peerId, INetPacket packet, DeliveryMethod method = DeliveryMethod.ReliableOrdered)

@@ -30,5 +30,18 @@ namespace Server.Data.Services.Implementation
             await _context.SaveChangesAsync();
             return true;
         }
+
+        public async Task<bool> UnRegisterBattle(int userId)
+        {
+            var dbUser = await _context.Users.FirstOrDefaultAsync(x => x.Id == userId);
+            if (dbUser == null)
+            {
+                return false;
+            }
+
+            dbUser.BattleId = null;
+            await _context.SaveChangesAsync();
+            return true;
+        }
     }
 }

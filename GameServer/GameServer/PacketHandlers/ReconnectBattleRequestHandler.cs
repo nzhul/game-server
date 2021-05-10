@@ -1,4 +1,8 @@
-﻿using GameServer.Managers;
+﻿using System;
+using System.Threading.Tasks;
+using Assets.Scripts.Network.Services;
+using GameServer.Managers;
+using GameServer.NetworkShared.Packets.World.ServerClient;
 using NetworkingShared;
 using NetworkingShared.Attributes;
 using NetworkingShared.Packets.World.ClientServer;
@@ -19,8 +23,26 @@ namespace GameServer.PacketHandlers
             var connection = NetworkServer.Instance.Connections[connectionId];
             connection.GameId = msg.GameId;
 
-            //var battle = NetworkServer.Instance.ActiveBattles.FirstOrDefault(x => x.Id == msg.BattleId);
             var battle = BattleManager.Instance.GetBattleById(msg.BattleId);
+
+            if (battle == null)
+            {
+                NetworkServer.Instance.Send(connectionId, new Net_OnReconnectBattleFail());
+
+                // TODO: Extract into FireAndForget() utility method.
+                Task.Run(() =>
+                {
+                    try
+                    {
+                        RequestManagerHttp.BattleService.UnRegisterBattle(connection.UserId);
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Error setting user offline. UserId: {connection.UserId}. Ex: {ex}");
+                    }
+                });
+                return;
+            }
 
             var isAttacker = battle.AttackerArmy.UserId == connection.UserId;
             if (isAttacker)

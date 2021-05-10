@@ -9,5 +9,10 @@ namespace Assets.Scripts.Network.Services.HTTP
         {
             base.Put($"battles/{battleId}/register/{userId}");
         }
+
+        public void UnRegisterBattle(int userId)
+        {
+            base.Put($"battles/unregister/{userId}");
+        }
     }
 }

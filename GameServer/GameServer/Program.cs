@@ -25,7 +25,7 @@ namespace GameServer
             HandlerRegistry.Initialize((int count) => { Console.WriteLine($"{count} handlers registered!"); });
             PacketRegistry.Initialize((int count) => { Console.WriteLine($"{count} packets registered!"); });
             RequestManagerHttp.Instance.Initialize();
-            RequestManagerTcp.Instance.Initialize();
+            //RequestManagerTcp.Instance.Initialize();
             GameManager.Instance.Initialize();
             GameplayConfigurationManager.Instance.Initialize();
             Scheduler.Instance.Initialize();

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GameServer.Managers;
+using GameServer.Models.Battle;
 using NetworkingShared;
 using NetworkingShared.Attributes;
 using NetworkingShared.Packets.Battle;
@@ -10,8 +11,24 @@ namespace GameServer.PacketHandlers
     {
         public void Handle(INetPacket packet, int connectionId)
         {
-            var request = (Net_ConfirmLoadingBattleSceneRequest)packet;
-            Console.WriteLine($"[{nameof(Net_ConfirmLoadingBattleSceneRequest)}] received!");
+            Net_ConfirmLoadingBattleSceneRequest msg = (Net_ConfirmLoadingBattleSceneRequest)packet;
+
+            var battle = BattleManager.Instance.GetBattleById(msg.BattleId);
+
+            if (battle != null && battle.AttackerArmyId == msg.ArmyId)
+            {
+                battle.AttackerReady = true;
+            }
+
+            if (battle != null && battle.DefenderArmyId == msg.ArmyId)
+            {
+                battle.DefenderReady = true;
+            }
+
+            if (battle.AttackerReady && battle.DefenderReady)
+            {
+                battle.State = BattleState.Fight;
+            }
         }
     }
 }

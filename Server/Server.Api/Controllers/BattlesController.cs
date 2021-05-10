@@ -35,5 +35,23 @@ namespace Server.Api.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex);
             }
         }
+
+        [HttpPut("unregister/{userId}")]
+        public async Task<IActionResult> UnRegisterBattle(int userId)
+        {
+            try
+            {
+                if (await _battleService.UnRegisterBattle(userId))
+                {
+                    return Ok();
+                }
+
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex);
+            }
+        }
     }
 }
