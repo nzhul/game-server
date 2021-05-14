@@ -1,4 +1,4 @@
-﻿using System;
+﻿using GameServer.Matchmaking;
 using NetworkingShared;
 using NetworkingShared.Attributes;
 
@@ -9,7 +9,9 @@ namespace GameServer.PacketHandlers
     {
         public void Handle(INetPacket packet, int connectionId)
         {
-            throw new NotImplementedException();
+            var connection = NetworkServer.Instance.Connections[connectionId];
+
+            Matchmaker.Instance.UnRegisterPlayer(connection);
         }
     }
 }
