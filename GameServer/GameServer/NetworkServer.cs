@@ -93,11 +93,13 @@ namespace GameServer
         // This method is manually invoked when user press logout button.
         public void DisconnectUser(NetPeer peer)
         {
+            var connection = _connections[peer.Id];
+
             BattleManager.Instance.DisconnectFromBattle(peer.Id);
             _netManager.DisconnectPeer(peer);
-            Console.WriteLine($"Peer disconnected: {peer.EndPoint}");
+            Console.WriteLine($"{connection.Username} disconnected: {peer.EndPoint}");
 
-            var userId = _connections[peer.Id].UserId;
+            var userId = connection.UserId;
 
             // TODO: Extract into FireAndForget() utility method.
             Task.Run(() =>
@@ -147,6 +149,13 @@ namespace GameServer
 
         public void OnNetworkReceiveUnconnected(IPEndPoint remoteEndPoint, NetPacketReader reader, UnconnectedMessageType messageType)
         {
+            // USE THIS TO CALCULATE PING !
+            // _netManager.UnconnectedMessagesEnabled = true;
+            // 1. Client sends _netManager.SendUnconnectedMessage()
+            // 2. Server calls back the client with _netManager.SendUnconnectedMessage() and info about players count and server status
+            // 3. Client calculate ping based on time passed after client message send and server message received.
+            // NOTE: _netManager.SendUnconnectedMessage() --> Those messages are unreliable! Should send multiple times from client!
+
             throw new NotImplementedException();
         }
     }

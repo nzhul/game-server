@@ -1,4 +1,5 @@
 ﻿using System;
+using GameServer.Matchmaking;
 
 namespace GameServer.Scheduling.Jobs
 {
@@ -12,6 +13,7 @@ namespace GameServer.Scheduling.Jobs
         protected override void DoWork()
         {
             //Console.WriteLine(DateTime.UtcNow.ToLongTimeString() + ": Perform matchmaking!");
+            Matchmaker.Instance.DoMatchmaking();
         }
     }
 }
