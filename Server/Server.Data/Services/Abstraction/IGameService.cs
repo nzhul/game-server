@@ -9,5 +9,9 @@ namespace Server.Data.Services.Abstraction
         Task<Game> CreateGameAsync(GameParams gameParams);
 
         Task<Game> GetGameAsync(int id);
+
+        Task EndGame(int gameId, int winnerId);
+
+        Task LeaveGame(int gameId, int userId);
     }
 }

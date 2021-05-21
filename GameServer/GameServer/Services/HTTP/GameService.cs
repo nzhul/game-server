@@ -21,5 +21,15 @@ namespace Assets.Scripts.Network.Services.HTTP
         {
             return base.Get<Dictionary<CreatureType, UnitConfiguration>>($"unit-configurations");
         }
+
+        public void EndGame(int gameId, int winnerId)
+        {
+            base.Put($"games/{gameId}/{winnerId}/end");
+        }
+
+        public void LeaveGame(int gameId, int userId)
+        {
+            base.Put($"games/{gameId}/{userId}/leave");
+        }
     }
 }

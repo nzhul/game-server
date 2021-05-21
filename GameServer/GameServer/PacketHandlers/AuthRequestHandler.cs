@@ -15,8 +15,6 @@ namespace GameServer.PacketHandlers
         public void Handle(INetPacket packet, int connectionId)
         {
             var msg = (Net_AuthRequest)packet;
-            Console.WriteLine($"[{nameof(Net_AuthRequest)}] received!");
-
             Net_OnAuthRequest rmsg = new Net_OnAuthRequest();
 
             if (msg.IsValid())

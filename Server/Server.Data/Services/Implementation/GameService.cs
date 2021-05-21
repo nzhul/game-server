@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Internal;
 using Server.Data.Generators;
 using Server.Data.Services.Abstraction;
 using Server.Models.MapEntities;
@@ -66,6 +65,62 @@ namespace Server.Data.Services.Implementation
             await this.AssignGameToUsers(newGame.Id, gameParams.Players.Select(x => x.UserId));
 
             return newGame;
+        }
+
+        public async Task EndGame(int gameId, int winnerId)
+        {
+            var game = await _context.Games
+                .Include(x => x.Users)
+                .FirstOrDefaultAsync(x => x.Id == gameId);
+
+            if (game == null)
+            {
+                throw new ArgumentException($"Cannot find game with Id {gameId}");
+            }
+
+            foreach (var user in game.Users)
+            {
+                if (user.Id == winnerId)
+                {
+                    user.MMR += 10;
+                } else
+                {
+                    user.MMR -= 10;
+                }
+
+                user.Game = null;
+                user.GameId = null;
+            }
+
+            await _context.SaveChangesAsync();
+
+
+            // get the game
+            // get all players in the game
+            // increase MMR of the winner
+            // lower the MMR of the loosers
+            // clear game reference in all players
+            // mark game as completed.
+            // TODO: archive/delete the game
+        }
+
+        public async Task LeaveGame(int gameId, int userId)
+        {
+            var game = await _context.Games
+                .Include(x => x.Users)
+                .FirstOrDefaultAsync(x => x.Id == gameId);
+
+            if (game == null)
+            {
+                throw new ArgumentException($"Cannot find game with Id {gameId}");
+            }
+
+            var userToRemove = game.Users.FirstOrDefault(x => x.Id == userId);
+            game.Users.Remove(userToRemove);
+            userToRemove.Game = null;
+            userToRemove.GameId = null;
+
+            await _context.SaveChangesAsync();
         }
 
         private async Task AssignGameToUsers(int gameId, IEnumerable<int> userIds)
@@ -130,7 +185,7 @@ namespace Server.Data.Services.Implementation
             var users = _context.Users.Where(x => userIds.Contains(x.Id));
             users.ForEachAsync(x =>
             {
-                x.Avatar = new Avatar 
+                x.Avatar = new Avatar
                 {
                     Wood = 20,
                     Ore = 20,

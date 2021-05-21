@@ -15,5 +15,9 @@ namespace GameServer.Models
         public int Gems { get; set; }
 
         public Team Team { get; set; }
+
+        public bool IsDisconnected { get; set; }
+
+        public bool HasLeftTheGame { get; set; }
     }
 }

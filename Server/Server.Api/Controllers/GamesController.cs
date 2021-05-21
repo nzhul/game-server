@@ -53,5 +53,33 @@ namespace Server.Api.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex);
             }
         }
+
+        [HttpPut("{id}/{winnerid}/end")]
+        public async Task<IActionResult> EndGame(int id, int winnerId)
+        {
+            try
+            {
+                await _gamesService.EndGame(id, winnerId);
+                return Ok();
+            }
+            catch (System.Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex);
+            }
+        }
+
+        [HttpPut("{id}/{userId}/leave")]
+        public async Task<IActionResult> LeaveGame(int id, int userId)
+        {
+            try
+            {
+                await _gamesService.LeaveGame(id, userId);
+                return Ok();
+            }
+            catch (System.Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex);
+            }
+        }
     }
 }

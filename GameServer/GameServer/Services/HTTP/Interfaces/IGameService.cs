@@ -11,5 +11,9 @@ namespace Assets.Scripts.Network.Services.HTTP.Interfaces
         Game CreateGame(GameParams gameConfig);
 
         Dictionary<CreatureType, UnitConfiguration> GetUnitConfigurations();
+
+        void EndGame(int gameId, int winnerId);
+
+        void LeaveGame(int gameId, int userId);
     }
 }

@@ -43,6 +43,12 @@ namespace GameServer.Managers
 
         public void EndBattle(Battle battle, int winnerId)
         {
+            // TODO: Send Net_EndBattleEvent to both players.
+            //_activeBattles.Remove(battle);
+        }
+
+        public void UnRegisterBattle(Battle battle)
+        {
             _activeBattles.Remove(battle);
         }
 

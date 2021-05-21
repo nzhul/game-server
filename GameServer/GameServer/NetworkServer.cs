@@ -45,7 +45,7 @@ namespace GameServer
         {
             _connections = new Dictionary<int, ServerConnection>();
             _netManager = new NetManager(this);
-            _netManager.DisconnectTimeout = 100000; // TODO: use config for this. Default is 5000
+            _netManager.DisconnectTimeout = 5000; // TODO: use config for this. Default is 5000
 
             _netManager.Start(9050);
             Console.WriteLine("Server listening on port 9050");
@@ -86,12 +86,6 @@ namespace GameServer
 
         // This method is automatically invoked when there is no response from the user for X amount of time.
         public void OnPeerDisconnected(NetPeer peer, DisconnectInfo disconnectInfo)
-        {
-            this.DisconnectUser(peer);
-        }
-
-        // This method is manually invoked when user press logout button.
-        public void DisconnectUser(NetPeer peer)
         {
             var connection = _connections[peer.Id];
 
