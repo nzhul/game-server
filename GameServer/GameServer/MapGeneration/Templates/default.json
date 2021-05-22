@@ -1,0 +1,65 @@
+﻿{
+    "MapTemplate": "Default",
+    "Width": 172,
+    "Height": 70,
+    "Zones": [
+        {
+            "Id": "1",
+            "Y": 10,
+            "X": 0,
+            "Width": 50,
+            "Height": 50,
+            "Type": "StartingZone",
+            "Team": "Team1",
+            "Fuzziness": 45,
+            "Links": [
+                {
+                    "ZoneId": 2,
+                    "GuardianStrength": 15,
+                    "Type": "Standard"
+                }
+            ]
+        },
+        {
+            "Id": "2",
+            "Y": 0,
+            "X": 51,
+            "Width": 70,
+            "Height": 70,
+            "Type": "NeutralZone",
+            "Team": "Neutral",
+            "Fuzziness": 45,
+            "Links": [
+                {
+                    "ZoneId": 1,
+                    "GuardianStrength": 15,
+                    "Type": "Standard"
+                },
+                {
+                    "ZoneId": 3,
+                    "Guardians": {
+                        "Strength": 15
+                    },
+                    "Type": "Standard"
+                }
+            ]
+        },
+        {
+            "Id": "3",
+            "Y": 10,
+            "X": 122,
+            "Width": 50,
+            "Height": 50,
+            "Type": "StartingZone",
+            "Team": "Team2",
+            "Fuzziness": 45,
+            "Links": [
+                {
+                    "ZoneId": 2,
+                    "GuardianStrength": 15,
+                    "Type": "Standard"
+                }
+            ]
+        }
+    ]
+}

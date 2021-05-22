@@ -1,26 +1,27 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using GameServer.Models.Units;
 
 namespace GameServer.Models
 {
-    public class Army
+    public class Army : MapEntity
     {
-        public int Id { get; set; }
+        public Army()
+        {
+            this.Units = new Collection<Unit>();
+        }
 
         public int? UserId { get; set; }
 
         public int GameId { get; set; }
 
-        public int X { get; set; }
-
-        public int Y { get; set; }
-
         public NPCData NPCData { get; set; }
 
         public bool IsNPC { get; set; }
 
-        public Team Team { get; set; }
-
         public IList<Unit> Units { get; set; }
+
+        public Guid? Link { get; set; }
     }
 }

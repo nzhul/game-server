@@ -36,6 +36,7 @@ namespace GameServer.Models
     {
         Default,
         Cross,
-        Small
+        Small,
+        Tiny
     }
 }

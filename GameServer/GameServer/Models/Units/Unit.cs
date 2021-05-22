@@ -4,10 +4,8 @@ using Newtonsoft.Json.Converters;
 
 namespace GameServer.Models.Units
 {
-    public class Unit
+    public class Unit : MapEntity
     {
-        public int Id { get; set; }
-
         public int StartX { get; set; }
 
         public int StartY { get; set; }
