@@ -134,11 +134,6 @@ namespace Server.Api.Controllers
         [HttpPut("{userId}/setoffline")]
         public async Task<IActionResult> SetOffline(int userId)
         {
-            if (userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
-            {
-                return Unauthorized();
-            }
-
             string result = await _usersService.SetOffline(userId);
 
             if (string.IsNullOrEmpty(result))
@@ -154,11 +149,6 @@ namespace Server.Api.Controllers
         [HttpPut("{userId}/setonline/{connectionId}")]
         public async Task<IActionResult> SetOnline(int userId, int connectionId)
         {
-            if (userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
-            {
-                return Unauthorized();
-            }
-
             string result = await _usersService.SetOnline(userId, connectionId);
 
             if (string.IsNullOrEmpty(result))
@@ -169,6 +159,20 @@ namespace Server.Api.Controllers
             {
                 return BadRequest(result);
             }
+        }
+
+        [HttpPut("{userId}/clearbattle")]
+        public async Task<IActionResult> ClearBattle(int userId)
+        {
+            await _usersService.ClearBattle(userId);
+            return Ok();
+        }
+
+        [HttpPut("clearallbattles")]
+        public async Task<IActionResult> ClearAllBattles()
+        {
+            await _usersService.ClearAllBattles();
+            return Ok();
         }
     }
 }

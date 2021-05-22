@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using Server.Models;
-
-namespace Server.Api.Models.View.Realms
+﻿namespace Server.Api.Models.View.Realms
 {
     public class RoomDetailedDto
     {
@@ -12,11 +9,5 @@ namespace Server.Api.Models.View.Realms
         public string EdgeTilesString { get; set; }
 
         public int RoomSize { get; set; }
-
-        public bool IsMainRoom { get; set; }
-
-        public bool IsAccessibleFromMainRoom { get; set; }
-
-        public ICollection<HeroDetailedDto> Heroes { get; set; }
     }
 }

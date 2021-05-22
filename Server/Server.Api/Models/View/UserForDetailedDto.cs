@@ -7,6 +7,8 @@ namespace Server.Api.Models.View
     {
         public int Id { get; set; }
 
+        public int MMR { get; set; }
+
         public string Username { get; set; }
 
         public string Gender { get; set; }
@@ -30,6 +32,10 @@ namespace Server.Api.Models.View
         public string Country { get; set; }
 
         public string PhotoUrl { get; set; }
+
+        public int GameId { get; set; }
+
+        public Guid? BattleId { get; set; }
 
         public ICollection<PhotosForDetailedDto> Photos { get; set; }
     }

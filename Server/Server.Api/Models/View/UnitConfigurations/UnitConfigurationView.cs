@@ -10,7 +10,7 @@ namespace Server.Api.Models.View.UnitConfigurations
 
         public CreatureType Type { get; set; }
 
-        public HeroFaction Faction { get; set; }
+        public Faction Faction { get; set; }
 
         public int MovementPoints { get; set; }
 

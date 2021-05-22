@@ -59,5 +59,15 @@ namespace Server.Data.Services.Abstraction
         /// <param name="connectionId">the id of the connection in the dedicated server</param>
         /// <returns>Null if success. Error message on fail</returns>
         Task<string> SetOnline(int userId, int connectionId);
+        
+        /// <summary>
+        /// Clears the current battle from the user. Sets it to NULL
+        /// </summary>
+        /// <param name="userId">Id of the user</param>
+        /// <returns></returns>
+        Task ClearBattle(int userId);
+
+        // [TEST] Clears all user battles.
+        Task ClearAllBattles();
     }
 }

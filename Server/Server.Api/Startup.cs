@@ -23,6 +23,7 @@ using Newtonsoft.Json.Serialization;
 using Server.Api.Helpers;
 using Server.Api.Infrastructure.Filters;
 using Server.Data;
+using Server.Data.Generators;
 using Server.Data.Services.Abstraction;
 using Server.Data.Services.Implementation;
 using Server.Models.Users;
@@ -63,14 +64,17 @@ namespace Server.Api
 
             var key = Encoding.ASCII.GetBytes(Configuration.GetSection("AppSettings:Token").Value);
             services.AddDbContext<DataContext>(x => x.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"))
-            .ConfigureWarnings(warnings => warnings.Ignore(CoreEventId.IncludeIgnoredWarning)));
+            .ConfigureWarnings(warnings => warnings.Ignore(CoreEventId.IncludeIgnoredWarning)), ServiceLifetime.Transient);
             services.AddCors();
             services.AddAutoMapper(typeof(AutoMapperProfiles).GetTypeInfo().Assembly);
+            services.AddScoped<IGameService, GameService>();
             services.AddScoped<IUsersService, UsersService>();
-            services.AddScoped<IRealmsService, RealmsService>();
-            services.AddScoped<IHeroesService, HeroesService>();
-            services.AddScoped<IAvatarsService, AvatarsService>();
+            //services.AddScoped<IRealmsService, RealmsService>();
+            services.AddScoped<IArmiesService, ArmiesService>();
+            services.AddScoped<IBattleService, BattleService>();
+            //services.AddScoped<IAvatarsService, AvatarsService>();
             services.AddScoped<IUnitConfigurationsService, UnitConfigurationsService>();
+            services.AddScoped<IMapGenerator, MapGenerator>();
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
@@ -104,6 +108,7 @@ namespace Server.Api
                 options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
                 options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
                 options.SerializerSettings.Converters.Add(new StringEnumConverter());
+                //options.SerializerSettings.NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore;
             });
 
             services.AddSwaggerGen(c =>

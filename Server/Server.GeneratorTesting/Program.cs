@@ -4,6 +4,7 @@ using System.Diagnostics;
 using Server.Data.Generators;
 using Server.Models;
 using Server.Models.Realms;
+using Server.Models.Realms.Input;
 
 namespace Server.GeneratorTesting
 {
@@ -36,36 +37,18 @@ namespace Server.GeneratorTesting
                 IMapGenerator generator = new MapGenerator();
                 Map map = null;
 
-                bool generationIsFailing = true;
-                bool retryLimitNotReached = true;
-                int retryLimit = 10;
-                int currentRetries = 0;
-
-                while (generationIsFailing && retryLimitNotReached)
+                var config = new GameParams()
                 {
-                    try
-                    {
-                        stopwatch.Start();
-                        //map = generator.GenerateMap(36, 36, 0, 1, 0, 0, 30);
-                        map = generator.GenerateMap(100, 76, 0, 1, 100, 10, 45);
-                        map = generator.PopulateMap(map, 50, 50);
-                        stopwatch.Stop();
-                        generationIsFailing = false;
-                    }
-                    catch (Exception ex)
-                    {
-                        if (currentRetries <= retryLimit)
-                        {
-                            currentRetries++;
-                            Console.WriteLine("Current retries: " + currentRetries);
-                        }
-                        else
-                        {
-                            retryLimitNotReached = false;
-                            throw ex;
-                        }
-                    }
-                }
+                    MapTemplate = MapTemplate.Default
+                };
+
+                //var sw = new Stopwatch();
+                //sw.Start();
+                map = generator.TryGenerateMap(config);
+                //sw.Stop();
+                //Console.WriteLine(sw.ElapsedMilliseconds);
+                //Console.WriteLine();
+
 
                 if (debugMode)
                 {
@@ -77,16 +60,16 @@ namespace Server.GeneratorTesting
                     Console.WriteLine();
                 }
 
-                for (int x = 0; x < map.Matrix.GetLength(1); x++)
+                for (int row = 0; row < map.Matrix.GetLength(0); row++)
                 {
                     if (debugMode)
                     {
-                        Console.Write(x.ToString().PadLeft(2));
+                        Console.Write(row.ToString().PadLeft(2));
                     }
 
-                    for (int y = 0; y < map.Matrix.GetLength(0); y++)
+                    for (int col = 0; col < map.Matrix.GetLength(1); col++)
                     {
-                        if (map.Matrix[y, x] == 1)
+                        if (map.Matrix[row, col] == 1)
                         {
                             if (debugMode)
                             {
@@ -97,7 +80,7 @@ namespace Server.GeneratorTesting
                                 Console.Write("\u2588");
                             }
                         }
-                        else if (map.Matrix[y, x] == 2)
+                        else if (map.Matrix[row, col] == 2)
                         {
                             if (debugMode)
                             {
@@ -109,7 +92,7 @@ namespace Server.GeneratorTesting
                             }
 
                         }
-                        else if (map.Matrix[y, x] == 3)
+                        else if (map.Matrix[row, col] == 3)
                         {
                             if (debugMode)
                             {
@@ -119,7 +102,7 @@ namespace Server.GeneratorTesting
                             {
                                 Console.Write("O");
                             }
-                            
+
                         }
                         else
                         {
@@ -131,7 +114,7 @@ namespace Server.GeneratorTesting
                             {
                                 Console.Write(" ");
                             }
-                            
+
                         }
                     }
 
@@ -145,31 +128,47 @@ namespace Server.GeneratorTesting
                 //PaintRooms(map.Rooms);
                 //PaintEdges(map.Rooms);
                 //PaintHero(map, r);
+                PaintPassages(map.Matrix);
 
-                if (debugMode)
-                {
-                    Console.SetCursorPosition(map.Matrix.GetLength(1), map.Matrix.GetLength(1) * 2);
-                }
-                else
-                {
-                    Console.SetCursorPosition(map.Matrix.GetLength(1), map.Matrix.GetLength(1));
-                }
+                //if (debugMode)
+                //{
+                //    Console.SetCursorPosition(map.Matrix.GetLength(1), map.Matrix.GetLength(1) * 2);
+                //}
+                //else
+                //{
+                //    Console.SetCursorPosition(map.Matrix.GetLength(1), map.Matrix.GetLength(1));
+                //}
 
-                Console.WriteLine();
-                Console.WriteLine(stopwatch.Elapsed);
+                //Console.WriteLine();
+                //Console.WriteLine(stopwatch.Elapsed);
 
                 key = Console.ReadKey().Key;
             }
         }
 
-        private static void PaintEdges(List<Room> rooms)
+        private static void PaintPassages(int[,] matrix)
+        {
+            for (int row = 0; row < matrix.GetLength(0); row++)
+            {
+                for (int col = 0; col < matrix.GetLength(1); col++)
+                {
+                    if (matrix[row, col] == 9)
+                    {
+                        Console.SetCursorPosition(col, row);
+                        Console.Write("$");
+                    }
+                }
+            }
+        }
+
+        private static void PaintEdges(List<TempRoom> rooms)
         {
             Console.ForegroundColor = ConsoleColor.DarkGray;
-            foreach (Room room in rooms)
+            foreach (var room in rooms)
             {
-                foreach (Coord coord in room.EdgeTiles)
+                foreach (Coord coord in room.edgeTiles)
                 {
-                    Console.SetCursorPosition(coord.Row, coord.Col);
+                    Console.SetCursorPosition(coord.Y, coord.X);
                     Console.Write('\u25A0');
                 }
             }
@@ -178,18 +177,18 @@ namespace Server.GeneratorTesting
 
         private static void PaintHero(Map map, Random r)
         {
-            Coord randomPositionInMainRoom = map.Rooms[0].Tiles[r.Next(map.Rooms[0].Tiles.Count)];
-            Console.SetCursorPosition(randomPositionInMainRoom.Row, randomPositionInMainRoom.Col);
+            Coord randomPositionInMainRoom = map.Rooms[0].tiles[r.Next(map.Rooms[0].tiles.Count)];
+            Console.SetCursorPosition(randomPositionInMainRoom.X, randomPositionInMainRoom.Y);
             Console.ForegroundColor = ConsoleColor.Red;
             Console.Write('\u2588');
             Console.ForegroundColor = ConsoleColor.White;
             Console.SetCursorPosition(map.Matrix.GetLength(1), map.Matrix.GetLength(0));
         }
 
-        private static void PaintRooms(List<Room> rooms)
+        private static void PaintRooms(List<TempRoom> rooms)
         {
-            int colorIndex = 9;
-            foreach (Room room in rooms)
+            int colorIndex = 1;
+            foreach (TempRoom room in rooms)
             {
                 if (colorIndex <= 14)
                 {
@@ -200,9 +199,9 @@ namespace Server.GeneratorTesting
                     Console.ForegroundColor = ConsoleColor.Yellow;
                 }
 
-                foreach (Coord coord in room.Tiles)
+                foreach (Coord coord in room.tiles)
                 {
-                    Console.SetCursorPosition(coord.Row, coord.Col);
+                    Console.SetCursorPosition(coord.Y, coord.X);
                     //Console.Write('\u2591');
                     Console.Write('\u2588');
                 }
@@ -217,7 +216,7 @@ namespace Server.GeneratorTesting
 
             foreach (var item in room.Tiles)
             {
-                if (item.Row == x && item.Col == y)
+                if (item.X == x && item.Y == y)
                 {
                     isInRoom = true;
                 }

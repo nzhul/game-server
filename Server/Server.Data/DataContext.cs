@@ -1,17 +1,15 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Server.Models;
-using Server.Models.Castles;
+using Server.Models.Armies;
 using Server.Models.Heroes;
 using Server.Models.Heroes.Units;
 using Server.Models.Items;
+using Server.Models.MapEntities;
 using Server.Models.Realms;
 using Server.Models.Users;
-using System;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Server.Data
 {
@@ -23,27 +21,19 @@ namespace Server.Data
         {
         }
 
-        public DbSet<Avatar> Avatars { get; set; }
-
         public DbSet<Photo> Photos { get; set; }
 
         public DbSet<Message> Messages { get; set; }
 
-        public DbSet<Hero> Heroes { get; set; }
+        public DbSet<Army> Armies { get; set; }
 
-        public DbSet<HeroBlueprint> HeroBlueprints { get; set; }
+        public DbSet<Unit> Units { get; set; }
 
         public DbSet<ItemBlueprint> ItemBlueprints { get; set; }
 
         public DbSet<Item> Items { get; set; }
 
-        public DbSet<Realm> Realms { get; set; }
-
-        public DbSet<Region> Regions { get; set; }
-
-        public DbSet<Castle> Castles { get; set; }
-
-        public DbSet<CastleBlueprint> CastleBlueprints { get; set; }
+        public DbSet<Game> Games { get; set; }
 
         public DbSet<Friendship> Friendships { get; set; }
 
@@ -73,20 +63,20 @@ namespace Server.Data
                 .HasForeignKey(u => u.RecieverId);
 
             // Many to many
-            builder.Entity<AvatarDwelling>(avatarDwelling =>
-            {
-                avatarDwelling.HasKey(ad => new { ad.AvatarId, ad.DwellingId });
+            //builder.Entity<AvatarDwelling>(avatarDwelling =>
+            //{
+            //    avatarDwelling.HasKey(ad => new { ad.AvatarId, ad.DwellingId });
 
-                avatarDwelling.HasOne(ad => ad.Avatar)
-                .WithMany(a => a.AvatarDwellings)
-                .HasForeignKey(ad => ad.AvatarId)
-                .IsRequired();
+            //    avatarDwelling.HasOne(ad => ad.Avatar)
+            //    .WithMany(a => a.AvatarDwellings)
+            //    .HasForeignKey(ad => ad.AvatarId)
+            //    .IsRequired();
 
-                avatarDwelling.HasOne(ad => ad.Dwelling)
-                .WithMany(a => a.AvatarDwellings)
-                .HasForeignKey(ad => ad.DwellingId)
-                .IsRequired();
-            });
+            //    avatarDwelling.HasOne(ad => ad.Dwelling)
+            //    .WithMany(a => a.AvatarDwellings)
+            //    .HasForeignKey(ad => ad.DwellingId)
+            //    .IsRequired();
+            //});
 
             builder.Entity<UserRole>(userRole =>
             {
@@ -113,29 +103,29 @@ namespace Server.Data
                 .WithMany(u => u.MessagesRecieved)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            builder.Entity<Realm>()
-                .HasIndex(r => r.Name)
-                .IsUnique(true);
-
-            builder.Entity<Hero>()
-                .HasOne(u => u.Avatar)
-                .WithMany(u => u.Heroes)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            builder.Entity<Hero>()
+            builder.Entity<Army>()
                 .OwnsOne(x => x.NPCData);
 
+            builder.Entity<Army>()
+                .HasOne(x => x.User);
+
+            builder.Entity<Dwelling>()
+                .HasOne(x => x.User);
+
+            builder.Entity<User>()
+                .OwnsOne(x => x.Avatar);
+
             builder.Entity<Unit>()
-                .HasOne(u => u.Hero)
+                .HasOne(u => u.Army)
                 .WithMany(u => u.Units)
                 .OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<Item>()
-                .HasOne(u => u.Hero)
+                .HasOne(u => u.Unit)
                 .WithMany(u => u.Items)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            builder.Entity<Region>()
+            builder.Entity<Game>()
                 .Property(r => r.MatrixString)
                 .HasField("_matrixString")
                 .UsePropertyAccessMode(PropertyAccessMode.Property);
@@ -150,10 +140,10 @@ namespace Server.Data
                 .HasField("_edgeTilesString")
                 .UsePropertyAccessMode(PropertyAccessMode.Property);
 
-            builder.Entity<Room>()
-                .Property(r => r.RoomSize)
-                .HasField("_roomSize")
-                .UsePropertyAccessMode(PropertyAccessMode.Property);
+            //builder.Entity<Room>()
+            //    .Property(r => r.RoomSize)
+            //    .HasField("_roomSize")
+            //    .UsePropertyAccessMode(PropertyAccessMode.Property);
 
             builder.Entity<UnitConfiguration>()
                 .HasIndex(x => x.Type)
@@ -190,37 +180,40 @@ namespace Server.Data
                 .HasForeignKey(ad => ad.UpgradeId)
                 .IsRequired();
             });
+
+            builder.Entity<Dwelling>()
+                .HasOne(u => u.Guardian);
         }
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
-            this.ApplyAudition();
+            //this.ApplyAudition();
             return base.SaveChangesAsync(cancellationToken);
         }
 
         public override int SaveChanges()
         {
-            this.ApplyAudition();
+            //this.ApplyAudition();
             return base.SaveChanges();
         }
 
-        private void ApplyAudition()
-        {
-            var entities = this.ChangeTracker.Entries()
-                .Where(e => e.Entity is IAuditedEntity &&
-                    (e.State == EntityState.Added || e.State == EntityState.Modified));
+        //private void ApplyAudition()
+        //{
+        //    var entities = this.ChangeTracker.Entries()
+        //        .Where(e => e.Entity is IAuditedEntity &&
+        //            (e.State == EntityState.Added || e.State == EntityState.Modified));
 
-            foreach (var entry in entities)
-            {
-                var entity = (IAuditedEntity)entry.Entity;
+        //    foreach (var entry in entities)
+        //    {
+        //        var entity = (IAuditedEntity)entry.Entity;
 
-                if (entry.State == EntityState.Added)
-                {
-                    entity.CreatedAt = DateTime.UtcNow;
-                }
+        //        if (entry.State == EntityState.Added)
+        //        {
+        //            entity.CreatedAt = DateTime.UtcNow;
+        //        }
 
-                entity.ModifiedAt = DateTime.UtcNow;
-            }
-        }
+        //        entity.ModifiedAt = DateTime.UtcNow;
+        //    }
+        //}
     }
 }

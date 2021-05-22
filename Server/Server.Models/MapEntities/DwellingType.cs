@@ -8,7 +8,8 @@
         GoldMine = 3,
         TownPortal = 4,
         ExperienceShrine = 5,
-        Waypoint = 6
+        Waypoint = 6,
+        Bridge = 7
         //TODO: Add more like -> CyclopsCave, Spell Shrine, Observatory (map reveal shrine)
     }
 }

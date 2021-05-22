@@ -1,12 +1,10 @@
-﻿using System.Collections.Generic;
-using Server.Api.Models.View.Avatars;
-using Server.Api.Models.View.Realms;
+﻿using Server.Models.Users;
 
 namespace Server.Api.Controllers
 {
     public class AvatarDetailedDto
     {
-        public int Id { get; set; }
+        public int UserId { get; set; }
 
         public int Wood { get; set; }
 
@@ -16,10 +14,8 @@ namespace Server.Api.Controllers
 
         public int Gems { get; set; }
 
-        public ICollection<HeroDetailedDto> Heroes { get; set; }
+        public Team Team { get; set; }
 
-        public ICollection<DwellingDetailedDto> Dwellings { get; set; }
-
-        public ICollection<WaypointDto> Waypoints { get; set; }
+        public string VisitedString { get; set; }
     }
 }
