@@ -1,13 +1,11 @@
-using Microsoft.AspNetCore.Identity;
-using Newtonsoft.Json;
-using Server.Models.Heroes;
-using Server.Models.Heroes.Units;
-using Server.Models.Realms;
-using Server.Models.Users;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Microsoft.AspNetCore.Identity;
+using Newtonsoft.Json;
+using Server.Models.Heroes.Units;
+using Server.Models.Users;
 
 namespace Server.Data
 {
@@ -113,8 +111,6 @@ namespace Server.Data
         public static void Initialize(DataContext _context, UserManager<User> _userManager, RoleManager<Role> _roleManager)
         {
             List<User> users = new List<User>();
-            ICollection<Avatar> avatars = new List<Avatar>();
-            ICollection<Unit> heroes = new List<Unit>();
             List<UnitConfiguration> unitConfigurations = new List<UnitConfiguration>();
 
             if (!_context.Users.Any())
@@ -167,8 +163,7 @@ namespace Server.Data
             {
                 UserName = username,
                 Gender = "male",
-                Email = email,
-                Avatar = new Avatar()
+                Email = email
             };
 
             IdentityResult result = _userManager.CreateAsync(adminUser, "password").Result;

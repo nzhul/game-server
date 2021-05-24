@@ -22,4 +22,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Server.Data\Server.Data.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Models\View\Avatars\" />
+  </ItemGroup>
 </Project>

@@ -10,7 +10,7 @@ using Server.Data;
 namespace Server.Data.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20200719220337_init")]
+    [Migration("20210524195329_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -89,64 +89,6 @@ namespace Server.Data.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens");
-                });
-
-            modelBuilder.Entity("Server.Models.Armies.Army", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int?>("GameId");
-
-                    b.Property<bool>("IsNPC");
-
-                    b.Property<int>("Team");
-
-                    b.Property<int?>("UserId");
-
-                    b.Property<int>("X");
-
-                    b.Property<int>("Y");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("GameId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Armies");
-                });
-
-            modelBuilder.Entity("Server.Models.Heroes.Unit", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int?>("ArmyId");
-
-                    b.Property<int>("Level");
-
-                    b.Property<int>("Quantity");
-
-                    b.Property<int>("StartX");
-
-                    b.Property<int>("StartY");
-
-                    b.Property<int>("Team");
-
-                    b.Property<int>("Type");
-
-                    b.Property<int>("X");
-
-                    b.Property<int>("Y");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ArmyId");
-
-                    b.ToTable("Units");
                 });
 
             modelBuilder.Entity("Server.Models.Heroes.Units.Ability", b =>
@@ -275,27 +217,6 @@ namespace Server.Data.Migrations
                     b.ToTable("Upgrades");
                 });
 
-            modelBuilder.Entity("Server.Models.Items.Item", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int?>("BlueprintId");
-
-                    b.Property<int?>("HeroId");
-
-                    b.Property<int?>("UnitId");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BlueprintId");
-
-                    b.HasIndex("UnitId");
-
-                    b.ToTable("Items");
-                });
-
             modelBuilder.Entity("Server.Models.Items.ItemBlueprint", b =>
                 {
                     b.Property<int>("Id")
@@ -313,108 +234,17 @@ namespace Server.Data.Migrations
                     b.ToTable("ItemBlueprints");
                 });
 
-            modelBuilder.Entity("Server.Models.MapEntities.Dwelling", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("EndX");
-
-                    b.Property<int>("EndY");
-
-                    b.Property<int>("GameId");
-
-                    b.Property<int?>("GuardianId");
-
-                    b.Property<string>("OccupiedTilesString");
-
-                    b.Property<int>("Team");
-
-                    b.Property<int>("Type");
-
-                    b.Property<int?>("UserId");
-
-                    b.Property<string>("VisitorsString");
-
-                    b.Property<int>("X");
-
-                    b.Property<int>("Y");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("GameId");
-
-                    b.HasIndex("GuardianId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Dwelling");
-                });
-
-            modelBuilder.Entity("Server.Models.MapEntities.Treasure", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int?>("GameId");
-
-                    b.Property<int>("Quantity");
-
-                    b.Property<int>("Team");
-
-                    b.Property<int>("Type");
-
-                    b.Property<int>("X");
-
-                    b.Property<int>("Y");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("GameId");
-
-                    b.ToTable("Treasure");
-                });
-
             modelBuilder.Entity("Server.Models.Realms.Game", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("MatrixString");
-
-                    b.Property<string>("Name");
+                    b.Property<int?>("WinnerId");
 
                     b.HasKey("Id");
 
                     b.ToTable("Games");
-                });
-
-            modelBuilder.Entity("Server.Models.Realms.Room", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("EdgeTilesString");
-
-                    b.Property<int?>("GameId");
-
-                    b.Property<bool>("IsAccessibleFromMainRoom");
-
-                    b.Property<bool>("IsMainRoom");
-
-                    b.Property<int>("RoomSize");
-
-                    b.Property<string>("TilesString");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("GameId");
-
-                    b.ToTable("Room");
                 });
 
             modelBuilder.Entity("Server.Models.Users.Friendship", b =>
@@ -540,8 +370,6 @@ namespace Server.Data.Migrations
 
                     b.Property<string>("CreatedBy");
 
-                    b.Property<int>("CurrentRealmId");
-
                     b.Property<DateTime>("DateOfBirth");
 
                     b.Property<string>("Discriminator");
@@ -591,8 +419,6 @@ namespace Server.Data.Migrations
                         .HasMaxLength(256);
 
                     b.HasKey("Id");
-
-                    b.HasIndex("GameId");
 
                     b.HasIndex("NormalizedEmail")
                         .HasName("EmailIndex");
@@ -650,63 +476,6 @@ namespace Server.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("Server.Models.Armies.Army", b =>
-                {
-                    b.HasOne("Server.Models.Realms.Game", "Game")
-                        .WithMany("Armies")
-                        .HasForeignKey("GameId");
-
-                    b.HasOne("Server.Models.Users.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-
-                    b.OwnsOne("Server.Models.MapEntities.NPCData", "NPCData", b1 =>
-                        {
-                            b1.Property<int>("ArmyId")
-                                .ValueGeneratedOnAdd()
-                                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                            b1.Property<int>("Disposition");
-
-                            b1.Property<int?>("ItemRewardId");
-
-                            b1.Property<int>("MapRepresentation");
-
-                            b1.Property<string>("OccupiedTilesString");
-
-                            b1.Property<int>("RewardQuantity");
-
-                            b1.Property<int>("RewardType");
-
-                            b1.Property<int>("TroopsRewardQuantity");
-
-                            b1.Property<int>("TroopsRewardType");
-
-                            b1.HasKey("ArmyId");
-
-                            b1.HasIndex("ItemRewardId");
-
-                            b1.ToTable("Armies");
-
-                            b1.HasOne("Server.Models.Armies.Army")
-                                .WithOne("NPCData")
-                                .HasForeignKey("Server.Models.MapEntities.NPCData", "ArmyId")
-                                .OnDelete(DeleteBehavior.Cascade);
-
-                            b1.HasOne("Server.Models.Items.ItemBlueprint", "ItemReward")
-                                .WithMany()
-                                .HasForeignKey("ItemRewardId");
-                        });
-                });
-
-            modelBuilder.Entity("Server.Models.Heroes.Unit", b =>
-                {
-                    b.HasOne("Server.Models.Armies.Army", "Army")
-                        .WithMany("Units")
-                        .HasForeignKey("ArmyId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
             modelBuilder.Entity("Server.Models.Heroes.Units.UnitConfigurationAbility", b =>
                 {
                     b.HasOne("Server.Models.Heroes.Units.Ability", "Ability")
@@ -731,48 +500,6 @@ namespace Server.Data.Migrations
                         .WithMany("UnitConfigurationUpgrades")
                         .HasForeignKey("UpgradeId")
                         .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("Server.Models.Items.Item", b =>
-                {
-                    b.HasOne("Server.Models.Items.ItemBlueprint", "Blueprint")
-                        .WithMany()
-                        .HasForeignKey("BlueprintId");
-
-                    b.HasOne("Server.Models.Heroes.Unit", "Unit")
-                        .WithMany("Items")
-                        .HasForeignKey("UnitId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("Server.Models.MapEntities.Dwelling", b =>
-                {
-                    b.HasOne("Server.Models.Realms.Game", "Game")
-                        .WithMany("Dwellings")
-                        .HasForeignKey("GameId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("Server.Models.Armies.Army", "Guardian")
-                        .WithMany()
-                        .HasForeignKey("GuardianId");
-
-                    b.HasOne("Server.Models.Users.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-                });
-
-            modelBuilder.Entity("Server.Models.MapEntities.Treasure", b =>
-                {
-                    b.HasOne("Server.Models.Realms.Game")
-                        .WithMany("Treasures")
-                        .HasForeignKey("GameId");
-                });
-
-            modelBuilder.Entity("Server.Models.Realms.Room", b =>
-                {
-                    b.HasOne("Server.Models.Realms.Game")
-                        .WithMany("Rooms")
-                        .HasForeignKey("GameId");
                 });
 
             modelBuilder.Entity("Server.Models.Users.Friendship", b =>
@@ -806,41 +533,6 @@ namespace Server.Data.Migrations
                     b.HasOne("Server.Models.Users.User", "User")
                         .WithMany("Photos")
                         .HasForeignKey("UserId");
-                });
-
-            modelBuilder.Entity("Server.Models.Users.User", b =>
-                {
-                    b.HasOne("Server.Models.Realms.Game", "Game")
-                        .WithMany("Users")
-                        .HasForeignKey("GameId");
-
-                    b.OwnsOne("Server.Models.Users.Avatar", "Avatar", b1 =>
-                        {
-                            b1.Property<int>("UserId")
-                                .ValueGeneratedOnAdd()
-                                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                            b1.Property<int>("Gems");
-
-                            b1.Property<int>("Gold");
-
-                            b1.Property<int>("Ore");
-
-                            b1.Property<int>("Team");
-
-                            b1.Property<string>("VisitedString");
-
-                            b1.Property<int>("Wood");
-
-                            b1.HasKey("UserId");
-
-                            b1.ToTable("AspNetUsers");
-
-                            b1.HasOne("Server.Models.Users.User")
-                                .WithOne("Avatar")
-                                .HasForeignKey("Server.Models.Users.Avatar", "UserId")
-                                .OnDelete(DeleteBehavior.Cascade);
-                        });
                 });
 
             modelBuilder.Entity("Server.Models.Users.UserRole", b =>

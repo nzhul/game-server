@@ -14,7 +14,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
@@ -23,7 +22,6 @@ using Newtonsoft.Json.Serialization;
 using Server.Api.Helpers;
 using Server.Api.Infrastructure.Filters;
 using Server.Data;
-using Server.Data.Generators;
 using Server.Data.Services.Abstraction;
 using Server.Data.Services.Implementation;
 using Server.Models.Users;
@@ -69,12 +67,7 @@ namespace Server.Api
             services.AddAutoMapper(typeof(AutoMapperProfiles).GetTypeInfo().Assembly);
             services.AddScoped<IGameService, GameService>();
             services.AddScoped<IUsersService, UsersService>();
-            //services.AddScoped<IRealmsService, RealmsService>();
-            services.AddScoped<IArmiesService, ArmiesService>();
-            services.AddScoped<IBattleService, BattleService>();
-            //services.AddScoped<IAvatarsService, AvatarsService>();
             services.AddScoped<IUnitConfigurationsService, UnitConfigurationsService>();
-            services.AddScoped<IMapGenerator, MapGenerator>();
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {

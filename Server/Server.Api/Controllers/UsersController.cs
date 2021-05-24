@@ -39,14 +39,7 @@ namespace Server.Api.Controllers
         {
             int currentUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
 
-            // var dbUser = await _usersService.GetUser(currentUserId);
-
             userParams.UserId = currentUserId;
-
-            // if (string.IsNullOrEmpty(userParams.Gender))
-            // {
-            //     userParams.Gender = dbUser.Gender == "male" ? "female" : "male";
-            // }
 
             Server.Models.Pagination.PagedList<User> users = await _usersService.GetUsers(userParams);
 
@@ -161,18 +154,18 @@ namespace Server.Api.Controllers
             }
         }
 
-        [HttpPut("{userId}/clearbattle")]
-        public async Task<IActionResult> ClearBattle(int userId)
-        {
-            await _usersService.ClearBattle(userId);
-            return Ok();
-        }
+        //[HttpPut("{userId}/clearbattle")]
+        //public async Task<IActionResult> ClearBattle(int userId)
+        //{
+        //    await _usersService.ClearBattle(userId);
+        //    return Ok();
+        //}
 
-        [HttpPut("clearallbattles")]
-        public async Task<IActionResult> ClearAllBattles()
-        {
-            await _usersService.ClearAllBattles();
-            return Ok();
-        }
+        //[HttpPut("clearallbattles")]
+        //public async Task<IActionResult> ClearAllBattles()
+        //{
+        //    await _usersService.ClearAllBattles();
+        //    return Ok();
+        //}
     }
 }
