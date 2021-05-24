@@ -1,9 +1,10 @@
 ﻿using System;
-using Assets.Scripts.Network.Services;
 using GameServer.Managers;
 using NetworkingShared;
 using NetworkingShared.Attributes;
 using NetworkingShared.Packets.World.ClientServer;
+using NetworkingShared.Packets.World.ServerClient;
+using Newtonsoft.Json;
 
 namespace GameServer.PacketHandlers
 {
@@ -14,21 +15,30 @@ namespace GameServer.PacketHandlers
         {
             Net_ReconnectRequest msg = (Net_ReconnectRequest)packet;
 
-            // TODO: User should not be able to just reconnect to any Game.
-            // Server should do API call to check what is the gameId of the user.
-
             var connection = NetworkServer.Instance.Connections[connectionId];
             connection.GameId = msg.GameId;
 
-            if (GameManager.Instance.GameIsRegistered(msg.GameId))
+            if (!GameManager.Instance.GameIsRegistered(msg.GameId))
             {
-                Console.WriteLine($"Game with Id {msg.GameId} is already registered!");
+                Console.WriteLine($"[ERROR] Game with Id {msg.GameId} is not registered registered!");
+                // TODO: Return fail event ?
                 return;
             }
 
-            var game = RequestManagerHttp.GameService.GetGame(msg.GameId);
-            GameManager.Instance.RegisterGame(game);
-            Console.WriteLine($"Game with Id {game.Id} loaded!");
+            // raise startGame event
+
+            var game = GameManager.Instance.GetGameByConnectionId(connectionId);
+            var rmsg = new Net_OnStartGame()
+            {
+                GameId = game.Id,
+                GameString = JsonConvert.SerializeObject(game)
+            };
+
+            NetworkServer.Instance.Send(connectionId, rmsg);
+
+            //var game = RequestManagerHttp.GameService.GetGame(msg.GameId);
+            //GameManager.Instance.RegisterGame(game);
+            //Console.WriteLine($"Game with Id {game.Id} loaded!");
         }
     }
 }

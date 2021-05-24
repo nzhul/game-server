@@ -12,6 +12,8 @@ namespace GameServer.Models
 
         public IList<Dwelling> Dwellings { get; set; }
 
+        public IList<Treasure> Treasures { get; set; }
+
         public IList<Avatar> Avatars { get; set; }
 
         private string _matrixString;

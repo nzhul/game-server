@@ -29,19 +29,19 @@ namespace GameServer.PacketHandlers
             {
                 NetworkServer.Instance.Send(connectionId, new Net_OnReconnectBattleFail());
 
-                // TODO: Extract into FireAndForget() utility method.
-                Task.Run(() =>
-                {
-                    try
-                    {
-                        RequestManagerHttp.BattleService.UnRegisterBattle(connection.UserId);
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine($"Error setting user offline. UserId: {connection.UserId}. Ex: {ex}");
-                    }
-                });
-                return;
+                // TODO: Delete this commented code.
+                //Task.Run(() =>
+                //{
+                //    try
+                //    {
+                //        RequestManagerHttp.BattleService.UnRegisterBattle(connection.UserId);
+                //    }
+                //    catch (Exception ex)
+                //    {
+                //        Console.WriteLine($"Error setting user offline. UserId: {connection.UserId}. Ex: {ex}");
+                //    }
+                //});
+                //return;
             }
 
             var isAttacker = battle.AttackerArmy.UserId == connection.UserId;

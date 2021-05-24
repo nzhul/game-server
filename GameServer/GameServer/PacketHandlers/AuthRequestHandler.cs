@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Assets.Scripts.Network.Services;
 using Assets.Scripts.Network.Shared.NetMessages.Users;
+using GameServer.Managers;
 using NetworkingShared;
 using NetworkingShared.Attributes;
 
@@ -33,8 +34,12 @@ namespace GameServer.PacketHandlers
                 connection.Token = msg.Token;
                 connection.Username = msg.Username;
                 connection.MMR = msg.MMR;
-                connection.GameId = msg.GameId;
-                connection.BattleId = msg.BattleId;
+
+                rmsg.GameId = GameManager.Instance.GetGameIdByUserId(connection.UserId);
+                rmsg.BattleId = BattleManager.Instance.GetBattleIdByUserId(connection.UserId);
+
+                connection.GameId = rmsg.GameId;
+                connection.BattleId = rmsg.BattleId;
 
                 // TODO: Extract into FireAndForget() utility method.
                 Task.Run(() =>

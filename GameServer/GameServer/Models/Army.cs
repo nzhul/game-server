@@ -14,6 +14,7 @@ namespace GameServer.Models
 
         public int? UserId { get; set; }
 
+        // TODO: Delete if not needed
         public int GameId { get; set; }
 
         public NPCData NPCData { get; set; }

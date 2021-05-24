@@ -24,7 +24,13 @@ namespace GameServer.Managers
             }
         }
 
-        private List<Battle> _activeBattles = new List<Battle>();
+        private List<Battle> _activeBattles;
+
+        public void Initialize()
+        {
+            _activeBattles = new List<Battle>();
+            // TODO: GenerateDummyBattle();
+        }
 
         public void RegisterBattle(Battle battle)
         {
@@ -50,6 +56,17 @@ namespace GameServer.Managers
         public void UnRegisterBattle(Battle battle)
         {
             _activeBattles.Remove(battle);
+        }
+
+        public Guid? GetBattleIdByUserId(int userId)
+        {
+            var battle = _activeBattles.FirstOrDefault(x => x.AttackerArmy.UserId == userId || x.DefenderArmy.UserId == userId);
+            if (battle == null)
+            {
+                return null;
+            }
+
+            return battle.Id;
         }
 
         public void DisconnectFromBattle(int connectionId)
