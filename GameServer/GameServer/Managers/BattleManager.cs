@@ -58,6 +58,17 @@ namespace GameServer.Managers
             _activeBattles.Remove(battle);
         }
 
+        public Guid? GetBattleIdByUserId(int userId)
+        {
+            var battle = _activeBattles.FirstOrDefault(x => x.AttackerArmy.UserId == userId || x.DefenderArmy.UserId == userId);
+            if (battle == null)
+            {
+                return null;
+            }
+
+            return battle.Id;
+        }
+
         public void DisconnectFromBattle(int connectionId)
         {
             var attackerBattle = _activeBattles.FirstOrDefault(x => x.AttackerConnectionId == connectionId);

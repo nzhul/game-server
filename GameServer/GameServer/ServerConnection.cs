@@ -15,7 +15,7 @@ namespace GameServer
         /// </summary>
         public int ConnectionId { get; set; }
 
-        public int GameId { get; set; }
+        public int? GameId { get; set; }
 
         public Guid? BattleId { get; set; }
 

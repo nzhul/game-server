@@ -31,10 +31,10 @@ namespace GameServer.PacketHandlers
                 };
 
                 var gameId = GameManager.Instance.GetGameIdByConnectionId(connectionId);
-                var movingArmy = GameManager.Instance.GetArmy(gameId, msg.ArmyId);
+                var movingArmy = GameManager.Instance.GetArmy(gameId.Value, msg.ArmyId);
 
                 // 2. Notify the interested clients ( must exclude the requester )
-                base.NotifyClientsInGame(gameId, rmsg);
+                base.NotifyClientsInGame(gameId.Value, rmsg);
 
                 // 3. Update army position here in the dedicated server cache.
                 base.UpdateCache(movingArmy, msg.Destination, movingArmy.GameId);

@@ -67,12 +67,13 @@ namespace GameServer.Managers
         public Game GetGameByConnectionId(int connectionId)
         {
             var gameId = this.GetGameIdByConnectionId(connectionId);
-            if (gameId == 0)
+            if (!gameId.HasValue)
             {
                 Console.WriteLine($"No active game was found for connectionId: {connectionId}");
+                return null;
             }
 
-            return _games[gameId];
+            return _games[gameId.Value];
         }
 
         public Unit GetUnit(int gameId, int unitId)
@@ -97,7 +98,7 @@ namespace GameServer.Managers
             return game.Armies.FirstOrDefault(x => x.Id == armyId);
         }
 
-        public int GetGameIdByConnectionId(int connectionId)
+        public int? GetGameIdByConnectionId(int connectionId)
         {
             return NetworkServer.Instance.Connections[connectionId].GameId;
         }
@@ -118,13 +119,25 @@ namespace GameServer.Managers
         public void DisconnectFromGame(int userId)
         {
             var gameId = GetGameIdByUserId(userId);
-            var avatar = _games[gameId].Avatars.FirstOrDefault(x => x.UserId == userId);
+            if (!gameId.HasValue)
+            {
+                return;
+            }
+
+            var avatar = _games[gameId.Value].Avatars.FirstOrDefault(x => x.UserId == userId);
             avatar.IsDisconnected = true;
         }
 
         public void LeaveGame(ServerConnection connection)
         {
-            var gameId = connection.GameId;
+            int gameId;
+            if (!connection.GameId.HasValue)
+            {
+                Console.WriteLine("[ERROR] Leaving game. ServerConnection gameId is null");
+            }
+
+            gameId = connection.GameId.Value;
+
             var avatar = _games[gameId].Avatars.FirstOrDefault(x => x.UserId == connection.UserId);
             avatar.HasLeftTheGame = true;
 
@@ -148,9 +161,17 @@ namespace GameServer.Managers
                 }, $"Error ending game with id: {gameId}");
 
                 // 3. Remove the game from the pool.
-                _games.Remove(gameId);
+                //_games.Remove(gameId);
 
                 return;
+            }
+
+
+            // all players have left the game. we can close it now.
+            // game statistics is already recorded on previous stage.
+            if (playersCount == 0)
+            {
+                _games.Remove(gameId);
             }
 
             // TODO: 1. TCP call to let other players know that this player has left the game
@@ -240,9 +261,15 @@ namespace GameServer.Managers
             return NetworkServer.Instance.Connections.FirstOrDefault(x => x.Value.UserId == userId).Value.ConnectionId;
         }
 
-        private int GetGameIdByUserId(int userId)
+        public int? GetGameIdByUserId(int userId)
         {
-            return _games.FirstOrDefault(x => x.Value.Avatars.Any(y => y.UserId == userId)).Value.Id;
+            var gameKv = _games.FirstOrDefault(x => x.Value.Avatars.Any(y => y.UserId == userId));
+            if (gameKv.Equals(default(KeyValuePair<int, Game>)))
+            {
+                return null;
+            }
+
+            return gameKv.Value.Id;
         }
     }
 }
