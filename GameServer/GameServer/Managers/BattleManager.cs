@@ -24,7 +24,13 @@ namespace GameServer.Managers
             }
         }
 
-        private List<Battle> _activeBattles = new List<Battle>();
+        private List<Battle> _activeBattles;
+
+        public void Initialize()
+        {
+            _activeBattles = new List<Battle>();
+            // TODO: GenerateDummyBattle();
+        }
 
         public void RegisterBattle(Battle battle)
         {

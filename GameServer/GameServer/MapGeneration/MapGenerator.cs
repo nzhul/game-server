@@ -50,6 +50,11 @@ namespace GameServer.MapGeneration
 
         private bool MapIsFullForMonstersOrTreasure;
 
+        private int _lastArmyId = 0;
+        private int _lastUnitId = 0;
+        private int _lastTreasureId = 0;
+        private int _lastDwellingId = 0;
+
         public int PassageRadius { get; private set; }
 
         public string Seed { get; set; }
@@ -70,6 +75,11 @@ namespace GameServer.MapGeneration
 
         public Map TryGenerateMap(GameParams gameParams)
         {
+            _lastArmyId = 0;
+            _lastUnitId = 0;
+            _lastTreasureId = 0;
+            _lastDwellingId = 0;
+
             this.Template = this.Templates[gameParams.MapTemplate];
             var zones = new List<Map>();
 
@@ -831,6 +841,7 @@ namespace GameServer.MapGeneration
         {
             var playerArmy = new Army()
             {
+                Id = ++_lastArmyId,
                 X = position.Y, // X and Y are switcher because here X is Row. In Unity X is Col
                 Y = position.X, // X and Y are switcher because here Y is Col. In Unity Y is Row
                 Team = team,
@@ -847,6 +858,7 @@ namespace GameServer.MapGeneration
         {
             var neutralArmy = new Army()
             {
+                Id = ++_lastArmyId,
                 X = position.Y, // X and Y are switcher because here X is Row. In Unity X is Col
                 Y = position.X,
                 NPCData = new NPCData
@@ -874,6 +886,7 @@ namespace GameServer.MapGeneration
             // TODO: Populate Unit TEAM
             var heroUnit = new Unit
             {
+                Id = ++_lastUnitId,
                 Type = CreatureType.Paladin,
                 Level = 1,
                 Quantity = 1,
@@ -885,6 +898,7 @@ namespace GameServer.MapGeneration
 
             var unit1 = new Unit
             {
+                Id = ++_lastUnitId,
                 Quantity = 1,
                 Type = CreatureType.Troll,
                 StartX = 0,
@@ -895,6 +909,7 @@ namespace GameServer.MapGeneration
 
             var unit2 = new Unit
             {
+                Id = ++_lastUnitId,
                 Quantity = 2,
                 Type = CreatureType.Troll,
                 StartX = 0,
@@ -905,6 +920,7 @@ namespace GameServer.MapGeneration
 
             var unit3 = new Unit
             {
+                Id = ++_lastUnitId,
                 Quantity = 2,
                 Type = CreatureType.Shaman,
                 StartX = 0,
@@ -985,6 +1001,7 @@ namespace GameServer.MapGeneration
         {
             Dwelling dwelling = new Dwelling()
             {
+                Id = ++_lastDwellingId,
                 Type = type,
                 X = position.Y, // X and Y are switcher because here X is Row. In Unity X is Col
                 Y = position.X,

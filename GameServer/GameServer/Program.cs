@@ -4,7 +4,9 @@ using System.Threading;
 using Assets.Scripts.Network.Services;
 using Assets.Scripts.Network.Shared.NetMessages.Users;
 using GameServer.Managers;
+using GameServer.Matchmaking;
 using GameServer.Scheduling;
+using GameServer.Utilities;
 using LiteNetLib;
 using NetworkingShared;
 using NetworkingShared.Packets.Battle;
@@ -27,7 +29,9 @@ namespace GameServer
             RequestManagerHttp.Instance.Initialize();
             //RequestManagerTcp.Instance.Initialize();
             GameManager.Instance.Initialize();
+            BattleManager.Instance.Initialize();
             GameplayConfigurationManager.Instance.Initialize();
+            AM.Instance.Initialize();
             Scheduler.Instance.Initialize();
             NetworkServer.Instance.Start();
 
@@ -58,6 +62,12 @@ namespace GameServer
                     break;
                 case ConsoleKey.S:
                     Console.WriteLine($"Active connections: {NetworkServer.Instance.ConnectionsCount}");
+                    break;
+                case ConsoleKey.G:
+                    Console.WriteLine($"Active games: {GameManager.Instance.GamesCount}");
+                    break;
+                case ConsoleKey.M:
+                    Console.WriteLine($"Matchmaking registrations: {Matchmaker.Instance.PoolSize}");
                     break;
             }
         }

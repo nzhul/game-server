@@ -1,17 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Assets.Scripts.Network.Services;
+using GameServer.MapGeneration;
 using GameServer.Models;
 using GameServer.Models.Units;
 using GameServer.NetworkShared.Packets.World.ServerClient;
 using GameServer.Utilities;
+using Newtonsoft.Json;
 
 namespace GameServer.Managers
 {
     public class GameManager
     {
         private static GameManager _instance;
+        private IMapGenerator _mapGenerator;
 
         public static GameManager Instance
         {
@@ -26,21 +30,38 @@ namespace GameServer.Managers
             }
         }
 
-        private IDictionary<int, Game> Games;
+        private IDictionary<int, Game> _games;
+
+        private int _lastGameId;
+
+        public int GamesCount { get { return _games.Count; } }
 
         public void Initialize()
         {
-            this.Games = new Dictionary<int, Game>();
+            _games = new Dictionary<int, Game>();
+            _mapGenerator = new MapGenerator();
+            _lastGameId = 0;
+
+            GenerateDummyGame();
+        }
+
+        private void GenerateDummyGame()
+        {
+            var gameString = File.ReadAllText("DummyData/DummyGame.json");
+            var game = JsonConvert.DeserializeObject<Game>(gameString);
+            RegisterGame(game);
+            Console.WriteLine("Adding 1 dummy game!");
         }
 
         public bool GameIsRegistered(int gameId)
         {
-            return this.Games.ContainsKey(gameId);
+            return _games.ContainsKey(gameId);
         }
 
         public void RegisterGame(Game game)
         {
-            this.Games.Add(game.Id, game);
+            _games.Add(game.Id, game);
+            _lastGameId = game.Id;
         }
 
         public Game GetGameByConnectionId(int connectionId)
@@ -51,12 +72,12 @@ namespace GameServer.Managers
                 Console.WriteLine($"No active game was found for connectionId: {connectionId}");
             }
 
-            return this.Games[gameId];
+            return _games[gameId];
         }
 
         public Unit GetUnit(int gameId, int unitId)
         {
-            var game = this.Games[gameId];
+            var game = _games[gameId];
 
             foreach (var army in game.Armies)
             {
@@ -72,7 +93,7 @@ namespace GameServer.Managers
 
         public Army GetArmy(int gameId, int armyId)
         {
-            var game = this.Games[gameId];
+            var game = _games[gameId];
             return game.Armies.FirstOrDefault(x => x.Id == armyId);
         }
 
@@ -83,7 +104,7 @@ namespace GameServer.Managers
 
         public int GetConnectionIdByArmyId(int gameId, int armyId)
         {
-            var army = this.Games[gameId].Armies.FirstOrDefault(x => x.Id == armyId);
+            var army = _games[gameId].Armies.FirstOrDefault(x => x.Id == armyId);
             var connection = NetworkServer.Instance.Connections.FirstOrDefault(x => x.Value.UserId == army.UserId);
             return connection.Value != null ? connection.Value.ConnectionId : 0;
         }
@@ -97,21 +118,21 @@ namespace GameServer.Managers
         public void DisconnectFromGame(int userId)
         {
             var gameId = GetGameIdByUserId(userId);
-            var avatar = this.Games[gameId].Avatars.FirstOrDefault(x => x.UserId == userId);
+            var avatar = _games[gameId].Avatars.FirstOrDefault(x => x.UserId == userId);
             avatar.IsDisconnected = true;
         }
 
         public void LeaveGame(ServerConnection connection)
         {
             var gameId = connection.GameId;
-            var avatar = this.Games[gameId].Avatars.FirstOrDefault(x => x.UserId == connection.UserId);
+            var avatar = _games[gameId].Avatars.FirstOrDefault(x => x.UserId == connection.UserId);
             avatar.HasLeftTheGame = true;
 
             // If there are only two player left in the game, the last player standing is the winner.
-            var playersCount = this.Games[gameId].Avatars.Count(x => !x.HasLeftTheGame);
+            var playersCount = _games[gameId].Avatars.Count(x => !x.HasLeftTheGame);
             if (playersCount == 1)
             {
-                var winnerAvatar = Games[gameId].Avatars.FirstOrDefault(x => !x.HasLeftTheGame);
+                var winnerAvatar = _games[gameId].Avatars.FirstOrDefault(x => !x.HasLeftTheGame);
                 var winnerConnectionId = GetConnectionIdByUserId(winnerAvatar.UserId);
 
                 if (winnerConnectionId >= 0)
@@ -126,22 +147,86 @@ namespace GameServer.Managers
                     RequestManagerHttp.GameService.EndGame(gameId, winnerAvatar.UserId);
                 }, $"Error ending game with id: {gameId}");
 
+                // 3. Remove the game from the pool.
+                _games.Remove(gameId);
+
                 return;
             }
 
-            // Regular game leave.
-            HttpUtilities.FF(() =>
+            // TODO: 1. TCP call to let other players know that this player has left the game
+        }
+
+        public Game CreateGame(GameParams @params)
+        {
+            Map generatedMap = _mapGenerator.TryGenerateMap(@params);
+            _lastGameId++;
+
+            var newGame = new Game()
             {
-                RequestManagerHttp.GameService.LeaveGame(gameId, connection.UserId);
-            }, $"Error leaving the game with id {gameId}. UserId: {connection.UserId}");
+                Id = _lastGameId,
+                Avatars = InitAvatars(@params),
+                MatrixString = generatedMap.MatrixString,
+                Dwellings = generatedMap.Dwellings,
+                Treasures = generatedMap.Treasures,
+                Armies = generatedMap.Armies,
+            };
 
-            // 
-            // 1. [API] Unregister user from the game
-            // 2. [API] Lower the leaver MMR, IF he is not the winner!
-            // 3. [API] Update the game state
+            AssignAvatarsToEntities(newGame);
 
-            // 1. TCP call to let other players know that this player has left the game
-            // 2. API call to update the game state and the user state
+            AssignGameToUsers(newGame.Id, @params.Players.Select(x => x.UserId));
+
+            return newGame;
+        }
+
+        private void AssignGameToUsers(int gameId, IEnumerable<int> userIds)
+        {
+            foreach (var userId in userIds)
+            {
+                var con = NetworkServer.Instance.Connections.FirstOrDefault(x => x.Value.UserId == userId).Value;
+                con.GameId = gameId;
+            }
+        }
+
+        private void AssignAvatarsToEntities(Game newGame)
+        {
+            var teams = (Team[])Enum.GetValues(typeof(Team));
+
+            for (int i = 1; i < teams.Length; i++)
+            {
+                var team = teams[i];
+
+                var avatarsFromTeam = newGame.Avatars.Where(x => x.Team == team);
+                var armies = newGame.Armies.Where(x => x.Team == team && !x.IsNPC && x.UserId == null);
+                var dwellings = newGame.Dwellings.Where(x => x.Team == team && x.UserId == null);
+
+                foreach (var avatar in avatarsFromTeam)
+                {
+                    var availibleArmy = armies.FirstOrDefault(x => x.Team == avatar.Team);
+                    var availibleCastle = dwellings.FirstOrDefault(x => x.Team == avatar.Team
+                        && x.Type == DwellingType.Castle && x.Link == availibleArmy.Link);
+
+                    availibleArmy.UserId = avatar.UserId;
+                    availibleCastle.UserId = avatar.UserId;
+                    //TODO: we are currently handling only heroes and castles. Handle other dwellings if needed.
+                }
+            }
+        }
+
+        private IList<Avatar> InitAvatars(GameParams @params)
+        {
+            var avatars = new List<Avatar>();
+            foreach (var player in @params.Players)
+            {
+                var newAvatar = new Avatar
+                {
+                    UserId = player.UserId,
+                    Team = player.Team
+                };
+
+                avatars.Add(newAvatar);
+            }
+
+            return avatars;
         }
 
         private int GetConnectionIdByUserId(int userId)
@@ -157,7 +242,7 @@ namespace GameServer.Managers
 
         private int GetGameIdByUserId(int userId)
         {
-            return Games.FirstOrDefault(x => x.Value.Avatars.Any(y => y.UserId == userId)).Value.Id;
+            return _games.FirstOrDefault(x => x.Value.Avatars.Any(y => y.UserId == userId)).Value.Id;
         }
     }
 }

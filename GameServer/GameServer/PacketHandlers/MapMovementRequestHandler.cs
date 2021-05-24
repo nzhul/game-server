@@ -33,28 +33,11 @@ namespace GameServer.PacketHandlers
                 var gameId = GameManager.Instance.GetGameIdByConnectionId(connectionId);
                 var movingArmy = GameManager.Instance.GetArmy(gameId, msg.ArmyId);
 
-                // BUG: the game is not loaded because it is from reconnect!
-                // Temporary hack: load all games on server start!
-                // We won't need to do this in the actual game, because the game will be there.
-
                 // 2. Notify the interested clients ( must exclude the requester )
                 base.NotifyClientsInGame(gameId, rmsg);
 
                 // 3. Update army position here in the dedicated server cache.
                 base.UpdateCache(movingArmy, msg.Destination, movingArmy.GameId);
-
-                // 5. Update the database.
-                Task.Run(() =>
-                {
-                    try
-                    {
-                        RequestManagerHttp.ArmiesService.UpdateArmyPosition(msg.ArmyId, msg.Destination.X, msg.Destination.Y);
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine($"Error updating army position. GameId: {gameId}, ArmyId: {movingArmy.Id} Ex: {ex}");
-                    }
-                });
 
                 // Note: Both UpdateCached and UpdateDatabase is happening after client notification.
                 // That is done on purpose so we do not slow down the response to the client after we know that the request is valid.

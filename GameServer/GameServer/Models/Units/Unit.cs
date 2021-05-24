@@ -12,6 +12,7 @@ namespace GameServer.Models.Units
 
         public int Level { get; set; }
 
+        // TODO: Delete if not needed
         public int? GameId { get; set; }
 
         public int? AvatarId { get; set; }

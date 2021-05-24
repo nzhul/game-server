@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Threading.Tasks;
-using Assets.Scripts.Network.Services;
 using GameServer.Managers;
 using GameServer.Models;
 using GameServer.Models.Battle;
@@ -63,18 +61,19 @@ namespace GameServer.PacketHandlers
                 BattleManager.Instance.RegisterBattle(newBattle);
                 NetworkServer.Instance.Send(connectionId, rmsg);
 
-                Task.Run(() =>
-                {
-                    var connection = NetworkServer.Instance.Connections[connectionId];
-                    try
-                    {
-                        RequestManagerHttp.BattleService.RegisterBattle(newBattle.Id, connection.UserId);
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine($"Error registering battle on API. UserId: {connection.UserId}. Ex: {ex}");
-                    }
-                });
+                // TODO: Delete this.
+                //Task.Run(() =>
+                //{
+                //    var connection = NetworkServer.Instance.Connections[connectionId];
+                //    try
+                //    {
+                //        RequestManagerHttp.BattleService.RegisterBattle(newBattle.Id, connection.UserId);
+                //    }
+                //    catch (Exception ex)
+                //    {
+                //        Console.WriteLine($"Error registering battle on API. UserId: {connection.UserId}. Ex: {ex}");
+                //    }
+                //});
 
                 // TODO: Register battle for other player when pvp battle.
             }

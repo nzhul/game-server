@@ -54,9 +54,17 @@ namespace GameServer
         public void OnNetworkReceive(NetPeer peer, NetPacketReader reader, DeliveryMethod deliveryMethod)
         {
             var packetType = (PacketType)reader.GetByte();
-            var packet = NetworkUtils.ResolvePacket(packetType, reader);
-            HandlerRegistry.Handlers[packet.Type].Handle(packet, peer.Id);
-            reader.Recycle();
+
+            try
+            {
+                var packet = NetworkUtils.ResolvePacket(packetType, reader);
+                HandlerRegistry.Handlers[packet.Type].Handle(packet, peer.Id);
+                reader.Recycle();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[ERROR] Error processing {packetType} packet. Ex: {ex}");
+            }
         }
 
         public void PollEvents()
