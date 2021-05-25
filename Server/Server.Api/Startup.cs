@@ -1,31 +1,23 @@
-﻿using System;
-using System.IO;
-using System.Net;
-using System.Reflection;
+﻿using System.Reflection;
 using System.Text;
-using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
 using Server.Api.Helpers;
-using Server.Api.Infrastructure.Filters;
 using Server.Data;
 using Server.Data.Services.Abstraction;
 using Server.Data.Services.Implementation;
 using Server.Models.Users;
-using Swashbuckle.AspNetCore.Swagger;
 
 namespace Server.Api
 {
@@ -43,6 +35,7 @@ namespace Server.Api
         {
             IdentityBuilder builder = services.AddIdentityCore<User>(opt =>
             {
+                opt.SignIn.RequireConfirmedEmail = false;
                 opt.Password.RequireDigit = false;
                 opt.Password.RequiredLength = 4;
                 opt.Password.RequireNonAlphanumeric = false;
@@ -61,9 +54,23 @@ namespace Server.Api
             });
 
             var key = Encoding.ASCII.GetBytes(Configuration.GetSection("AppSettings:Token").Value);
-            services.AddDbContext<DataContext>(x => x.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"))
-            .ConfigureWarnings(warnings => warnings.Ignore(CoreEventId.IncludeIgnoredWarning)), ServiceLifetime.Transient);
-            services.AddCors();
+            services.AddDbContext<DataContext>(opt =>
+            {
+                opt.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+            }, ServiceLifetime.Transient);
+
+            services.AddCors(opt =>
+            {
+                opt.AddPolicy("CorsPolicy", policy =>
+                {
+                    policy.AllowAnyHeader()
+                            .AllowAnyMethod()
+                            .WithExposedHeaders("WWW-Authenticate")
+                            .AllowAnyOrigin();
+                    //.WithOrigins("http://localhost:3000")
+                });
+            });
+
             services.AddAutoMapper(typeof(AutoMapperProfiles).GetTypeInfo().Assembly);
             services.AddScoped<IGameService, GameService>();
             services.AddScoped<IUsersService, UsersService>();
@@ -88,79 +95,38 @@ namespace Server.Api
                 options.AddPolicy("VipOnly", policy => policy.RequireRole("Admin", "VIP"));
             });
 
-            services.AddMvc(options =>
+            services.AddControllers(options =>
             {
-                var policy = new AuthorizationPolicyBuilder()
-                .RequireAuthenticatedUser()
-                .Build();
-
+                var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
                 options.Filters.Add(new AuthorizeFilter(policy));
-            })
-                .AddJsonOptions(options =>
+            }).AddNewtonsoftJson(opt =>
             {
-                options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
-                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
-                options.SerializerSettings.Converters.Add(new StringEnumConverter());
-                //options.SerializerSettings.NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore;
+                opt.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+                // Don't try to follow circular references -> https://dotnetcoretutorials.com/2020/03/15/fixing-json-self-referencing-loop-exceptions/
+                opt.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+
+                // because -> System.Text.Json does not support IDictionary<enum, string> serialize, deserialize
+                opt.SerializerSettings.Converters.Add(new StringEnumConverter());
             });
 
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new Info
-                {
-                    Version = "v1",
-                    Title = "AW Server API",
-                    Description = "A simple example asp.net core web api"
-                });
-                c.OperationFilter<AddAuthTokenHeaderParameter>();
 
-                // Set the comments path for the Swagger JSON and UI.
-                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-                c.IncludeXmlComments(xmlPath);
-            });
+            // TODO: Swagger ?
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-            else
-            {
-                app.UseExceptionHandler(builder =>
-                {
-                    builder.Run(async context =>
-                    {
-                        context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+            //TODO: Middleware for exceptions
 
-                        var error = context.Features.Get<IExceptionHandlerFeature>();
-                        if (error != null)
-                        {
-                            context.Response.AddApplicationError(error.Error.Message);
-                            await context.Response.WriteAsync(error.Error.Message);
-                        }
-                    });
-                });
-            }
+            app.UseRouting();
+            app.UseCors("CorsPolicy");
 
-            //TODO: add any check!
-
-            app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin().AllowCredentials());
             app.UseAuthentication();
-            app.UseDefaultFiles();
-            app.UseStaticFiles();
-            app.UseSwagger(c => c.RouteTemplate = "api/{documentName}/swagger.json");
-            app.UseSwaggerUI(c => c.SwaggerEndpoint("/api/v1/swagger.json", "AW Server V1"));
-            app.UseMvc();
-            app.UseMvc(routes =>
+            app.UseAuthorization();
+
+            app.UseEndpoints(endpoints =>
             {
-                routes.MapSpaFallbackRoute(
-                    name: "spa-fallback",
-                    defaults: new { controller = "Fallback", action = "Index" }
-                );
+                endpoints.MapControllers();
             });
         }
     }

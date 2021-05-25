@@ -1,4 +1,4 @@
-namespace Server.Models.Realms
+namespace Server.Models.Games
 {
     public class Game : Entity
     {

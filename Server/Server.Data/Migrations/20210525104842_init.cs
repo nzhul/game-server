@@ -1,5 +1,4 @@
 ﻿using System;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Server.Data.Migrations
@@ -12,13 +11,13 @@ namespace Server.Data.Migrations
                 name: "Abilities",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Name = table.Column<int>(nullable: false),
-                    IsHeroAbility = table.Column<bool>(nullable: false),
-                    Levels = table.Column<int>(nullable: false),
-                    HealingAmount = table.Column<int>(nullable: false),
-                    DamageAmount = table.Column<int>(nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<int>(type: "int", nullable: false),
+                    IsHeroAbility = table.Column<bool>(type: "bit", nullable: false),
+                    Levels = table.Column<int>(type: "int", nullable: false),
+                    HealingAmount = table.Column<int>(type: "int", nullable: false),
+                    DamageAmount = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -29,11 +28,11 @@ namespace Server.Data.Migrations
                 name: "AspNetRoles",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Name = table.Column<string>(maxLength: 256, nullable: true),
-                    NormalizedName = table.Column<string>(maxLength: 256, nullable: true),
-                    ConcurrencyStamp = table.Column<string>(nullable: true)
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    NormalizedName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -44,38 +43,38 @@ namespace Server.Data.Migrations
                 name: "AspNetUsers",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    UserName = table.Column<string>(maxLength: 256, nullable: true),
-                    NormalizedUserName = table.Column<string>(maxLength: 256, nullable: true),
-                    Email = table.Column<string>(maxLength: 256, nullable: true),
-                    NormalizedEmail = table.Column<string>(maxLength: 256, nullable: true),
-                    EmailConfirmed = table.Column<bool>(nullable: false),
-                    PasswordHash = table.Column<string>(nullable: true),
-                    SecurityStamp = table.Column<string>(nullable: true),
-                    ConcurrencyStamp = table.Column<string>(nullable: true),
-                    PhoneNumber = table.Column<string>(nullable: true),
-                    PhoneNumberConfirmed = table.Column<bool>(nullable: false),
-                    TwoFactorEnabled = table.Column<bool>(nullable: false),
-                    LockoutEnd = table.Column<DateTimeOffset>(nullable: true),
-                    LockoutEnabled = table.Column<bool>(nullable: false),
-                    AccessFailedCount = table.Column<int>(nullable: false),
-                    MMR = table.Column<int>(nullable: false),
-                    Discriminator = table.Column<string>(nullable: true),
-                    Gender = table.Column<string>(nullable: true),
-                    DateOfBirth = table.Column<DateTime>(nullable: false),
-                    LastActive = table.Column<DateTime>(nullable: false),
-                    Interests = table.Column<string>(nullable: true),
-                    City = table.Column<string>(nullable: true),
-                    Country = table.Column<string>(nullable: true),
-                    CreatedBy = table.Column<string>(nullable: true),
-                    CreatedAt = table.Column<DateTime>(nullable: false),
-                    ModifiedBy = table.Column<string>(nullable: true),
-                    ModifiedAt = table.Column<DateTime>(nullable: false),
-                    ActiveConnection = table.Column<int>(nullable: false),
-                    BattleId = table.Column<Guid>(nullable: true),
-                    GameId = table.Column<int>(nullable: true),
-                    OnlineStatus = table.Column<byte>(nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    MMR = table.Column<int>(type: "int", nullable: false),
+                    Discriminator = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Gender = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DateOfBirth = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    LastActive = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Interests = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    City = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Country = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ModifiedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ActiveConnection = table.Column<int>(type: "int", nullable: false),
+                    BattleId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    GameId = table.Column<int>(type: "int", nullable: true),
+                    OnlineStatus = table.Column<byte>(type: "tinyint", nullable: false),
+                    UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    NormalizedEmail = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    EmailConfirmed = table.Column<bool>(type: "bit", nullable: false),
+                    PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    SecurityStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PhoneNumberConfirmed = table.Column<bool>(type: "bit", nullable: false),
+                    TwoFactorEnabled = table.Column<bool>(type: "bit", nullable: false),
+                    LockoutEnd = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
+                    LockoutEnabled = table.Column<bool>(type: "bit", nullable: false),
+                    AccessFailedCount = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -86,9 +85,9 @@ namespace Server.Data.Migrations
                 name: "Games",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    WinnerId = table.Column<int>(nullable: true)
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    WinnerId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -99,11 +98,11 @@ namespace Server.Data.Migrations
                 name: "ItemBlueprints",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Name = table.Column<string>(nullable: true),
-                    Description = table.Column<string>(nullable: true),
-                    ItemSlotType = table.Column<int>(nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ItemSlotType = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -114,31 +113,31 @@ namespace Server.Data.Migrations
                 name: "UnitConfigurations",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Type = table.Column<int>(nullable: false),
-                    Faction = table.Column<int>(nullable: false),
-                    MovementPointsBase = table.Column<int>(nullable: false),
-                    ActionPointsBase = table.Column<int>(nullable: false),
-                    MinDamageBase = table.Column<int>(nullable: false),
-                    MinDamageIncrement = table.Column<int>(nullable: false),
-                    MaxDamageBase = table.Column<int>(nullable: false),
-                    MaxDamageIncrement = table.Column<int>(nullable: false),
-                    HitpointsBase = table.Column<int>(nullable: false),
-                    HitpointsIncrement = table.Column<int>(nullable: false),
-                    ManaBase = table.Column<int>(nullable: false),
-                    ManaIncrement = table.Column<int>(nullable: false),
-                    ArmorBase = table.Column<int>(nullable: false),
-                    ArmorIncrement = table.Column<int>(nullable: false),
-                    EvasionBase = table.Column<int>(nullable: false),
-                    AttackType = table.Column<int>(nullable: false),
-                    ArmorType = table.Column<int>(nullable: false),
-                    BuildTime = table.Column<int>(nullable: false),
-                    WoodCost = table.Column<int>(nullable: false),
-                    OreCost = table.Column<int>(nullable: false),
-                    GoldCost = table.Column<int>(nullable: false),
-                    GemsCost = table.Column<int>(nullable: false),
-                    FoodCost = table.Column<int>(nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Type = table.Column<int>(type: "int", nullable: false),
+                    Faction = table.Column<int>(type: "int", nullable: false),
+                    MovementPointsBase = table.Column<int>(type: "int", nullable: false),
+                    ActionPointsBase = table.Column<int>(type: "int", nullable: false),
+                    MinDamageBase = table.Column<int>(type: "int", nullable: false),
+                    MinDamageIncrement = table.Column<int>(type: "int", nullable: false),
+                    MaxDamageBase = table.Column<int>(type: "int", nullable: false),
+                    MaxDamageIncrement = table.Column<int>(type: "int", nullable: false),
+                    HitpointsBase = table.Column<int>(type: "int", nullable: false),
+                    HitpointsIncrement = table.Column<int>(type: "int", nullable: false),
+                    ManaBase = table.Column<int>(type: "int", nullable: false),
+                    ManaIncrement = table.Column<int>(type: "int", nullable: false),
+                    ArmorBase = table.Column<int>(type: "int", nullable: false),
+                    ArmorIncrement = table.Column<int>(type: "int", nullable: false),
+                    EvasionBase = table.Column<int>(type: "int", nullable: false),
+                    AttackType = table.Column<int>(type: "int", nullable: false),
+                    ArmorType = table.Column<int>(type: "int", nullable: false),
+                    BuildTime = table.Column<int>(type: "int", nullable: false),
+                    WoodCost = table.Column<int>(type: "int", nullable: false),
+                    OreCost = table.Column<int>(type: "int", nullable: false),
+                    GoldCost = table.Column<int>(type: "int", nullable: false),
+                    GemsCost = table.Column<int>(type: "int", nullable: false),
+                    FoodCost = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -149,12 +148,12 @@ namespace Server.Data.Migrations
                 name: "Upgrades",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Name = table.Column<int>(nullable: false),
-                    WoodCost = table.Column<int>(nullable: false),
-                    GoldCost = table.Column<int>(nullable: false),
-                    TimeCost = table.Column<int>(nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<int>(type: "int", nullable: false),
+                    WoodCost = table.Column<int>(type: "int", nullable: false),
+                    GoldCost = table.Column<int>(type: "int", nullable: false),
+                    TimeCost = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -165,11 +164,11 @@ namespace Server.Data.Migrations
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    RoleId = table.Column<int>(nullable: false),
-                    ClaimType = table.Column<string>(nullable: true),
-                    ClaimValue = table.Column<string>(nullable: true)
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    RoleId = table.Column<int>(type: "int", nullable: false),
+                    ClaimType = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ClaimValue = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -186,11 +185,11 @@ namespace Server.Data.Migrations
                 name: "AspNetUserClaims",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    UserId = table.Column<int>(nullable: false),
-                    ClaimType = table.Column<string>(nullable: true),
-                    ClaimValue = table.Column<string>(nullable: true)
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    ClaimType = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ClaimValue = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -207,10 +206,10 @@ namespace Server.Data.Migrations
                 name: "AspNetUserLogins",
                 columns: table => new
                 {
-                    LoginProvider = table.Column<string>(nullable: false),
-                    ProviderKey = table.Column<string>(nullable: false),
-                    ProviderDisplayName = table.Column<string>(nullable: true),
-                    UserId = table.Column<int>(nullable: false)
+                    LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ProviderKey = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ProviderDisplayName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UserId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -227,8 +226,8 @@ namespace Server.Data.Migrations
                 name: "AspNetUserRoles",
                 columns: table => new
                 {
-                    UserId = table.Column<int>(nullable: false),
-                    RoleId = table.Column<int>(nullable: false)
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    RoleId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -251,10 +250,10 @@ namespace Server.Data.Migrations
                 name: "AspNetUserTokens",
                 columns: table => new
                 {
-                    UserId = table.Column<int>(nullable: false),
-                    LoginProvider = table.Column<string>(nullable: false),
-                    Name = table.Column<string>(nullable: false),
-                    Value = table.Column<string>(nullable: true)
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Value = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -271,11 +270,11 @@ namespace Server.Data.Migrations
                 name: "Friendships",
                 columns: table => new
                 {
-                    SenderId = table.Column<int>(nullable: false),
-                    RecieverId = table.Column<int>(nullable: false),
-                    RequestTime = table.Column<DateTime>(nullable: true),
-                    BecameFriendsTime = table.Column<DateTime>(nullable: true),
-                    State = table.Column<int>(nullable: false)
+                    SenderId = table.Column<int>(type: "int", nullable: false),
+                    RecieverId = table.Column<int>(type: "int", nullable: false),
+                    RequestTime = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    BecameFriendsTime = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    State = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -298,16 +297,16 @@ namespace Server.Data.Migrations
                 name: "Messages",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    SenderId = table.Column<int>(nullable: true),
-                    RecipientId = table.Column<int>(nullable: true),
-                    Content = table.Column<string>(nullable: true),
-                    IsRead = table.Column<bool>(nullable: false),
-                    DateRead = table.Column<DateTime>(nullable: true),
-                    MessageSent = table.Column<DateTime>(nullable: false),
-                    SenderDeleted = table.Column<bool>(nullable: false),
-                    RecipientDeleted = table.Column<bool>(nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    SenderId = table.Column<int>(type: "int", nullable: true),
+                    RecipientId = table.Column<int>(type: "int", nullable: true),
+                    Content = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsRead = table.Column<bool>(type: "bit", nullable: false),
+                    DateRead = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    MessageSent = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    SenderDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    RecipientDeleted = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -330,14 +329,14 @@ namespace Server.Data.Migrations
                 name: "Photos",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Url = table.Column<string>(nullable: true),
-                    Description = table.Column<string>(nullable: true),
-                    DateAdded = table.Column<DateTime>(nullable: false),
-                    IsMain = table.Column<bool>(nullable: false),
-                    PublicId = table.Column<string>(nullable: true),
-                    UserId = table.Column<int>(nullable: true)
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Url = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DateAdded = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsMain = table.Column<bool>(type: "bit", nullable: false),
+                    PublicId = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UserId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -354,8 +353,8 @@ namespace Server.Data.Migrations
                 name: "UnitConfigurationAbility",
                 columns: table => new
                 {
-                    UnitConfigurationId = table.Column<int>(nullable: false),
-                    AbilityId = table.Column<int>(nullable: false)
+                    UnitConfigurationId = table.Column<int>(type: "int", nullable: false),
+                    AbilityId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -378,8 +377,8 @@ namespace Server.Data.Migrations
                 name: "UnitConfigurationUpgrade",
                 columns: table => new
                 {
-                    UnitConfigurationId = table.Column<int>(nullable: false),
-                    UpgradeId = table.Column<int>(nullable: false)
+                    UnitConfigurationId = table.Column<int>(type: "int", nullable: false),
+                    UpgradeId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {

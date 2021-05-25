@@ -3,7 +3,7 @@ using AutoMapper;
 using Server.Api.Models.Input;
 using Server.Api.Models.View;
 using Server.Api.Models.View.UnitConfigurations;
-using Server.Models.Heroes.Units;
+using Server.Models.UnitConfigurations;
 using Server.Models.Users;
 
 namespace Server.Api.Helpers

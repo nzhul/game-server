@@ -1,7 +1,7 @@
 ﻿using Server.Models.MapEntities;
 using System.Collections.Generic;
 
-namespace Server.Models.Heroes.Units
+namespace Server.Models.UnitConfigurations
 {
     public class UnitConfiguration
     {

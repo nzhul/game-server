@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Server.Models.Heroes.Units
+namespace Server.Models.UnitConfigurations
 {
     public class Ability
     {

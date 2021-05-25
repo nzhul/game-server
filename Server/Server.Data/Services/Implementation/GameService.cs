@@ -2,7 +2,7 @@
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Server.Data.Services.Abstraction;
-using Server.Models.Realms;
+using Server.Models.Games;
 
 namespace Server.Data.Services.Implementation
 {

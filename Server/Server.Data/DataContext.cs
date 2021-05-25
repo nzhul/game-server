@@ -3,9 +3,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Server.Models.Heroes.Units;
+using Server.Models.UnitConfigurations;
 using Server.Models.Items;
-using Server.Models.Realms;
+using Server.Models.Games;
 using Server.Models.Users;
 
 namespace Server.Data

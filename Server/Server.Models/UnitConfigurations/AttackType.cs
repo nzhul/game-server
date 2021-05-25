@@ -1,4 +1,4 @@
-﻿namespace Server.Models.Heroes.Units
+﻿namespace Server.Models.UnitConfigurations
 {
     public enum AttackType
     {

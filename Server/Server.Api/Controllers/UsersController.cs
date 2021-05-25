@@ -153,19 +153,5 @@ namespace Server.Api.Controllers
                 return BadRequest(result);
             }
         }
-
-        //[HttpPut("{userId}/clearbattle")]
-        //public async Task<IActionResult> ClearBattle(int userId)
-        //{
-        //    await _usersService.ClearBattle(userId);
-        //    return Ok();
-        //}
-
-        //[HttpPut("clearallbattles")]
-        //public async Task<IActionResult> ClearAllBattles()
-        //{
-        //    await _usersService.ClearAllBattles();
-        //    return Ok();
-        //}
     }
 }

@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using Server.Models.Realms;
+using Server.Models.Games;
 
 namespace Server.Data.Services.Abstraction
 {
