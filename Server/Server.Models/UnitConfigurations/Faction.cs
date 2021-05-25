@@ -1,4 +1,4 @@
-﻿namespace Server.Models.Heroes
+﻿namespace Server.Models.UnitConfigurations
 {
     public enum Faction
     {

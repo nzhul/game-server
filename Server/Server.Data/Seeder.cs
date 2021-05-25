@@ -1,120 +1,21 @@
-using Microsoft.AspNetCore.Identity;
-using Newtonsoft.Json;
-using Server.Models.Heroes;
-using Server.Models.Heroes.Units;
-using Server.Models.Realms;
-using Server.Models.Users;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Microsoft.AspNetCore.Identity;
+using Newtonsoft.Json;
+using Server.Models.UnitConfigurations;
+using Server.Models.Users;
 
 namespace Server.Data
 {
     public static class Seeder
     {
         private static Random r = new Random();
-        private static string[] realmNames = new string[]
-        {
-            "Forstford",
-            "Azmar",
-            "Hull",
-            "Zeffari",
-            "Tarnstead",
-            //"Wimborne",
-            //"Leeside",
-            //"Taewe",
-            //"Dragomir",
-            //"Lanteglos",
-            //"Rotherham",
-            //"Coombe",
-            //"Grimsby",
-            //"Sutton",
-            //"Aylesbury",
-            //"Drumnadrochit",
-            //"Wavemeet",
-            //"Acton",
-            //"Redwater",
-            //"Shipton",
-        };
-        private static string[] regionNames = new string[]
-        {
-            "Adeljoanland",
-            "Principality of Wrong Snouts",
-            "Garrickland",
-            "Mount Ambassador",
-            "Duchy of the Rundown Worms",
-            "Aarenland",
-            "Duchy of Ambassadors",
-            "Worms Sea",
-            "Gate Of Bazah",
-            "Chelanville",
-            "Cute Cobble Lake",
-            "Empire of the Misty Horses",
-            "Enough Man Realm",
-            "Shaky Soldier Forest",
-            "Hill Of Ktukcasybar",
-            "Miniature Jetty Hills",
-            "Mount Count",
-            "Realm of the Kegs",
-            "Duchy of Amused Women",
-            "Lake Anchor",
-        };
-        private static string[] heroNames = new string[]
-        {
-            "poisonpaddling",
-            "dauphineobject",
-            "millecampus",
-            "forebittsnobby",
-            "starboardstar",
-            "lobstercomis",
-            "unbalancedkilldeer",
-            "teethingtyre",
-            "roseateglory",
-            "gallowaypassage",
-            "broughtdisc",
-            "feverspeanut",
-            "nitricjoining",
-            "twitterfixes",
-            "ramenphase",
-            "anodetriangulum",
-            "residencedunnock",
-            "welcomesupporting",
-            "nigerianvenus",
-            "minercuckoo",
-            "wackvapid",
-            "radiantspinnaker",
-            "syphilisvenues",
-            "repulsivescoff",
-            "gaysbarmpot",
-            "jointscygnus",
-            "pacebinomial",
-            "conceptjugular",
-            "syndromecaspian",
-            "squeakamphora",
-            "mallardtherapist",
-            "clasthornbill",
-            "saucypetrified",
-            "marksfoamy",
-            "macaroonpeacock",
-            "valuebrown",
-            "teammateplantar",
-            "ablationpumice",
-            "grilltickets",
-            "pastillesvigilant",
-            "awakebenthic",
-            "parkerdropper",
-            "frightencriticize",
-            "cameltaut",
-            "secondarytangent",
-            "isaaccollar"
-        };
 
         public static void Initialize(DataContext _context, UserManager<User> _userManager, RoleManager<Role> _roleManager)
         {
             List<User> users = new List<User>();
-            ICollection<Avatar> avatars = new List<Avatar>();
-            ICollection<Unit> heroes = new List<Unit>();
             List<UnitConfiguration> unitConfigurations = new List<UnitConfiguration>();
 
             if (!_context.Users.Any())
@@ -167,8 +68,7 @@ namespace Server.Data
             {
                 UserName = username,
                 Gender = "male",
-                Email = email,
-                Avatar = new Avatar()
+                Email = email
             };
 
             IdentityResult result = _userManager.CreateAsync(adminUser, "password").Result;
@@ -234,21 +134,5 @@ namespace Server.Data
             return new string(Enumerable.Repeat(chars, length)
               .Select(s => s[r.Next(s.Length)]).ToArray());
         }
-
-        //private static string GetRandomHeroName(DataContext _context, int regionId)
-        //{
-        //    Game region = _context.Games.FirstOrDefault(r => r.Id == regionId);
-
-        //    string heroName = string.Empty;
-        //    bool isFree = false;
-
-        //    while (!isFree)
-        //    {
-        //        heroName = heroNames[r.Next(1, heroNames.Length)];
-        //        isFree = !region.Realm.Avatars.Any(a => a.Heroes.Any(h => h.Name == heroName));
-        //    }
-
-        //    return heroName;
-        //}
     }
 }

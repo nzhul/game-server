@@ -1,13 +1,13 @@
-﻿using AutoMapper;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Server.Api.Models.View.UnitConfigurations;
 using Server.Data.Services.Abstraction;
 using Server.Models.MapEntities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Server.Api.Controllers
 {

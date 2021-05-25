@@ -1,6 +1,5 @@
-﻿using Server.Models.Heroes;
-using Server.Models.Heroes.Units;
-using Server.Models.MapEntities;
+﻿using Server.Models.MapEntities;
+using Server.Models.UnitConfigurations;
 
 namespace Server.Api.Models.View.UnitConfigurations
 {

@@ -1,4 +1,4 @@
-﻿using Server.Models.Heroes.Units;
+﻿using Server.Models.UnitConfigurations;
 using Server.Models.MapEntities;
 using System.Linq;
 
