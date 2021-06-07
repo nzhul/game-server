@@ -68,7 +68,8 @@ namespace Server.Data
             {
                 UserName = username,
                 Gender = "male",
-                Email = email
+                Email = email,
+                MMR = 1000
             };
 
             IdentityResult result = _userManager.CreateAsync(adminUser, "password").Result;

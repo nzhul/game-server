@@ -65,6 +65,8 @@ namespace GameServer.Matchmaking
             var matchedRequests = new List<MMRequest>();
             foreach (var request in this._pool)
             {
+                // TODO: Use custom Range class, because the default one doesn't allow negative numbers
+                // https://stackoverflow.com/a/5343033/3937407
                 var match = this._pool.FirstOrDefault(
                     x => !x.MatchFound &&
                     x.SearchRange.Overlap(request.SearchRange)

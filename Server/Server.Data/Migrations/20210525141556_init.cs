@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Server.Data.Migrations
 {
@@ -11,13 +12,13 @@ namespace Server.Data.Migrations
                 name: "Abilities",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<int>(type: "int", nullable: false),
-                    IsHeroAbility = table.Column<bool>(type: "bit", nullable: false),
-                    Levels = table.Column<int>(type: "int", nullable: false),
-                    HealingAmount = table.Column<int>(type: "int", nullable: false),
-                    DamageAmount = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<int>(type: "integer", nullable: false),
+                    IsHeroAbility = table.Column<bool>(type: "boolean", nullable: false),
+                    Levels = table.Column<int>(type: "integer", nullable: false),
+                    HealingAmount = table.Column<int>(type: "integer", nullable: false),
+                    DamageAmount = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -28,11 +29,11 @@ namespace Server.Data.Migrations
                 name: "AspNetRoles",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    NormalizedName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
+                    NormalizedName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
+                    ConcurrencyStamp = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -43,38 +44,38 @@ namespace Server.Data.Migrations
                 name: "AspNetUsers",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    MMR = table.Column<int>(type: "int", nullable: false),
-                    Discriminator = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Gender = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DateOfBirth = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    LastActive = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Interests = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    City = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Country = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ModifiedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ActiveConnection = table.Column<int>(type: "int", nullable: false),
-                    BattleId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    GameId = table.Column<int>(type: "int", nullable: true),
-                    OnlineStatus = table.Column<byte>(type: "tinyint", nullable: false),
-                    UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    NormalizedEmail = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    EmailConfirmed = table.Column<bool>(type: "bit", nullable: false),
-                    PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    SecurityStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PhoneNumberConfirmed = table.Column<bool>(type: "bit", nullable: false),
-                    TwoFactorEnabled = table.Column<bool>(type: "bit", nullable: false),
-                    LockoutEnd = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
-                    LockoutEnabled = table.Column<bool>(type: "bit", nullable: false),
-                    AccessFailedCount = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    MMR = table.Column<int>(type: "integer", nullable: false),
+                    Discriminator = table.Column<string>(type: "text", nullable: true),
+                    Gender = table.Column<string>(type: "text", nullable: true),
+                    DateOfBirth = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    LastActive = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    Interests = table.Column<string>(type: "text", nullable: true),
+                    City = table.Column<string>(type: "text", nullable: true),
+                    Country = table.Column<string>(type: "text", nullable: true),
+                    CreatedBy = table.Column<string>(type: "text", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    ModifiedBy = table.Column<string>(type: "text", nullable: true),
+                    ModifiedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    ActiveConnection = table.Column<int>(type: "integer", nullable: false),
+                    BattleId = table.Column<Guid>(type: "uuid", nullable: true),
+                    GameId = table.Column<int>(type: "integer", nullable: true),
+                    OnlineStatus = table.Column<byte>(type: "smallint", nullable: false),
+                    UserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
+                    NormalizedUserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
+                    Email = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
+                    NormalizedEmail = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
+                    EmailConfirmed = table.Column<bool>(type: "boolean", nullable: false),
+                    PasswordHash = table.Column<string>(type: "text", nullable: true),
+                    SecurityStamp = table.Column<string>(type: "text", nullable: true),
+                    ConcurrencyStamp = table.Column<string>(type: "text", nullable: true),
+                    PhoneNumber = table.Column<string>(type: "text", nullable: true),
+                    PhoneNumberConfirmed = table.Column<bool>(type: "boolean", nullable: false),
+                    TwoFactorEnabled = table.Column<bool>(type: "boolean", nullable: false),
+                    LockoutEnd = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
+                    LockoutEnabled = table.Column<bool>(type: "boolean", nullable: false),
+                    AccessFailedCount = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -85,9 +86,9 @@ namespace Server.Data.Migrations
                 name: "Games",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    WinnerId = table.Column<int>(type: "int", nullable: true)
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    WinnerId = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -98,11 +99,11 @@ namespace Server.Data.Migrations
                 name: "ItemBlueprints",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ItemSlotType = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "text", nullable: true),
+                    Description = table.Column<string>(type: "text", nullable: true),
+                    ItemSlotType = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -113,31 +114,31 @@ namespace Server.Data.Migrations
                 name: "UnitConfigurations",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Type = table.Column<int>(type: "int", nullable: false),
-                    Faction = table.Column<int>(type: "int", nullable: false),
-                    MovementPointsBase = table.Column<int>(type: "int", nullable: false),
-                    ActionPointsBase = table.Column<int>(type: "int", nullable: false),
-                    MinDamageBase = table.Column<int>(type: "int", nullable: false),
-                    MinDamageIncrement = table.Column<int>(type: "int", nullable: false),
-                    MaxDamageBase = table.Column<int>(type: "int", nullable: false),
-                    MaxDamageIncrement = table.Column<int>(type: "int", nullable: false),
-                    HitpointsBase = table.Column<int>(type: "int", nullable: false),
-                    HitpointsIncrement = table.Column<int>(type: "int", nullable: false),
-                    ManaBase = table.Column<int>(type: "int", nullable: false),
-                    ManaIncrement = table.Column<int>(type: "int", nullable: false),
-                    ArmorBase = table.Column<int>(type: "int", nullable: false),
-                    ArmorIncrement = table.Column<int>(type: "int", nullable: false),
-                    EvasionBase = table.Column<int>(type: "int", nullable: false),
-                    AttackType = table.Column<int>(type: "int", nullable: false),
-                    ArmorType = table.Column<int>(type: "int", nullable: false),
-                    BuildTime = table.Column<int>(type: "int", nullable: false),
-                    WoodCost = table.Column<int>(type: "int", nullable: false),
-                    OreCost = table.Column<int>(type: "int", nullable: false),
-                    GoldCost = table.Column<int>(type: "int", nullable: false),
-                    GemsCost = table.Column<int>(type: "int", nullable: false),
-                    FoodCost = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Type = table.Column<int>(type: "integer", nullable: false),
+                    Faction = table.Column<int>(type: "integer", nullable: false),
+                    MovementPointsBase = table.Column<int>(type: "integer", nullable: false),
+                    ActionPointsBase = table.Column<int>(type: "integer", nullable: false),
+                    MinDamageBase = table.Column<int>(type: "integer", nullable: false),
+                    MinDamageIncrement = table.Column<int>(type: "integer", nullable: false),
+                    MaxDamageBase = table.Column<int>(type: "integer", nullable: false),
+                    MaxDamageIncrement = table.Column<int>(type: "integer", nullable: false),
+                    HitpointsBase = table.Column<int>(type: "integer", nullable: false),
+                    HitpointsIncrement = table.Column<int>(type: "integer", nullable: false),
+                    ManaBase = table.Column<int>(type: "integer", nullable: false),
+                    ManaIncrement = table.Column<int>(type: "integer", nullable: false),
+                    ArmorBase = table.Column<int>(type: "integer", nullable: false),
+                    ArmorIncrement = table.Column<int>(type: "integer", nullable: false),
+                    EvasionBase = table.Column<int>(type: "integer", nullable: false),
+                    AttackType = table.Column<int>(type: "integer", nullable: false),
+                    ArmorType = table.Column<int>(type: "integer", nullable: false),
+                    BuildTime = table.Column<int>(type: "integer", nullable: false),
+                    WoodCost = table.Column<int>(type: "integer", nullable: false),
+                    OreCost = table.Column<int>(type: "integer", nullable: false),
+                    GoldCost = table.Column<int>(type: "integer", nullable: false),
+                    GemsCost = table.Column<int>(type: "integer", nullable: false),
+                    FoodCost = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -148,12 +149,12 @@ namespace Server.Data.Migrations
                 name: "Upgrades",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<int>(type: "int", nullable: false),
-                    WoodCost = table.Column<int>(type: "int", nullable: false),
-                    GoldCost = table.Column<int>(type: "int", nullable: false),
-                    TimeCost = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<int>(type: "integer", nullable: false),
+                    WoodCost = table.Column<int>(type: "integer", nullable: false),
+                    GoldCost = table.Column<int>(type: "integer", nullable: false),
+                    TimeCost = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -164,11 +165,11 @@ namespace Server.Data.Migrations
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    RoleId = table.Column<int>(type: "int", nullable: false),
-                    ClaimType = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ClaimValue = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    RoleId = table.Column<int>(type: "integer", nullable: false),
+                    ClaimType = table.Column<string>(type: "text", nullable: true),
+                    ClaimValue = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -185,11 +186,11 @@ namespace Server.Data.Migrations
                 name: "AspNetUserClaims",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<int>(type: "int", nullable: false),
-                    ClaimType = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ClaimValue = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    UserId = table.Column<int>(type: "integer", nullable: false),
+                    ClaimType = table.Column<string>(type: "text", nullable: true),
+                    ClaimValue = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -206,10 +207,10 @@ namespace Server.Data.Migrations
                 name: "AspNetUserLogins",
                 columns: table => new
                 {
-                    LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    ProviderKey = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    ProviderDisplayName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UserId = table.Column<int>(type: "int", nullable: false)
+                    LoginProvider = table.Column<string>(type: "text", nullable: false),
+                    ProviderKey = table.Column<string>(type: "text", nullable: false),
+                    ProviderDisplayName = table.Column<string>(type: "text", nullable: true),
+                    UserId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -226,8 +227,8 @@ namespace Server.Data.Migrations
                 name: "AspNetUserRoles",
                 columns: table => new
                 {
-                    UserId = table.Column<int>(type: "int", nullable: false),
-                    RoleId = table.Column<int>(type: "int", nullable: false)
+                    UserId = table.Column<int>(type: "integer", nullable: false),
+                    RoleId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -250,10 +251,10 @@ namespace Server.Data.Migrations
                 name: "AspNetUserTokens",
                 columns: table => new
                 {
-                    UserId = table.Column<int>(type: "int", nullable: false),
-                    LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Value = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    UserId = table.Column<int>(type: "integer", nullable: false),
+                    LoginProvider = table.Column<string>(type: "text", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    Value = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -270,11 +271,11 @@ namespace Server.Data.Migrations
                 name: "Friendships",
                 columns: table => new
                 {
-                    SenderId = table.Column<int>(type: "int", nullable: false),
-                    RecieverId = table.Column<int>(type: "int", nullable: false),
-                    RequestTime = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    BecameFriendsTime = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    State = table.Column<int>(type: "int", nullable: false)
+                    SenderId = table.Column<int>(type: "integer", nullable: false),
+                    RecieverId = table.Column<int>(type: "integer", nullable: false),
+                    RequestTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    BecameFriendsTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    State = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -297,16 +298,16 @@ namespace Server.Data.Migrations
                 name: "Messages",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    SenderId = table.Column<int>(type: "int", nullable: true),
-                    RecipientId = table.Column<int>(type: "int", nullable: true),
-                    Content = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IsRead = table.Column<bool>(type: "bit", nullable: false),
-                    DateRead = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    MessageSent = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    SenderDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    RecipientDeleted = table.Column<bool>(type: "bit", nullable: false)
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    SenderId = table.Column<int>(type: "integer", nullable: true),
+                    RecipientId = table.Column<int>(type: "integer", nullable: true),
+                    Content = table.Column<string>(type: "text", nullable: true),
+                    IsRead = table.Column<bool>(type: "boolean", nullable: false),
+                    DateRead = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    MessageSent = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    SenderDeleted = table.Column<bool>(type: "boolean", nullable: false),
+                    RecipientDeleted = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -329,14 +330,14 @@ namespace Server.Data.Migrations
                 name: "Photos",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Url = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DateAdded = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    IsMain = table.Column<bool>(type: "bit", nullable: false),
-                    PublicId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UserId = table.Column<int>(type: "int", nullable: true)
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Url = table.Column<string>(type: "text", nullable: true),
+                    Description = table.Column<string>(type: "text", nullable: true),
+                    DateAdded = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    IsMain = table.Column<bool>(type: "boolean", nullable: false),
+                    PublicId = table.Column<string>(type: "text", nullable: true),
+                    UserId = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -353,8 +354,8 @@ namespace Server.Data.Migrations
                 name: "UnitConfigurationAbility",
                 columns: table => new
                 {
-                    UnitConfigurationId = table.Column<int>(type: "int", nullable: false),
-                    AbilityId = table.Column<int>(type: "int", nullable: false)
+                    UnitConfigurationId = table.Column<int>(type: "integer", nullable: false),
+                    AbilityId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -366,7 +367,7 @@ namespace Server.Data.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_UnitConfigurationAbility_UnitConfigurations_UnitConfigurationId",
+                        name: "FK_UnitConfigurationAbility_UnitConfigurations_UnitConfigurati~",
                         column: x => x.UnitConfigurationId,
                         principalTable: "UnitConfigurations",
                         principalColumn: "Id",
@@ -377,14 +378,14 @@ namespace Server.Data.Migrations
                 name: "UnitConfigurationUpgrade",
                 columns: table => new
                 {
-                    UnitConfigurationId = table.Column<int>(type: "int", nullable: false),
-                    UpgradeId = table.Column<int>(type: "int", nullable: false)
+                    UnitConfigurationId = table.Column<int>(type: "integer", nullable: false),
+                    UpgradeId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_UnitConfigurationUpgrade", x => new { x.UnitConfigurationId, x.UpgradeId });
                     table.ForeignKey(
-                        name: "FK_UnitConfigurationUpgrade_UnitConfigurations_UnitConfigurationId",
+                        name: "FK_UnitConfigurationUpgrade_UnitConfigurations_UnitConfigurati~",
                         column: x => x.UnitConfigurationId,
                         principalTable: "UnitConfigurations",
                         principalColumn: "Id",
@@ -406,8 +407,7 @@ namespace Server.Data.Migrations
                 name: "RoleNameIndex",
                 table: "AspNetRoles",
                 column: "NormalizedName",
-                unique: true,
-                filter: "[NormalizedName] IS NOT NULL");
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetUserClaims_UserId",
@@ -433,8 +433,7 @@ namespace Server.Data.Migrations
                 name: "UserNameIndex",
                 table: "AspNetUsers",
                 column: "NormalizedUserName",
-                unique: true,
-                filter: "[NormalizedUserName] IS NOT NULL");
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Friendships_RecieverId",
