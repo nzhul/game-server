@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using GameServer.Managers;
 using GameServer.Models.Battle;
 
@@ -30,9 +31,9 @@ namespace GameServer.Scheduling.Jobs
 
                 // 1. Check if both players are inactive.
                 DateTime idleTime = DateTime.UtcNow - IDLE_TIMEOUT;
-                if (battle.AttackerLastActivity < idleTime && battle.DefenderLastActivity < idleTime)
+                if (battle.Armies.All(x => x.LastActivity < idleTime))
                 {
-                    Console.WriteLine($"Ending Idle battle: AttackerId: {battle.AttackerArmy.Id}, Defender: {battle.DefenderArmy.Id}, BattleId: {battle.Id}");
+                    Console.WriteLine($"Ending Idle battle: BattleId: {battle.Id}");
                     BattleManager.Instance.EndBattle(battle, -1);
                     completedBattles.Add(battle);
                 }

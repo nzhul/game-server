@@ -17,6 +17,9 @@ namespace GameServer.Models.Users
         public string City { get; set; }
         public string Country { get; set; }
         public string PhotoUrl { get; set; }
+        public Avatar Avatar { get; set; }
+        public ServerConnection Connection { get; set; }
+
 
         public DateTime? DateCreated
         {

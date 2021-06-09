@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using GameServer.MapGeneration;
+using GameServer.Models.Users;
 
 namespace GameServer.Models
 {
@@ -15,6 +16,8 @@ namespace GameServer.Models
         }
 
         public int UserId { get; set; }
+
+        public User User { get; set; }
 
         public int Wood { get; set; }
 

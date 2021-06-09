@@ -1,4 +1,6 @@
-﻿using GameServer.Managers;
+﻿using System;
+using System.Linq;
+using GameServer.Managers;
 using GameServer.Models.Battle;
 using NetworkingShared;
 using NetworkingShared.Attributes;
@@ -15,17 +17,15 @@ namespace GameServer.PacketHandlers
 
             var battle = BattleManager.Instance.GetBattleById(msg.BattleId);
 
-            if (battle != null && battle.AttackerArmyId == msg.ArmyId)
+            var army = battle.Armies.FirstOrDefault(x => x.Id == msg.ArmyId);
+
+            if (army == null)
             {
-                battle.AttackerReady = true;
+                throw new ArgumentException($"Army with Id {msg.ArmyId} cannot be found");
             }
 
-            if (battle != null && battle.DefenderArmyId == msg.ArmyId)
-            {
-                battle.DefenderReady = true;
-            }
-
-            if (battle.AttackerReady && battle.DefenderReady)
+            army.ReadyForBattle = msg.IsReady;
+            if (battle.Armies.All(x => x.ReadyForBattle))
             {
                 battle.State = BattleState.Fight;
             }

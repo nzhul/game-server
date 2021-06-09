@@ -1,4 +1,5 @@
 ﻿using System;
+using GameServer.Models.Users;
 using LiteNetLib;
 
 namespace GameServer
@@ -9,6 +10,8 @@ namespace GameServer
         /// Database Id
         /// </summary>
         public int UserId { get; set; }
+
+        public User User { get; set; }
 
         /// <summary>
         /// Unity connection Idl

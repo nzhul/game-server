@@ -110,11 +110,11 @@ namespace GameServer.Managers
             return connection.Value != null ? connection.Value.ConnectionId : 0;
         }
 
-        public Unit GetRandomAvailibleUnit(Army army)
-        {
-            var availibleUnits = army.Units.Where(x => !x.ActionConsumed).ToList();
-            return availibleUnits[RandomGenerator.RandomNumber(0, army.Units.Count - 1)]; // TODO: Not tested
-        }
+        //public Unit GetRandomAvailibleUnit(Army army)
+        //{
+        //    var availibleUnits = army.Units.Where(x => !x.ActionConsumed).ToList();
+        //    return availibleUnits[RandomGenerator.RandomNumber(0, army.Units.Count - 1)]; // TODO: Not tested
+        //}
 
         public void DisconnectFromGame(int userId)
         {

@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using GameServer.Models.Units;
-using NetworkShared.Enums;
+using GameServer.Utilities;
 
 namespace GameServer.Models.Battle
 {
@@ -10,48 +11,19 @@ namespace GameServer.Models.Battle
         public Battle()
         {
             this.Start = DateTime.UtcNow;
-            this.AttackerLastActivity = DateTime.UtcNow;
-            this.DefenderLastActivity = DateTime.UtcNow;
             this.Log = new List<string>();
+            this.Armies = new List<Army>();
         }
 
         public Guid Id { get; set; }
 
         public int GameId { get; set; }
 
-        public int AttackerArmyId { get; set; }
+        public int CurrentArmyId { get; set; } // Replace of Turn enum
 
-        public int AttackerConnectionId { get; set; }
-
-        public Army AttackerArmy { get; set; }
-
-        public DateTime AttackerLastActivity { get; set; }
-
-        public bool AttackerDisconnected { get; set; }
-
-        public int DefenderArmyId { get; set; }
-
-        public int DefenderConnectionId { get; set; }
-
-        public Army DefenderArmy { get; set; }
-
-        public DateTime DefenderLastActivity { get; set; }
-
-        public bool DefenderDisconnected { get; set; }
-
-        public Unit SelectedUnit { get; set; }
-
-        public PlayerType AttackerType { get; set; }
-
-        public PlayerType DefenderType { get; set; }
-
-        public bool AttackerReady { get; set; }
-
-        public bool DefenderReady { get; set; }
+        public Unit CurrentUnit { get; set; }
 
         public BattleState State { get; set; }
-
-        public BattleScenario BattleScenario { get; set; }
 
         public DateTime Start { get; set; }
 
@@ -59,20 +31,39 @@ namespace GameServer.Models.Battle
 
         public DateTime LastTurnStartTime { get; set; }
 
-        public Turn Turn { get; set; }
-
         public List<string> Log { get; set; }
 
-        public void UpdateLastActivity(int heroId)
+        public List<Army> Armies { get; set; }
+
+        public void UpdateLastActivity(int armyId)
         {
-            if (this.AttackerArmyId == heroId)
+            Armies.Find(x => x.Id == armyId).LastActivity = DateTime.UtcNow;
+        }
+
+        public Army SwitchTurn()
+        {
+            var currentArmy = Armies.Find(x => x.Id == CurrentArmyId);
+            currentArmy.TurnConsumed = true;
+            var availableArmies = Armies.Where(x => !x.TurnConsumed);
+
+            if (availableArmies.Count() == 0)
             {
-                this.AttackerLastActivity = DateTime.UtcNow;
+                Armies.ForEach(x => x.TurnConsumed = false);
             }
-            else if (this.DefenderArmyId == heroId)
-            {
-                this.DefenderLastActivity = DateTime.UtcNow;
-            }
+
+            var nextArmy = Armies.OrderByDescending(x => x.TurnOrder).First();
+            CurrentArmyId = nextArmy.Id;
+
+            CurrentUnit = GetRandomAvailibleUnit(nextArmy);
+
+            return nextArmy;
+
+        }
+
+        public Unit GetRandomAvailibleUnit(Army army)
+        {
+            var availibleUnits = army.Units.Where(x => !x.ActionConsumed).ToList();
+            return availibleUnits[RandomGenerator.RandomNumber(0, army.Units.Count - 1)]; // TODO: Not tested
         }
 
         // Attacker Troops

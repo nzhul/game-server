@@ -97,7 +97,7 @@ namespace GameServer
         {
             var connection = _connections[peer.Id];
 
-            BattleManager.Instance.DisconnectFromBattle(peer.Id);
+            //BattleManager.Instance.DisconnectFromBattle(peer.Id);
             _netManager.DisconnectPeer(peer);
             Console.WriteLine($"{connection.Username} disconnected: {peer.EndPoint}");
 

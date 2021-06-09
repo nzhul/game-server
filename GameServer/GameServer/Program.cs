@@ -10,7 +10,6 @@ using GameServer.Utilities;
 using LiteNetLib;
 using NetworkingShared;
 using NetworkingShared.Packets.Battle;
-using NetworkShared.Enums;
 
 namespace GameServer
 {
@@ -92,7 +91,6 @@ namespace GameServer
                 {
                     BattleId = Guid.NewGuid(),
                     CurrentUnitId = 66,
-                    Turn = Turn.Attacker
                 },
                 DeliveryMethod.ReliableOrdered);
         }

@@ -1,6 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-using Assets.Scripts.Network.Services;
+﻿using System.Linq;
 using GameServer.Managers;
 using GameServer.NetworkShared.Packets.World.ServerClient;
 using NetworkingShared;
@@ -28,45 +26,16 @@ namespace GameServer.PacketHandlers
             if (battle == null)
             {
                 NetworkServer.Instance.Send(connectionId, new Net_OnReconnectBattleFail());
-
-                // TODO: Delete this commented code.
-                //Task.Run(() =>
-                //{
-                //    try
-                //    {
-                //        RequestManagerHttp.BattleService.UnRegisterBattle(connection.UserId);
-                //    }
-                //    catch (Exception ex)
-                //    {
-                //        Console.WriteLine($"Error setting user offline. UserId: {connection.UserId}. Ex: {ex}");
-                //    }
-                //});
-                //return;
             }
 
-            var isAttacker = battle.AttackerArmy.UserId == connection.UserId;
-            if (isAttacker)
-            {
-                battle.AttackerDisconnected = false;
-                battle.AttackerConnectionId = connectionId;
-            }
-            else
-            {
-                battle.DefenderDisconnected = false;
-                battle.DefenderConnectionId = connectionId;
-            }
-
+            connection.User.Avatar.IsDisconnected = false;
 
             Net_OnStartBattle rmsg = new Net_OnStartBattle
             {
                 BattleId = battle.Id,
-                AttackerArmyId = battle.AttackerArmyId,
-                DefenderArmyId = battle.DefenderArmyId,
-                BattleScenario = battle.BattleScenario,
-                SelectedUnitId = battle.SelectedUnit.Id,
-                AttackerType = battle.AttackerType,
-                DefenderType = battle.DefenderType,
-                Turn = battle.Turn
+                CurrentArmyId = battle.CurrentArmyId,
+                CurrentUnitId = battle.CurrentUnit.Id,
+                Armies = battle.Armies.Select(x => x.Id).ToArray()
             };
 
             NetworkServer.Instance.Send(connectionId, rmsg);
