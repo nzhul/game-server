@@ -49,6 +49,11 @@ namespace GameServer.Managers
         {
             var gameString = File.ReadAllText("DummyData/DummyGame.json");
             var game = JsonConvert.DeserializeObject<Game>(gameString);
+            // TODO: Link users
+            // TODO: Link avatars
+            // TODO NOTE: Users do not exist when dummy game is loaded
+            // thats why i need to populate the user reference after the user login to the server.
+            // do the change in AuthRequestHandler.cs
             RegisterGame(game);
             Console.WriteLine("Adding 1 dummy game!");
         }
@@ -70,6 +75,18 @@ namespace GameServer.Managers
             if (!gameId.HasValue)
             {
                 Console.WriteLine($"No active game was found for connectionId: {connectionId}");
+                return null;
+            }
+
+            return _games[gameId.Value];
+        }
+
+        public Game GetGameByUserId(int userId)
+        {
+            var gameId = this.GetGameIdByUserId(userId);
+            if (!gameId.HasValue)
+            {
+                Console.WriteLine($"No active game was found for userId: {userId}");
                 return null;
             }
 
@@ -227,7 +244,9 @@ namespace GameServer.Managers
                         && x.Type == DwellingType.Castle && x.Link == availibleArmy.Link);
 
                     availibleArmy.UserId = avatar.UserId;
+                    availibleArmy.User = avatar.User;
                     availibleCastle.UserId = avatar.UserId;
+                    availibleCastle.User = avatar.User;
                     //TODO: we are currently handling only heroes and castles. Handle other dwellings if needed.
                 }
             }
@@ -238,11 +257,15 @@ namespace GameServer.Managers
             var avatars = new List<Avatar>();
             foreach (var player in @params.Players)
             {
+                var user = NetworkServer.Instance.GetUser(player.UserId);
                 var newAvatar = new Avatar
                 {
                     UserId = player.UserId,
+                    User = user,
                     Team = player.Team
                 };
+
+                user.Avatar = newAvatar;
 
                 avatars.Add(newAvatar);
             }
@@ -270,6 +293,28 @@ namespace GameServer.Managers
             }
 
             return gameKv.Value.Id;
+        }
+
+        public void RelinkGameUserAndAvatarTMP(Models.Users.User user)
+        {
+            var game = GetGameByUserId(user.Id);
+            foreach (var avatar in game.Avatars)
+            {
+                if (avatar.UserId == user.Id)
+                {
+                    avatar.User = user;
+                    user.Avatar = avatar;
+                }
+            }
+
+            foreach (var army in game.Armies)
+            {
+                if (army.UserId == user.Id)
+                {
+                    army.User = user;
+                    army.Avatar = game.Avatars.FirstOrDefault(x => x.UserId == user.Id);
+                }
+            }
         }
     }
 }

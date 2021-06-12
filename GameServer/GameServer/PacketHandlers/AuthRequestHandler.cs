@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Assets.Scripts.Network.Services;
 using Assets.Scripts.Network.Shared.NetMessages.Users;
 using GameServer.Managers;
+using GameServer.Models.Users;
 using NetworkingShared;
 using NetworkingShared.Attributes;
 
@@ -34,6 +35,17 @@ namespace GameServer.PacketHandlers
                 connection.Token = msg.Token;
                 connection.Username = msg.Username;
                 connection.MMR = msg.MMR;
+
+                // TODO: Do real request to the API instead and get all user data.
+                connection.User = new User
+                {
+                    Id = msg.UserId,
+                    Username = msg.Username,
+                    Mmr = msg.MMR,
+                    Connection = connection
+                };
+
+                GameManager.Instance.RelinkGameUserAndAvatarTMP(connection.User);
 
                 rmsg.GameId = GameManager.Instance.GetGameIdByUserId(connection.UserId);
                 rmsg.BattleId = BattleManager.Instance.GetBattleIdByUserId(connection.UserId);

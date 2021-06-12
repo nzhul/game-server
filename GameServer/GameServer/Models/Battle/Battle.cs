@@ -19,7 +19,7 @@ namespace GameServer.Models.Battle
 
         public int GameId { get; set; }
 
-        public int CurrentArmyId { get; set; } // Replace of Turn enum
+        public Army CurrentArmy { get; set; }
 
         public Unit CurrentUnit { get; set; }
 
@@ -42,8 +42,8 @@ namespace GameServer.Models.Battle
 
         public Army SwitchTurn()
         {
-            var currentArmy = Armies.Find(x => x.Id == CurrentArmyId);
-            currentArmy.TurnConsumed = true;
+            var oldCurrentArmy = Armies.Find(x => x.Id == CurrentArmy.Id);
+            oldCurrentArmy.TurnConsumed = true;
             var availableArmies = Armies.Where(x => !x.TurnConsumed);
 
             if (availableArmies.Count() == 0)
@@ -51,9 +51,8 @@ namespace GameServer.Models.Battle
                 Armies.ForEach(x => x.TurnConsumed = false);
             }
 
-            var nextArmy = Armies.OrderByDescending(x => x.TurnOrder).First();
-            CurrentArmyId = nextArmy.Id;
-
+            var nextArmy = availableArmies.OrderByDescending(x => x.Order).First();
+            CurrentArmy = nextArmy;
             CurrentUnit = GetRandomAvailibleUnit(nextArmy);
 
             return nextArmy;

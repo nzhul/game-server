@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using GameServer.Managers;
+using GameServer.NetworkShared.Models;
 using GameServer.NetworkShared.Packets.World.ServerClient;
 using NetworkingShared;
 using NetworkingShared.Attributes;
@@ -30,12 +31,15 @@ namespace GameServer.PacketHandlers
 
             connection.User.Avatar.IsDisconnected = false;
 
+            // TODO: check if index syntax is working
+            // https://stackoverflow.com/questions/2471588/how-to-get-index-using-linq
+
             Net_OnStartBattle rmsg = new Net_OnStartBattle
             {
                 BattleId = battle.Id,
-                CurrentArmyId = battle.CurrentArmyId,
+                CurrentArmyId = battle.CurrentArmy.Id,
                 CurrentUnitId = battle.CurrentUnit.Id,
-                Armies = battle.Armies.Select(x => x.Id).ToArray()
+                Armies = battle.Armies.Select((x, i) => new ArmyParams(x.Id, i)).ToArray() 
             };
 
             NetworkServer.Instance.Send(connectionId, rmsg);

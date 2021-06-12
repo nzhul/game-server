@@ -4,6 +4,7 @@ using System.Linq;
 using GameServer.Managers;
 using GameServer.Models;
 using GameServer.Models.Battle;
+using GameServer.NetworkShared.Models;
 using NetworkingShared;
 using NetworkingShared.Attributes;
 using NetworkingShared.Packets.World.ClientServer;
@@ -24,8 +25,10 @@ namespace GameServer.PacketHandlers
             var armies = new List<Army>();
             var attackerArmy = game.Armies.FirstOrDefault(x => x.Id == msg.AttackerArmyId);
             var defenderArmy = game.Armies.FirstOrDefault(x => x.Id == msg.DefenderArmyId);
-            attackerArmy.TurnOrder = 1;
-            defenderArmy.TurnOrder = 2;
+            attackerArmy.Order = 0;
+            defenderArmy.Order = 1;
+            attackerArmy.LastActivity = DateTime.UtcNow;
+            defenderArmy.LastActivity = DateTime.UtcNow;
 
             armies.Add(attackerArmy);
             armies.Add(defenderArmy);
@@ -38,15 +41,16 @@ namespace GameServer.PacketHandlers
                 LastTurnStartTime = DateTime.UtcNow
             };
 
-            newBattle.CurrentArmyId = attackerArmy.Id;
+            newBattle.CurrentArmy = attackerArmy;
             newBattle.CurrentUnit = newBattle.GetRandomAvailibleUnit(attackerArmy);
 
             this.UpdateUnitsData(attackerArmy);
             this.UpdateUnitsData(defenderArmy);
 
             rmsg.BattleId = newBattle.Id;
-            rmsg.CurrentArmyId = newBattle.CurrentArmyId;
+            rmsg.CurrentArmyId = newBattle.CurrentArmy.Id;
             rmsg.CurrentUnitId = newBattle.CurrentUnit.Id;
+            rmsg.Armies = armies.Select(x => new ArmyParams(x.Id, x.Order)).ToArray();
 
             BattleManager.Instance.RegisterBattle(newBattle);
             NetworkServer.Instance.Send(connectionId, rmsg);

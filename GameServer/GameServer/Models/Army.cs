@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using GameServer.Models.Units;
 using GameServer.Models.Users;
+using Newtonsoft.Json;
 
 namespace GameServer.Models
 {
@@ -13,8 +14,9 @@ namespace GameServer.Models
             this.Units = new Collection<Unit>();
         }
 
-        public int UserId { get; set; }
+        public int? UserId { get; set; }
 
+        [JsonIgnore]
         public User User { get; set; }
 
         public Avatar Avatar { get; set; }
@@ -31,7 +33,7 @@ namespace GameServer.Models
 
         public bool TurnConsumed { get; set; }
 
-        public int TurnOrder { get; set; }
+        public int Order { get; set; }
 
         private bool _readyForBattle;
 

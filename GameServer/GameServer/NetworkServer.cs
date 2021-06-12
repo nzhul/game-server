@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
 using Assets.Scripts.Network.Services;
-using GameServer.Managers;
+using GameServer.Models.Users;
 using LiteNetLib;
 using LiteNetLib.Utils;
 using NetworkingShared;
@@ -45,7 +46,7 @@ namespace GameServer
         {
             _connections = new Dictionary<int, ServerConnection>();
             _netManager = new NetManager(this);
-            _netManager.DisconnectTimeout = 5000; // TODO: use config for this. Default is 5000
+            _netManager.DisconnectTimeout = 100000; // TODO: use config for this. Default is 5000
 
             _netManager.Start(9050);
             Console.WriteLine("Server listening on port 9050");
@@ -102,6 +103,11 @@ namespace GameServer
             Console.WriteLine($"{connection.Username} disconnected: {peer.EndPoint}");
 
             var userId = connection.UserId;
+            _connections.Remove(peer.Id);
+            if (userId == 0)
+            {
+                return;
+            }
 
             // TODO: Extract into FireAndForget() utility method.
             Task.Run(() =>
@@ -115,8 +121,6 @@ namespace GameServer
                     Console.WriteLine($"Error setting user offline. UserId: {userId}. Ex: {ex}");
                 }
             });
-
-            _connections.Remove(peer.Id);
         }
 
         public void Send(int peerId, INetPacket packet, DeliveryMethod method = DeliveryMethod.ReliableOrdered)
@@ -159,6 +163,17 @@ namespace GameServer
             // NOTE: _netManager.SendUnconnectedMessage() --> Those messages are unreliable! Should send multiple times from client!
 
             throw new NotImplementedException();
+        }
+
+        public User GetUser(int userId)
+        {
+            var connKv = _connections.FirstOrDefault(x => x.Value.UserId == userId);
+            if (connKv.Equals(default(KeyValuePair<int, ServerConnection>)))
+            {
+                return null;
+            }
+
+            return connKv.Value.User;
         }
     }
 }

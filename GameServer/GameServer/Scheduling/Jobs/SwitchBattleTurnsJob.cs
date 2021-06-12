@@ -9,7 +9,7 @@ namespace GameServer.Scheduling.Jobs
     public class SwitchBattleTurnsJob : JobBase
     {
         private readonly TimeSpan TURN_DURATION = new TimeSpan(0, 0, 20); // seconds
-        private readonly TimeSpan IDLE_TIMEOUT = new TimeSpan(0, 0, 50); // Use this for testing. Real one is bellow!
+        private readonly TimeSpan IDLE_TIMEOUT = new TimeSpan(0, 5, 50); // Use this for testing. Real one is bellow!
         //private const int IDLE_TIMEOUT = (TURN_DURATION * 2) + (TURN_DURATION / 2); // seconds -> 20 * 2 + 20 / 2 = 40 + 10 = 50
 
         public SwitchBattleTurnsJob()
