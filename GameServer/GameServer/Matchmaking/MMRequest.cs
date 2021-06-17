@@ -1,4 +1,5 @@
 ﻿using System;
+using GameServer.Utilities;
 using NetworkingShared.Enums;
 
 namespace GameServer.Matchmaking
@@ -21,11 +22,11 @@ namespace GameServer.Matchmaking
             }
         }
 
-        public Range SearchRange
+        public Range<int> SearchRange
         {
             get
             {
-                return new Range(this.Connection.MMR - this.SearchRadius, this.Connection.MMR + this.SearchRadius);
+                return new Range<int>(this.Connection.User.Mmr - this.SearchRadius, this.Connection.User.Mmr + this.SearchRadius);
             }
         }
 

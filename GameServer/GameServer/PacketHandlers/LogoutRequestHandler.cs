@@ -25,7 +25,7 @@ namespace GameServer.PacketHandlers
                 return;
             };
 
-            Console.WriteLine($"{connection.Username} logged out from the server!");
+            Console.WriteLine($"{connection.User.Username} logged out from the server!");
             GameManager.Instance.DisconnectFromGame(connection.UserId);
 
             Task.Run(() =>

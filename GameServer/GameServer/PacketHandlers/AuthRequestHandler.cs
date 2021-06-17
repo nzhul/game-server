@@ -32,9 +32,6 @@ namespace GameServer.PacketHandlers
 
                 // Update connection entity with user data.
                 connection.UserId = msg.UserId;
-                connection.Token = msg.Token;
-                connection.Username = msg.Username;
-                connection.MMR = msg.MMR;
 
                 // TODO: Do real request to the API instead and get all user data.
                 connection.User = new User
@@ -42,6 +39,7 @@ namespace GameServer.PacketHandlers
                     Id = msg.UserId,
                     Username = msg.Username,
                     Mmr = msg.MMR,
+                    Token = msg.Token,
                     Connection = connection
                 };
 

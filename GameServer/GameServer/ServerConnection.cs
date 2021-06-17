@@ -22,12 +22,6 @@ namespace GameServer
 
         public Guid? BattleId { get; set; }
 
-        public string Username { get; set; }
-
-        public int MMR { get; set; }
-
-        public string Token { get; set; }
-
         public NetPeer Peer { get; set; }
     }
 }

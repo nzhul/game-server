@@ -18,7 +18,7 @@ namespace GameServer.PacketHandlers
 
             var connection = NetworkServer.Instance.Connections[connectionId];
             var userData = RequestManagerHttp.UsersService.GetUser(connection.UserId);
-            connection.MMR = userData.Mmr;
+            connection.User.Mmr = userData.Mmr;
 
             Matchmaker.Instance.RegisterPlayer(connection, msg.Class);
         }

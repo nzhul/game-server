@@ -100,9 +100,19 @@ namespace GameServer
 
             //BattleManager.Instance.DisconnectFromBattle(peer.Id);
             _netManager.DisconnectPeer(peer);
-            Console.WriteLine($"{connection.Username} disconnected: {peer.EndPoint}");
+
 
             var userId = connection.UserId;
+
+            var username = "Unknown user";
+            if (connection.User != null && connection.User.Avatar != null)
+            {
+                username = connection.User.Username;
+                connection.User.Avatar.IsDisconnected = true;
+            }
+
+            Console.WriteLine($"{username} disconnected: {peer.EndPoint}");
+
             _connections.Remove(peer.Id);
             if (userId == 0)
             {
