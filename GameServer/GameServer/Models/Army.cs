@@ -14,6 +14,21 @@ namespace GameServer.Models
             this.Units = new Collection<Unit>();
         }
 
+        public string Name
+        {
+            get
+            {
+                if (IsNPC)
+                {
+                    return Units[0].Type.ToString();
+                }
+                else
+                {
+                    return User.Username;
+                }
+            }
+        }
+
         public int? UserId { get; set; }
 
         [JsonIgnore]
@@ -37,9 +52,9 @@ namespace GameServer.Models
 
         private bool _readyForBattle;
 
-        public bool ReadyForBattle 
-        { 
-            get 
+        public bool ReadyForBattle
+        {
+            get
             {
                 if (IsNPC)
                 {
@@ -49,10 +64,10 @@ namespace GameServer.Models
                 return _readyForBattle;
             }
 
-            set 
+            set
             {
                 _readyForBattle = value;
-            } 
+            }
         }
 
         public DateTime LastActivity { get; set; }

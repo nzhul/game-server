@@ -51,7 +51,7 @@ namespace GameServer.Models.Battle
                 Armies.ForEach(x => x.TurnConsumed = false);
             }
 
-            var nextArmy = availableArmies.OrderByDescending(x => x.Order).First();
+            var nextArmy = availableArmies.OrderBy(x => x.Order).First();
             CurrentArmy = nextArmy;
             CurrentUnit = GetRandomAvailibleUnit(nextArmy);
 

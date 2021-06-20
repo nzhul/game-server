@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Assets.Scripts.Network.Services;
 using Assets.Scripts.Network.Shared.NetMessages.Users;
@@ -33,17 +34,29 @@ namespace GameServer.PacketHandlers
                 // Update connection entity with user data.
                 connection.UserId = msg.UserId;
 
-                // TODO: Do real request to the API instead and get all user data.
-                connection.User = new User
+                // if game exist with this user, get the user object from there instead.
+                var game = GameManager.Instance.GetGameByUserId(connection.UserId);
+                if (game != null)
                 {
-                    Id = msg.UserId,
-                    Username = msg.Username,
-                    Mmr = msg.MMR,
-                    Token = msg.Token,
-                    Connection = connection
-                };
+                    var existingUser = game.Avatars.First(x => x.UserId == connection.UserId).User;
+                    connection.User = existingUser;
+                    existingUser.Connection = connection;
+                    existingUser.Avatar.IsDisconnected = false;
+                }
+                else
+                {
+                    connection.User = new User
+                    {
+                        Id = msg.UserId,
+                        Username = msg.Username,
+                        Mmr = msg.MMR,
+                        Token = msg.Token,
+                        Connection = connection,
+                    };
+                }
 
-                GameManager.Instance.RelinkGameUserAndAvatarTMP(connection.User);
+                // TODO: Delete this temporary method.
+                //GameManager.Instance.RelinkGameUserAndAvatarTMP(connection.User);
 
                 rmsg.GameId = GameManager.Instance.GetGameIdByUserId(connection.UserId);
                 rmsg.BattleId = BattleManager.Instance.GetBattleIdByUserId(connection.UserId);

@@ -66,6 +66,9 @@ namespace GameServer.PacketHandlers
 
                 // if connectionId is -1 - this means that the user is disconnected and we don't need to send message.
             }
+
+            Console.WriteLine($"Starting battle between {attackerArmy.Name} and {defenderArmy.Name}. " +
+                $"Current player: {attackerArmy.Name}, ArmyId: {rmsg.CurrentArmyId}, UnitId: {rmsg.CurrentUnitId}");
         }
 
         private void UpdateUnitsData(Army Army)

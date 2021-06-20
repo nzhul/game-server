@@ -25,10 +25,13 @@ namespace GameServer.PacketHandlers
             }
 
             army.ReadyForBattle = msg.IsReady;
-            if (battle.Armies.All(x => x.ReadyForBattle))
-            {
-                battle.State = BattleState.Fight;
-            }
+            battle.State = BattleState.Fight; // new logic: "If atleast one player is ready - we can start the game"
+
+            // Old logic was "All players need to be ready to start the battle"
+            //if (battle.Armies.All(x => x.ReadyForBattle))
+            //{
+            //    battle.State = BattleState.Fight;
+            //}
         }
     }
 }

@@ -93,8 +93,13 @@ namespace GameServer.Managers
 
             //battle.LastTurnStartTime = Time.time;
             battle.LastTurnStartTime = DateTime.UtcNow; // TODO: Not tested
-            Console.WriteLine("Switching turns! CurrentArmyId: " + nextArmy.Id);
-            battle.Log.Add("Switching turns! CurrentArmyId: " + nextArmy.Id);
+
+            var logMessage = $"[Switching turns] Current player: {nextArmy.Name}, " +
+                $"ArmyId: {battle.CurrentArmy.Id}, UnitId: {battle.CurrentUnit.Id}";
+
+            Console.WriteLine(logMessage);
+            battle.Log.Add(logMessage);
+
             this.SendSwitchTurnEvent(battle);
         }
 
@@ -107,7 +112,7 @@ namespace GameServer.Managers
 
             foreach (var army in battle.Armies)
             {
-                if (!army.IsNPC && !army.Avatar.IsDisconnected)
+                if (!army.IsNPC && army.Avatar != null && !army.Avatar.IsDisconnected)
                 {
                     NetworkServer.Instance.Send(army.User.Connection.ConnectionId, msg);
                 }

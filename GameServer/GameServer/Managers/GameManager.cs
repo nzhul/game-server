@@ -55,6 +55,16 @@ namespace GameServer.Managers
             // thats why i need to populate the user reference after the user login to the server.
             // do the change in AuthRequestHandler.cs
             RegisterGame(game);
+
+            var nzhul = RequestManagerHttp.UsersService.GetUser(3);
+            var freda = RequestManagerHttp.UsersService.GetUser(1);
+
+            RelinkGameUserAndAvatarTMP(nzhul);
+            RelinkGameUserAndAvatarTMP(freda);
+
+            nzhul.Avatar.IsDisconnected = true;
+            freda.Avatar.IsDisconnected = true;
+
             Console.WriteLine("Adding 1 dummy game!");
         }
 
