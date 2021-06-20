@@ -54,6 +54,18 @@ namespace GameServer.PacketHandlers
 
             BattleManager.Instance.RegisterBattle(newBattle);
             NetworkServer.Instance.Send(connectionId, rmsg);
+
+            if (!defenderArmy.IsNPC)
+            {
+                var defenderConnectionId = GameManager.Instance.GetConnectionIdByArmyId(game.Id, defenderArmy.Id);
+                if (defenderConnectionId > -1)
+                {
+                    
+                    NetworkServer.Instance.Send(defenderConnectionId, rmsg);
+                }
+
+                // if connectionId is -1 - this means that the user is disconnected and we don't need to send message.
+            }
         }
 
         private void UpdateUnitsData(Army Army)

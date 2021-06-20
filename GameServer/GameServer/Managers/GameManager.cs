@@ -124,7 +124,7 @@ namespace GameServer.Managers
         {
             var army = _games[gameId].Armies.FirstOrDefault(x => x.Id == armyId);
             var connection = NetworkServer.Instance.Connections.FirstOrDefault(x => x.Value.UserId == army.UserId);
-            return connection.Value != null ? connection.Value.ConnectionId : 0;
+            return connection.Value != null ? connection.Value.ConnectionId : -1;
         }
 
         //public Unit GetRandomAvailibleUnit(Army army)
@@ -245,6 +245,13 @@ namespace GameServer.Managers
 
                     availibleArmy.UserId = avatar.UserId;
                     availibleArmy.User = avatar.User;
+                    availibleArmy.Avatar = avatar;
+
+                    foreach (var unit in availibleArmy.Units)
+                    {
+                        unit.UserId = avatar.UserId;
+                    }
+
                     availibleCastle.UserId = avatar.UserId;
                     availibleCastle.User = avatar.User;
                     //TODO: we are currently handling only heroes and castles. Handle other dwellings if needed.
@@ -298,6 +305,11 @@ namespace GameServer.Managers
         public void RelinkGameUserAndAvatarTMP(Models.Users.User user)
         {
             var game = GetGameByUserId(user.Id);
+            if (game == null)
+            {
+                return;
+            }
+
             foreach (var avatar in game.Avatars)
             {
                 if (avatar.UserId == user.Id)

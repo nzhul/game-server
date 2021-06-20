@@ -16,9 +16,9 @@ namespace GameServer.Models.View
 
         public int Level { get; set; }
 
-        public int? GameId { get; set; }
+        public int? UserId { get; set; }
 
-        public int? AvatarId { get; set; }
+        public int? GameId { get; set; }
 
         public int? ArmyId { get; set; }
 
