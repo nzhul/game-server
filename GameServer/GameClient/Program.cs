@@ -84,7 +84,7 @@ namespace GameClient
 
         private static void SendEndTurnRequest()
         {
-            var p = new Net_EndTurnRequest
+            var p = new Net_EndBattleTurnRequest
             {
                 BattleId = Guid.NewGuid(),
                 IsDefend = false,
