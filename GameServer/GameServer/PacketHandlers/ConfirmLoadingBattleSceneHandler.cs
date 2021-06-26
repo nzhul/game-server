@@ -1,4 +1,6 @@
-﻿using GameServer.Managers;
+﻿using System;
+using System.Linq;
+using GameServer.Managers;
 using GameServer.Models.Battle;
 using NetworkingShared;
 using NetworkingShared.Attributes;
@@ -15,20 +17,21 @@ namespace GameServer.PacketHandlers
 
             var battle = BattleManager.Instance.GetBattleById(msg.BattleId);
 
-            if (battle != null && battle.AttackerArmyId == msg.ArmyId)
+            var army = battle.Armies.FirstOrDefault(x => x.Id == msg.ArmyId);
+
+            if (army == null)
             {
-                battle.AttackerReady = true;
+                throw new ArgumentException($"Army with Id {msg.ArmyId} cannot be found");
             }
 
-            if (battle != null && battle.DefenderArmyId == msg.ArmyId)
-            {
-                battle.DefenderReady = true;
-            }
+            army.ReadyForBattle = msg.IsReady;
+            battle.State = BattleState.Fight; // new logic: "If atleast one player is ready - we can start the game"
 
-            if (battle.AttackerReady && battle.DefenderReady)
-            {
-                battle.State = BattleState.Fight;
-            }
+            // Old logic was "All players need to be ready to start the battle"
+            //if (battle.Armies.All(x => x.ReadyForBattle))
+            //{
+            //    battle.State = BattleState.Fight;
+            //}
         }
     }
 }

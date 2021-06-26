@@ -1,12 +1,12 @@
-﻿using System;
-using System.Threading.Tasks;
-using Assets.Scripts.Network.Services;
+﻿using System.Linq;
 using GameServer.Managers;
+using GameServer.NetworkShared.Models;
 using GameServer.NetworkShared.Packets.World.ServerClient;
 using NetworkingShared;
 using NetworkingShared.Attributes;
 using NetworkingShared.Packets.World.ClientServer;
 using NetworkingShared.Packets.World.ServerClient;
+using Newtonsoft.Json;
 
 namespace GameServer.PacketHandlers
 {
@@ -28,45 +28,23 @@ namespace GameServer.PacketHandlers
             if (battle == null)
             {
                 NetworkServer.Instance.Send(connectionId, new Net_OnReconnectBattleFail());
-
-                // TODO: Delete this commented code.
-                //Task.Run(() =>
-                //{
-                //    try
-                //    {
-                //        RequestManagerHttp.BattleService.UnRegisterBattle(connection.UserId);
-                //    }
-                //    catch (Exception ex)
-                //    {
-                //        Console.WriteLine($"Error setting user offline. UserId: {connection.UserId}. Ex: {ex}");
-                //    }
-                //});
-                //return;
             }
 
-            var isAttacker = battle.AttackerArmy.UserId == connection.UserId;
-            if (isAttacker)
-            {
-                battle.AttackerDisconnected = false;
-                battle.AttackerConnectionId = connectionId;
-            }
-            else
-            {
-                battle.DefenderDisconnected = false;
-                battle.DefenderConnectionId = connectionId;
-            }
+            connection.User.Avatar.IsDisconnected = false;
 
+            var game = GameManager.Instance.GetGameByConnectionId(connectionId);
 
             Net_OnStartBattle rmsg = new Net_OnStartBattle
             {
                 BattleId = battle.Id,
-                AttackerArmyId = battle.AttackerArmyId,
-                DefenderArmyId = battle.DefenderArmyId,
-                BattleScenario = battle.BattleScenario,
-                SelectedUnitId = battle.SelectedUnit.Id,
-                AttackerType = battle.AttackerType,
-                DefenderType = battle.DefenderType,
-                Turn = battle.Turn
+                CurrentArmyId = battle.CurrentArmy.Id,
+                CurrentUnitId = battle.CurrentUnit.Id,
+                Armies = battle.Armies.Select((x, i) => new ArmyParams(x.Id, i)).ToArray(),
+                GameId = game.Id,
+                GameString = JsonConvert.SerializeObject(game, new JsonSerializerSettings()
+                {
+                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                })
             };
 
             NetworkServer.Instance.Send(connectionId, rmsg);

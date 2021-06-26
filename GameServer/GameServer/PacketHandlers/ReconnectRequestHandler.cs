@@ -31,7 +31,12 @@ namespace GameServer.PacketHandlers
             var rmsg = new Net_OnStartGame()
             {
                 GameId = game.Id,
-                GameString = JsonConvert.SerializeObject(game)
+                // !!! TODO: I need to not serialize directly the game model
+                // !!! TODO: Use simpler model instead / automapper.
+                GameString = JsonConvert.SerializeObject(game, new JsonSerializerSettings()
+                {
+                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                })
             };
 
             NetworkServer.Instance.Send(connectionId, rmsg);

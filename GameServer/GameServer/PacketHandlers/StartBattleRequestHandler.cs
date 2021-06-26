@@ -1,13 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using GameServer.Managers;
 using GameServer.Models;
 using GameServer.Models.Battle;
+using GameServer.NetworkShared.Models;
 using NetworkingShared;
 using NetworkingShared.Attributes;
 using NetworkingShared.Packets.World.ClientServer;
 using NetworkingShared.Packets.World.ServerClient;
-using NetworkShared.Enums;
 
 namespace GameServer.PacketHandlers
 {
@@ -21,62 +22,53 @@ namespace GameServer.PacketHandlers
             Net_OnStartBattle rmsg = new Net_OnStartBattle();
             var game = GameManager.Instance.GetGameByConnectionId(connectionId);
 
-            if (msg.IsValid())
+            var armies = new List<Army>();
+            var attackerArmy = game.Armies.FirstOrDefault(x => x.Id == msg.AttackerArmyId);
+            var defenderArmy = game.Armies.FirstOrDefault(x => x.Id == msg.DefenderArmyId);
+            attackerArmy.Order = 0;
+            defenderArmy.Order = 1;
+            attackerArmy.LastActivity = DateTime.UtcNow;
+            defenderArmy.LastActivity = DateTime.UtcNow;
+
+            armies.Add(attackerArmy);
+            armies.Add(defenderArmy);
+
+            Battle newBattle = new Battle()
             {
-                var scenario = this.ResolveBattleScenario(msg.AttackerType, msg.DefenderType);
-                rmsg.AttackerArmyId = msg.AttackerArmyId;
-                rmsg.DefenderArmyId = msg.DefenderArmyId;
-                rmsg.BattleScenario = scenario;
+                Id = Guid.NewGuid(),
+                GameId = game.Id,
+                Armies = armies,
+                LastTurnStartTime = DateTime.UtcNow
+            };
 
-                // 1. Add new record into NetworkServer.Instance.ActiveBattles
-                // 2. Send OnStartBattle back to the client.
+            newBattle.CurrentArmy = attackerArmy;
+            newBattle.CurrentUnit = newBattle.GetRandomAvailibleUnit(attackerArmy);
 
-                Battle newBattle = new Battle()
+            this.UpdateUnitsData(attackerArmy);
+            this.UpdateUnitsData(defenderArmy);
+
+            rmsg.BattleId = newBattle.Id;
+            rmsg.CurrentArmyId = newBattle.CurrentArmy.Id;
+            rmsg.CurrentUnitId = newBattle.CurrentUnit.Id;
+            rmsg.Armies = armies.Select(x => new ArmyParams(x.Id, x.Order)).ToArray();
+
+            BattleManager.Instance.RegisterBattle(newBattle);
+            NetworkServer.Instance.Send(connectionId, rmsg);
+
+            if (!defenderArmy.IsNPC)
+            {
+                var defenderConnectionId = GameManager.Instance.GetConnectionIdByArmyId(game.Id, defenderArmy.Id);
+                if (defenderConnectionId > -1)
                 {
-                    Id = Guid.NewGuid(),
-                    GameId = game.Id,
-                    AttackerArmyId = msg.AttackerArmyId,
-                    DefenderArmyId = msg.DefenderArmyId,
-                    AttackerArmy = game.Armies.FirstOrDefault(x => x.Id == msg.AttackerArmyId),
-                    DefenderArmy = game.Armies.FirstOrDefault(x => x.Id == msg.DefenderArmyId),
-                    AttackerType = msg.AttackerType,
-                    DefenderType = msg.DefenderType,
-                    BattleScenario = scenario,
-                    LastTurnStartTime = DateTime.UtcNow
-                };
+                    
+                    NetworkServer.Instance.Send(defenderConnectionId, rmsg);
+                }
 
-                newBattle.SelectedUnit = GameManager.Instance.GetRandomAvailibleUnit(newBattle.AttackerArmy);
-
-                this.UpdateUnitsData(newBattle.AttackerArmy);
-                this.UpdateUnitsData(newBattle.DefenderArmy);
-
-                rmsg.BattleId = newBattle.Id;
-                rmsg.SelectedUnitId = newBattle.SelectedUnit.Id;
-                rmsg.Turn = Turn.Attacker;
-
-                this.ConfigurePlayerReady(newBattle, scenario);
-                newBattle.AttackerConnectionId = GameManager.Instance.GetConnectionIdByArmyId(game.Id, newBattle.AttackerArmyId);
-                newBattle.DefenderConnectionId = GameManager.Instance.GetConnectionIdByArmyId(game.Id, newBattle.DefenderArmyId);
-
-                BattleManager.Instance.RegisterBattle(newBattle);
-                NetworkServer.Instance.Send(connectionId, rmsg);
-
-                // TODO: Delete this.
-                //Task.Run(() =>
-                //{
-                //    var connection = NetworkServer.Instance.Connections[connectionId];
-                //    try
-                //    {
-                //        RequestManagerHttp.BattleService.RegisterBattle(newBattle.Id, connection.UserId);
-                //    }
-                //    catch (Exception ex)
-                //    {
-                //        Console.WriteLine($"Error registering battle on API. UserId: {connection.UserId}. Ex: {ex}");
-                //    }
-                //});
-
-                // TODO: Register battle for other player when pvp battle.
+                // if connectionId is -1 - this means that the user is disconnected and we don't need to send message.
             }
+
+            Console.WriteLine($"Starting battle between {attackerArmy.Name} and {defenderArmy.Name}. " +
+                $"Current player: {attackerArmy.Name}, ArmyId: {rmsg.CurrentArmyId}, UnitId: {rmsg.CurrentUnitId}");
         }
 
         private void UpdateUnitsData(Army Army)
@@ -100,53 +92,6 @@ namespace GameServer.PacketHandlers
                 unit.ArmorType = config.ArmorType;
                 unit.Level = config.CreatureLevel;
             }
-        }
-
-        private void ConfigurePlayerReady(Battle newBattle, BattleScenario scenario)
-        {
-            switch (scenario)
-            {
-                case BattleScenario.HUvsAI:
-                    newBattle.AttackerReady = false;
-                    newBattle.DefenderReady = true;
-                    break;
-                case BattleScenario.AIvsAI:
-                    newBattle.AttackerReady = true;
-                    newBattle.DefenderReady = true;
-                    break;
-                case BattleScenario.HUvsHU:
-                    newBattle.AttackerReady = false;
-                    newBattle.DefenderReady = false;
-                    break;
-                case BattleScenario.AIvsHU:
-                    newBattle.AttackerReady = true;
-                    newBattle.DefenderReady = false;
-                    break;
-                default:
-                    break;
-            }
-        }
-
-        private BattleScenario ResolveBattleScenario(PlayerType attackerType, PlayerType defenderType)
-        {
-            if (attackerType == PlayerType.Human && defenderType == PlayerType.AI)
-            {
-                return BattleScenario.HUvsAI;
-            }
-            else if (attackerType == PlayerType.AI && defenderType == PlayerType.AI)
-            {
-                return BattleScenario.AIvsAI;
-            }
-            else if (attackerType == PlayerType.Human && defenderType == PlayerType.Human)
-            {
-                return BattleScenario.HUvsHU;
-            }
-            else if (attackerType == PlayerType.AI && defenderType == PlayerType.Human)
-            {
-                return BattleScenario.AIvsHU;
-            }
-
-            return BattleScenario.Unknown;
         }
     }
 }

@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using GameServer.MapGeneration;
+using GameServer.Models.Users;
+using Newtonsoft.Json;
 
 namespace GameServer.Models
 {
@@ -15,6 +17,9 @@ namespace GameServer.Models
         }
 
         public int UserId { get; set; }
+
+        [JsonIgnore]
+        public User User { get; set; }
 
         public int Wood { get; set; }
 

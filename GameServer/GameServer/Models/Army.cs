@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using GameServer.Models.Units;
+using GameServer.Models.Users;
+using Newtonsoft.Json;
 
 namespace GameServer.Models
 {
@@ -12,9 +14,28 @@ namespace GameServer.Models
             this.Units = new Collection<Unit>();
         }
 
+        public string Name
+        {
+            get
+            {
+                if (IsNPC)
+                {
+                    return Units[0].Type.ToString();
+                }
+                else
+                {
+                    return User.Username;
+                }
+            }
+        }
+
         public int? UserId { get; set; }
 
-        // TODO: Delete if not needed
+        [JsonIgnore]
+        public User User { get; set; }
+
+        public Avatar Avatar { get; set; }
+
         public int GameId { get; set; }
 
         public NPCData NPCData { get; set; }
@@ -24,5 +45,31 @@ namespace GameServer.Models
         public IList<Unit> Units { get; set; }
 
         public Guid? Link { get; set; }
+
+        public bool TurnConsumed { get; set; }
+
+        public int Order { get; set; }
+
+        private bool _readyForBattle;
+
+        public bool ReadyForBattle
+        {
+            get
+            {
+                if (IsNPC)
+                {
+                    return true;
+                }
+
+                return _readyForBattle;
+            }
+
+            set
+            {
+                _readyForBattle = value;
+            }
+        }
+
+        public DateTime LastActivity { get; set; }
     }
 }

@@ -43,8 +43,8 @@ namespace GameServer.Matchmaking
 
             this._pool.Add(request);
 
-            Console.WriteLine($"{request.Connection.Username} registered in matchmaking pool " +
-                $"with {request.Connection.MMR} MMR and {@class} class.");
+            Console.WriteLine($"{request.Connection.User.Username} registered in matchmaking pool " +
+                $"with {request.Connection.User.Mmr} MMR and {@class} class.");
         }
 
         public void UnRegisterPlayer(ServerConnection connection)
@@ -57,7 +57,7 @@ namespace GameServer.Matchmaking
             }
 
             this._pool.Remove(request);
-            Console.WriteLine($"{request.Connection.Username} canceled his MM request.");
+            Console.WriteLine($"{request.Connection.User.Username} canceled his MM request.");
         }
 
         public void DoMatchmaking()
@@ -74,7 +74,7 @@ namespace GameServer.Matchmaking
 
                 if (match != null)
                 {
-                    Console.WriteLine($"Match found for players: {request.Connection.Username} and {match.Connection.Username}");
+                    Console.WriteLine($"Match found for players: {request.Connection.User.Username} and {match.Connection.User.Username}");
 
                     request.MatchFound = true;
                     match.MatchFound = true;

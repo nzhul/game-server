@@ -20,8 +20,7 @@
                     "startX": 0,
                     "startY": 0,
                     "level": 1,
-                    "gameId": null,
-                    "avatarId": null,
+                    "userId": 3,
                     "armyId": 2,
                     "type": "Paladin",
                     "quantity": 1
@@ -33,8 +32,7 @@
                     "startX": 0,
                     "startY": 8,
                     "level": 0,
-                    "gameId": null,
-                    "avatarId": null,
+                    "userId": 3,
                     "armyId": 2,
                     "type": "Shaman",
                     "quantity": 2
@@ -46,8 +44,7 @@
                     "startX": 0,
                     "startY": 4,
                     "level": 0,
-                    "gameId": null,
-                    "avatarId": null,
+                    "userId": 3,
                     "armyId": 2,
                     "type": "Troll",
                     "quantity": 2
@@ -59,8 +56,7 @@
                     "startX": 0,
                     "startY": 2,
                     "level": 0,
-                    "gameId": null,
-                    "avatarId": null,
+                    "userId": 3,
                     "armyId": 2,
                     "type": "Troll",
                     "quantity": 1
@@ -94,8 +90,6 @@
                     "startX": 0,
                     "startY": 8,
                     "level": 0,
-                    "gameId": null,
-                    "avatarId": null,
                     "armyId": 3,
                     "type": "Shaman",
                     "quantity": 2
@@ -107,8 +101,6 @@
                     "startX": 0,
                     "startY": 4,
                     "level": 0,
-                    "gameId": null,
-                    "avatarId": null,
                     "armyId": 3,
                     "type": "Troll",
                     "quantity": 2
@@ -120,8 +112,6 @@
                     "startX": 0,
                     "startY": 2,
                     "level": 0,
-                    "gameId": null,
-                    "avatarId": null,
                     "armyId": 3,
                     "type": "Troll",
                     "quantity": 1
@@ -133,8 +123,6 @@
                     "startX": 0,
                     "startY": 0,
                     "level": 1,
-                    "gameId": null,
-                    "avatarId": null,
                     "armyId": 3,
                     "type": "Paladin",
                     "quantity": 1
@@ -168,8 +156,6 @@
                     "startX": 0,
                     "startY": 8,
                     "level": 0,
-                    "gameId": null,
-                    "avatarId": null,
                     "armyId": 4,
                     "type": "Shaman",
                     "quantity": 2
@@ -181,8 +167,6 @@
                     "startX": 0,
                     "startY": 4,
                     "level": 0,
-                    "gameId": null,
-                    "avatarId": null,
                     "armyId": 4,
                     "type": "Troll",
                     "quantity": 2
@@ -194,8 +178,6 @@
                     "startX": 0,
                     "startY": 2,
                     "level": 0,
-                    "gameId": null,
-                    "avatarId": null,
                     "armyId": 4,
                     "type": "Troll",
                     "quantity": 1
@@ -207,8 +189,6 @@
                     "startX": 0,
                     "startY": 0,
                     "level": 1,
-                    "gameId": null,
-                    "avatarId": null,
                     "armyId": 4,
                     "type": "Paladin",
                     "quantity": 1
@@ -232,8 +212,7 @@
                     "startX": 0,
                     "startY": 8,
                     "level": 0,
-                    "gameId": null,
-                    "avatarId": null,
+                    "userId": 1,
                     "armyId": 5,
                     "type": "Shaman",
                     "quantity": 2
@@ -245,8 +224,7 @@
                     "startX": 0,
                     "startY": 4,
                     "level": 0,
-                    "gameId": null,
-                    "avatarId": null,
+                    "userId": 1,
                     "armyId": 5,
                     "type": "Troll",
                     "quantity": 2
@@ -258,8 +236,7 @@
                     "startX": 0,
                     "startY": 2,
                     "level": 0,
-                    "gameId": null,
-                    "avatarId": null,
+                    "userId": 1,
                     "armyId": 5,
                     "type": "Troll",
                     "quantity": 1
@@ -271,8 +248,7 @@
                     "startX": 0,
                     "startY": 0,
                     "level": 1,
-                    "gameId": null,
-                    "avatarId": null,
+                    "userId": 1,
                     "armyId": 5,
                     "type": "Paladin",
                     "quantity": 1
@@ -306,8 +282,6 @@
                     "startX": 0,
                     "startY": 8,
                     "level": 0,
-                    "gameId": null,
-                    "avatarId": null,
                     "armyId": 6,
                     "type": "Shaman",
                     "quantity": 2
@@ -319,8 +293,6 @@
                     "startX": 0,
                     "startY": 4,
                     "level": 0,
-                    "gameId": null,
-                    "avatarId": null,
                     "armyId": 6,
                     "type": "Troll",
                     "quantity": 2
@@ -332,8 +304,6 @@
                     "startX": 0,
                     "startY": 2,
                     "level": 0,
-                    "gameId": null,
-                    "avatarId": null,
                     "armyId": 6,
                     "type": "Troll",
                     "quantity": 1
@@ -345,8 +315,6 @@
                     "startX": 0,
                     "startY": 0,
                     "level": 1,
-                    "gameId": null,
-                    "avatarId": null,
                     "armyId": 6,
                     "type": "Paladin",
                     "quantity": 1
@@ -380,8 +348,6 @@
                     "startX": 0,
                     "startY": 2,
                     "level": 0,
-                    "gameId": null,
-                    "avatarId": null,
                     "armyId": 7,
                     "type": "Troll",
                     "quantity": 1
@@ -393,8 +359,6 @@
                     "startX": 0,
                     "startY": 0,
                     "level": 1,
-                    "gameId": null,
-                    "avatarId": null,
                     "armyId": 7,
                     "type": "Paladin",
                     "quantity": 1
@@ -406,8 +370,6 @@
                     "startX": 0,
                     "startY": 4,
                     "level": 0,
-                    "gameId": null,
-                    "avatarId": null,
                     "armyId": 7,
                     "type": "Troll",
                     "quantity": 2
@@ -419,8 +381,6 @@
                     "startX": 0,
                     "startY": 8,
                     "level": 0,
-                    "gameId": null,
-                    "avatarId": null,
                     "armyId": 7,
                     "type": "Shaman",
                     "quantity": 2

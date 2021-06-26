@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using GameServer.MapGeneration;
+using GameServer.Models.Users;
 using NetworkShared.Models;
+using Newtonsoft.Json;
 
 namespace GameServer.Models
 {
@@ -10,6 +12,9 @@ namespace GameServer.Models
         public DwellingType Type { get; set; }
 
         public int? UserId { get; set; }
+
+        [JsonIgnore]
+        public User User { get; set; }
 
         public int GameId { get; set; }
 
