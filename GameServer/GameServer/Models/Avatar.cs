@@ -35,6 +35,8 @@ namespace GameServer.Models
 
         public bool HasLeftTheGame { get; set; }
 
+        public bool IsResting { get; set; }
+
         private string _visitedString;
 
         public string VisitedString

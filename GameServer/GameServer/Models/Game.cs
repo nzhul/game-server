@@ -6,6 +6,15 @@ namespace GameServer.Models
 {
     public class Game
     {
+        public Game()
+        {
+            StartTime = DateTime.UtcNow;
+            CurrentDayStartTime = DateTime.UtcNow;
+            TotalDays = 1;
+            Week = 1;
+            Month = 1;
+        }
+
         public int Id { get; set; }
 
         public IList<Army> Armies { get; set; }
@@ -15,6 +24,52 @@ namespace GameServer.Models
         public IList<Treasure> Treasures { get; set; }
 
         public IList<Avatar> Avatars { get; set; }
+
+        public DateTime StartTime { get; set; }
+
+        public int Day { get; private set; }
+
+        public int Week { get; private set; }
+
+        public int Month { get; private set; }
+
+        private int _totalDays;
+
+        public int TotalDays
+        {
+            get { return _totalDays; }
+            set
+            {
+                if (value <= _totalDays)
+                {
+                    throw new ArgumentException("Only increment is allowed!");
+                }
+
+                Day++;
+                if (Day == 8)
+                {
+                    Day = 1;
+                    Week++;
+                }
+
+                if (Week == 5)
+                {
+                    Week = 1;
+                    Month += 1;
+                }
+
+                _totalDays = value;
+            }
+        }
+
+
+        public DateTime CurrentDayStartTime { get; set; }
+
+        // We will increase this time every time the game is paused or both players are in PvP battle
+        // PauseTime is increased while Game.TimerStopped = true
+        public TimeSpan PauseTime { get; set; }
+
+        public bool TimerStopped { get; set; }
 
         private string _matrixString;
 

@@ -6,7 +6,7 @@ using NetworkingShared.Packets.Battle;
 
 namespace GameServer.PacketHandlers
 {
-    [HandlerRegister(PacketType.EndTurnRequest)]
+    [HandlerRegister(PacketType.EndBattleTurnRequest)]
     public class EndBattleTurnRequestHandler : IPacketHandler
     {
         public void Handle(INetPacket packet, int connectionId)

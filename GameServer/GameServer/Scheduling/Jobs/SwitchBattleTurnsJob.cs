@@ -3,14 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using GameServer.Managers;
 using GameServer.Models.Battle;
+using GameServer.NetworkShared;
 
 namespace GameServer.Scheduling.Jobs
 {
     public class SwitchBattleTurnsJob : JobBase
     {
-        private readonly TimeSpan TURN_DURATION = new TimeSpan(0, 0, 20); // seconds
-        private readonly TimeSpan IDLE_TIMEOUT = new TimeSpan(0, 5, 50); // Use this for testing. Real one is bellow!
-        //private const int IDLE_TIMEOUT = (TURN_DURATION * 2) + (TURN_DURATION / 2); // seconds -> 20 * 2 + 20 / 2 = 40 + 10 = 50
+        //private readonly TimeSpan TURN_DURATION = new TimeSpan(0, 0, 20); // seconds
+        //private readonly TimeSpan IDLE_TIMEOUT = new TimeSpan(0, 5, 50); // Use this for testing. Real one is bellow!
+        ////private const int IDLE_TIMEOUT = (TURN_DURATION * 2) + (TURN_DURATION / 2); // seconds -> 20 * 2 + 20 / 2 = 40 + 10 = 50
 
         public SwitchBattleTurnsJob()
             : base(new TimeSpan(0, 0, 1))
@@ -30,7 +31,7 @@ namespace GameServer.Scheduling.Jobs
                 }
 
                 // 1. Check if both players are inactive.
-                DateTime idleTime = DateTime.UtcNow - IDLE_TIMEOUT;
+                DateTime idleTime = DateTime.UtcNow - Constants.IDLE_TIMEOUT;
                 if (battle.Armies.All(x => x.LastActivity < idleTime))
                 {
                     Console.WriteLine($"Ending Idle battle: BattleId: {battle.Id}");
@@ -38,7 +39,7 @@ namespace GameServer.Scheduling.Jobs
                     completedBattles.Add(battle);
                 }
 
-                if (battle.LastTurnStartTime + TURN_DURATION < DateTime.UtcNow)
+                if (battle.CurrentTurnStartTime + Constants.BATTLE_TURN_DURATION < DateTime.UtcNow)
                 {
                     BattleManager.Instance.SwitchTurn(battle);
                 }

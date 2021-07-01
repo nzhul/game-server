@@ -12,6 +12,11 @@ namespace GameServer.Models
         public Army()
         {
             this.Units = new Collection<Unit>();
+
+            // TODO: Movement points of the army should be derived from the main hero in the army
+            // if there is no hero then we pick the slowest unit movement points.
+            MaxMovementPoints = 10;
+            MovementPoints = MaxMovementPoints;
         }
 
         public string Name
@@ -49,6 +54,10 @@ namespace GameServer.Models
         public bool TurnConsumed { get; set; }
 
         public int Order { get; set; }
+
+        public int MovementPoints { get; set; }
+
+        public int MaxMovementPoints { get; set; }
 
         private bool _readyForBattle;
 

@@ -29,7 +29,7 @@ namespace GameServer.Models.Battle
 
         public DateTime? End { get; set; }
 
-        public DateTime LastTurnStartTime { get; set; }
+        public DateTime CurrentTurnStartTime { get; set; }
 
         public List<string> Log { get; set; }
 
