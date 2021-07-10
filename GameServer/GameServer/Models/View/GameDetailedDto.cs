@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace GameServer.Models.View
 {
@@ -9,6 +10,18 @@ namespace GameServer.Models.View
         public string Name { get; set; }
 
         public string MatrixString { get; set; }
+
+        public DateTime StartTime { get; set; }
+
+        public int Day { get; set; }
+
+        public int Week { get; set; }
+
+        public int Month { get; set; }
+
+        public int TotalDays { get; set; }
+
+        public DateTime CurrentDayStartTime { get; set; }
 
         public ICollection<ArmyDetailedDto> Armies { get; set; }
 

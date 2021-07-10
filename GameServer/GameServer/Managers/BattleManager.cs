@@ -92,7 +92,7 @@ namespace GameServer.Managers
             var nextArmy = battle.SwitchTurn();
 
             //battle.LastTurnStartTime = Time.time;
-            battle.LastTurnStartTime = DateTime.UtcNow; // TODO: Not tested
+            battle.CurrentTurnStartTime = DateTime.UtcNow; // TODO: Not tested
 
             var logMessage = $"[Switching turns] Current player: {nextArmy.Name}, " +
                 $"ArmyId: {battle.CurrentArmy.Id}, UnitId: {battle.CurrentUnit.Id}";

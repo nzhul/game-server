@@ -6,12 +6,12 @@ using NetworkingShared.Packets.Battle;
 
 namespace GameServer.PacketHandlers
 {
-    [HandlerRegister(PacketType.EndTurnRequest)]
-    public class EndTurnRequestHandler : IPacketHandler
+    [HandlerRegister(PacketType.EndBattleTurnRequest)]
+    public class EndBattleTurnRequestHandler : IPacketHandler
     {
         public void Handle(INetPacket packet, int connectionId)
         {
-            Net_EndTurnRequest msg = (Net_EndTurnRequest)packet;
+            Net_EndBattleTurnRequest msg = (Net_EndBattleTurnRequest)packet;
             var game = GameManager.Instance.GetGameByConnectionId(connectionId);
 
             // 1. Find the battle

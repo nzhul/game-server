@@ -38,7 +38,7 @@ namespace GameServer.PacketHandlers
                 Id = Guid.NewGuid(),
                 GameId = game.Id,
                 Armies = armies,
-                LastTurnStartTime = DateTime.UtcNow
+                CurrentTurnStartTime = DateTime.UtcNow
             };
 
             newBattle.CurrentArmy = attackerArmy;

@@ -10,9 +10,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Dockerfile = Dockerfile
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GameClient", "GameClient\GameClient.csproj", "{152B9541-EE3A-4E7B-A50B-B5B1FF1AC112}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameServer.GeneratorTesting", "GameServer.GeneratorTesting\GameServer.GeneratorTesting.csproj", "{59059ED9-01D0-4CBA-A417-D0AB7A4A47D9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GameServer.GeneratorTesting", "GameServer.GeneratorTesting\GameServer.GeneratorTesting.csproj", "{59059ED9-01D0-4CBA-A417-D0AB7A4A47D9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -24,10 +22,6 @@ Global
 		{05207957-D57C-4B97-8C08-F82742B68E9F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{05207957-D57C-4B97-8C08-F82742B68E9F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{05207957-D57C-4B97-8C08-F82742B68E9F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{152B9541-EE3A-4E7B-A50B-B5B1FF1AC112}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{152B9541-EE3A-4E7B-A50B-B5B1FF1AC112}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{152B9541-EE3A-4E7B-A50B-B5B1FF1AC112}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{152B9541-EE3A-4E7B-A50B-B5B1FF1AC112}.Release|Any CPU.Build.0 = Release|Any CPU
 		{59059ED9-01D0-4CBA-A417-D0AB7A4A47D9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{59059ED9-01D0-4CBA-A417-D0AB7A4A47D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{59059ED9-01D0-4CBA-A417-D0AB7A4A47D9}.Release|Any CPU.ActiveCfg = Release|Any CPU

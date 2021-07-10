@@ -1,5 +1,7 @@
 ﻿using System;
 using GameServer.Managers;
+using GameServer.Models.View;
+using GameServer.Utilities;
 using NetworkingShared;
 using NetworkingShared.Attributes;
 using NetworkingShared.Packets.World.ClientServer;
@@ -28,12 +30,13 @@ namespace GameServer.PacketHandlers
             // raise startGame event
 
             var game = GameManager.Instance.GetGameByConnectionId(connectionId);
+            var simpleGame = AM.Instance.Mapper.Map<GameDetailedDto>(game);
             var rmsg = new Net_OnStartGame()
             {
                 GameId = game.Id,
                 // !!! TODO: I need to not serialize directly the game model
                 // !!! TODO: Use simpler model instead / automapper.
-                GameString = JsonConvert.SerializeObject(game, new JsonSerializerSettings()
+                GameString = JsonConvert.SerializeObject(simpleGame, new JsonSerializerSettings()
                 {
                     ReferenceLoopHandling = ReferenceLoopHandling.Ignore
                 })

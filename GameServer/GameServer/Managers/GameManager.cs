@@ -6,6 +6,7 @@ using Assets.Scripts.Network.Services;
 using GameServer.MapGeneration;
 using GameServer.Models;
 using GameServer.Models.Units;
+using GameServer.NetworkShared;
 using GameServer.NetworkShared.Packets.World.ServerClient;
 using GameServer.Utilities;
 using Newtonsoft.Json;
@@ -336,6 +337,67 @@ namespace GameServer.Managers
                     army.User = user;
                     army.Avatar = game.Avatars.FirstOrDefault(x => x.UserId == user.Id);
                 }
+            }
+        }
+
+        public void DoNewDayTimeCheck(TimeSpan tickInterval)
+        {
+            foreach (var kv in _games)
+            {
+                var game = kv.Value;
+
+                if (game.TimerStopped)
+                {
+                    game.PauseTime.Add(new TimeSpan(0, 0, tickInterval.Seconds));
+                    continue;
+                }
+
+                if (game.CurrentDayStartTime + Constants.DAY_DURATION + game.PauseTime < DateTime.UtcNow)
+                {
+                    TriggerNextDay(game);
+                }
+            }
+        }
+
+        public void DoNewDayRestCheck(int userId)
+        {
+            var game = GetGameByUserId(userId);
+            var allPlayersResting = game.Avatars.All(x => x.IsResting);
+            if (allPlayersResting)
+            {
+                TriggerNextDay(game);
+            }
+
+        }
+
+        private static void TriggerNextDay(Game game)
+        {
+            game.TotalDays++;
+            game.CurrentDayStartTime = DateTime.UtcNow;
+
+            var msg = new Net_OnNewDay()
+            {
+                Day = game.Day,
+                Week = game.Week,
+                Month = game.Month,
+                TotalDays = game.TotalDays
+            };
+
+            var recipients = game.Avatars.Where(x => !x.IsDisconnected).Select(x => x.User.Connection);
+            foreach (var recipient in recipients)
+            {
+                NetworkServer.Instance.Send(recipient.ConnectionId, msg);
+            }
+
+            // restore players movement points and IsResting
+            foreach (var avatar in game.Avatars)
+            {
+                avatar.IsResting = false;
+            }
+
+            foreach (var army in game.Armies)
+            {
+                army.MovementPoints = army.MaxMovementPoints;
             }
         }
     }

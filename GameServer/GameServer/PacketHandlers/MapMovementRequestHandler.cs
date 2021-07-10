@@ -22,6 +22,12 @@ namespace GameServer.PacketHandlers
             // 1. Validate the new position
             if (IsNewPositionValid(msg))
             {
+                // TODO: IMPORTANT: calculate the path here aswell and do not allow movement if:
+                // 1. target node is impossible to reach
+                // 2. Player doesn't have enough movement points.
+
+                // TODO: Consume player movement points.
+
                 rmsg.Success = 1;
                 rmsg.ArmyId = msg.ArmyId;
                 rmsg.Destination = new Coord
